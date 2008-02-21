@@ -10,8 +10,8 @@ Ojay.Overlay.Transitions
     show: function(overlay, chain) {
         overlay.getContainer()
                 .setStyle({opacity: overlay.getOpacity()})
-                .setStyle(overlay.getSize())
-                .setStyle(overlay.getPosition())
+                .setStyle(overlay.getSize(true))
+                .setStyle(overlay.getPosition(true))
                 .show();
         chain.fire();
         return overlay;
@@ -30,8 +30,8 @@ Ojay.Overlay.Transitions
     show: function(overlay, chain) {
         overlay.getContainer()
                 .setStyle({opacity: 0})
-                .setStyle(overlay.getSize())
-                .setStyle(overlay.getPosition())
+                .setStyle(overlay.getSize(true))
+                .setStyle(overlay.getPosition(true))
                 .show()
                 .animate({opacity: {to: overlay.getOpacity()}}, 0.4)
                 ._(chain.toFunction());
