@@ -1,0 +1,56 @@
+- @title = 'Sequencing'
+:textile
+  h3. Sequencing
+  
+  Sequencing is the process of setting some action to be carried out on the members of an
+  array. You can then step through the array, carrying out the action on each member in
+  turn.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  For example, let's say you want to rotate the source of some image on your page. You have
+  a list of images:
+  
+  <pre>
+  var sources = [
+    'header-1.jpg', 'header-2.jpg',
+    'some-other-file.jpg', 'ad-banners.jpg'
+  ];</pre>
+  
+  and an action that can be applied to an item in the list to change the source of your
+  image:
+  
+  <pre>
+  function(source) {
+    Ojay('#my-image').setAttributes({src: source});
+  }</pre>
+  
+  You create a sequence to perform this action like so:
+  
+  <pre>
+  var seq = sources.sequence(function(source) {
+    Ojay('#my-image').setAttributes({src: source});
+  });</pre>
+  
+  You can then tell the sequence to loop, pausing by some number of seconds between each
+  member:
+  
+  <pre>
+  seq.loop(10);</pre>
+  
+  You can tell the loop to pause whenever you like:
+  
+  <pre>
+  seq.pause();</pre>
+  
+  or you can tell it to pause when it next reaches the end of the list:
+  
+  <pre>
+  seq.finish();</pre>
+  
+  You can start the loop again by calling @seq.loop()@.

@@ -1,0 +1,191 @@
+- @title = 'Core extensions'
+:textile
+  h3. Core extensions
+  
+  Ojay adds a number of extra features to JavaScript's core classes, mostly to facilitate
+  iterator methods and function manipulation.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  h3. Array methods
+  
+  Most of the array methods come from Mozilla's implementation of them for JavaScript 1.8
+  (see the "Mozilla docs":http://developer.mozilla.org/en/docs/index.php?title=Core_JavaScript_1.5_Reference:Global_Objects:Array&oldid=58326).
+  These methods are also available on element collections returned by the @Ojay()@ function.
+  
+  * @array.indexOf(element, from)@ - returns the index of the first member of the array equal
+    to @element@. @from@ is an optional argument that specifies the index at which to
+    start searching the array.
+    
+    <pre>
+    [9,1,6,3,6,4].indexOf(6)    // -> 2</pre>
+  
+  * @array.lastIndexOf(element, from)@ - the same as @indexOf()@, except the array is searched
+    in reverse.
+  
+  * @array.forEach(func, scope)@ - executes the given function for each member of the array. With
+    each iteration, the function receives the current element, its index, and the array
+    itself. The optional @scope@ specifies the meaning of the keyword @this@ inside @func@.
+    
+    <pre>
+    // alerts: "0: 9", "1: 12", "2: 2", "3: 15"
+    [9,12,2,15].forEach(function(element, i) {
+      alert(i + ': ' + element);
+    });</pre>
+  
+  * @array.filter(func, scope)@ - returns a new array containing all the members of the original
+    array for which @func@ returns a @true@-like value.
+  
+  * @array.count(func, scope)@ - returns the number of elements of the array for which @func@ returns
+    a @true@-like value.
+  
+  * @array.every(func, scope)@ - returns @true@ iff @func@ returns @true@ for every member of
+    the array.
+  
+  * @array.some(func, scope)@ - returns @true@ iff @func@ returns @true@ for one or more members
+    of the array.
+  
+  * @array.map(func, scope)@ - returns a new array containing the values returns by @func@ for each
+    member of the array.
+    
+    <pre>
+    ['foo', 'bar'].map(function(s) {
+      return s.toUpperCase().replace(/[aeiou]/ig, '_');
+    });
+    
+    // -> ["F__", "B_R"]</pre>
+  
+  * @array.reduce(func, initial)@ - reduces the array down to a single value using an iterator
+    function. @func@ receives the current 'memo' value, the next member of the array, its
+    index, and the array itself. The return value of the function becomes the next memo value
+    received on the next iteration. @initial@ specifies the starting value of the memo
+    value; if it is omitted the array's first member is taken as the initial value.
+    
+    <pre>
+    // find the maximum number
+    [9,1,7,3,78,23,56,34].reduce(function(memo, value) {
+      return value > memo ? value : memo;
+    });
+    
+    // -> 78</pre>
+  
+  * @array.reduceRight(func, initial)@ - performs the same job as @reduce()@, except the array
+    is iterated over from right to left.
+  
+  * @array.unique()@ - returns a copy of the array with no duplicate elements.
+  
+  h3. Function methods
+  
+  These allow functions to be manipulated in various useful ways. Ojay uses these internally
+  to make code a little more concise.
+  
+  * @func.bind(object)@ - returns a new function that calls the original function with @this@
+    set to refer to @object@.
+    
+    <pre>
+    var getTitle = function() {
+      return this.title;
+    };
+    
+    var getDocumentTitle = getTitle.bind(document);
+    
+    getDocumentTitle()    // -> "Core extensions"</pre>
+  
+  * @func.partial(arg1 [, arg2 [, arg3 ... ]])@ - returns a copy of the function with some arguments
+    pre-set.
+    
+    <pre>
+    var add = function(a,b) { return a + b; };
+    var add4 = add.partial(4);
+    
+    add4(9)   // -> 13</pre>
+  
+  * @func.curry()@ - returns a curried version of the function.
+    
+    <pre>
+    var add = function(a,b,c) {
+      return a + b + c;
+    }.curry();
+    
+    add(1,2,3)    // -> 6
+    add(1,8)(14)  // -> 23
+    add(9)(2)(4)  // -> 15</pre>
+  
+  * @func.wrap(func)@ - provides aspect-oriented programming facilities by allowing you to wrap functions
+    in other functions that manipulate their input and output. An example from James Coglan's site:
+    
+    <pre>
+    var whizzBang = {
+      name: 'Fizz buzz',
+    
+      say: function(thing) {
+        alert(this.name + ' likes ' + thing);
+      }
+    };
+    
+    whizzBang.say('apples');
+    // -> alerts "Fizz buzz likes apples"
+    
+    whizzBang.say = whizzBang.say.wrap(
+      function(originalSay, stuff) {
+        originalSay(stuff);
+        if (!this.n) this.n = 0;
+        alert(this.name + ' has ' + this.n + ' ' + stuff);
+        this.n++;
+      }
+    );
+    
+    whizzBang.say('oranges');
+    // -> alerts "Fizz buzz likes oranges",
+    //    then "Fizz buzz has 0 oranges"
+    
+    whizzBang.say('kiwis');
+    // -> alerts "Fizz buzz likes kiwis",
+    //    then "Fizz buzz has 1 kiwis"</pre>
+  
+  * @func.methodize()@ - returns a version of the function that, instead of taking an object as its
+    first argument, becomes a method of that object
+    
+    <pre>
+    parseInt('A', 16)   // -> 10
+    
+    String.prototype.parseInt = parseInt.methodize();
+    'A'.parseInt(16)    // -> 10</pre>
+  
+  * @func.functionize()@ - returns a version of an object method that is called as a function with
+    the object passed in as an argument.
+    
+    <pre>
+    'foo'.toUpperCase()   // -> "FOO"
+    
+    var upcase = String.prototype.toUpperCase.functionize();
+    upcase('foo')         // -> "FOO"</pre>
+  
+  h3. Number methods
+  
+  Ojay extends the @Number@ class with the following methods from the @Math@ object:
+  
+  * @abs()@, @acos()@, @asin()@, @atan()@, @ceil()@, @cos()@, @exp()@, @floor()@, @log()@,
+    @pow(x)@, @round()@, @sin()@, @sqrt()@, @tan()@
+  
+  So, you can call @n.floor()@ or @n.pow(2)@ rather than @Math.floor(n)@ or @Math.pow(n,2)@.
+  
+  h3. String methods
+  
+  The @String@ extensions are mostly concerned with manipulatng scripts.
+  
+  * @string.extractScripts()@ - returns an array of the content of any @<script>@ tags
+    within @string@.
+  
+  * @string.evalScripts()@ - executes any @<script>@ tags embedded in the string.
+  
+  * @string.stripScripts()@ - returns a copy of @string@ with any @<script>@ tags removed.
+  
+  * @string.stripTags()@ - returns a copy of @string@ with all tags removed.
+  
+  * @string.trim()@ - returns a copy of @string@ with leading and trailing whitespace removed.

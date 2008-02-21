@@ -1,0 +1,214 @@
+- @title = 'Animation'
+:textile
+  h3. Animation
+  
+  Animation is one of the core things Ojay is designed to facilitate. Take a look at
+  the example on the "@MethodChain@":/articles/method_chain.html page:
+  
+  <pre>
+  Ojay('#animator').on('click')._('#animated li').animate(
+    
+    { marginLeft: {to: function(i) { return 40*i }} },
+    
+    function(i) { return 0.3*i },
+    
+    {
+      easing: 'easeBoth',
+      after: it().setStyle({color: 'red', fontSize: '9px'})
+    }
+  ).wait(0.5).animate({marginTop: {to: 30}}, 1.5,
+      {easing: 'elasticOut'});</pre>
+  
+  To perform the same animation in YUI, you need to do this:
+  
+  <pre>
+  (function() {
+    var trigger = YAHOO.util.Selector.query('#animator')[0];
+    YAHOO.util.Event.addListener(trigger, 'click', function() {
+      
+      var paras = YAHOO.util.Selector.query('#animated li');
+      var duration = function(i) { return 0.3*i };
+      var maxDuration = -Infinity, maxIndex;
+      
+      for (var i = 0, n = paras.length; i < n; i++) {
+        var t = duration(i);
+        if (t > maxDuration) {
+          maxDuration = t;
+          maxIndex = i;
+        }
+      }
+      for (i = 0, n = paras.length; i < n; i++)
+        (function(item, i) {
+          var anim = new YAHOO.util.Anim(item,
+              {marginLeft: {to: 40 * i}},
+              duration(i), YAHOO.util.Easing.easeBoth);
+          anim.onComplete.subscribe(function() {
+            if (i == maxIndex) {
+              setTimeout(function() {
+                for (var j = 0, m = paras.length; j < m; j++)
+                  (function(li, j) {
+                    var afterAnim = new YAHOO.util.Anim(li,
+                        {marginTop: {to: 30}},
+                        1.5, YAHOO.util.Easing.elasticOut);
+                    afterAnim.animate();
+                  })(paras[j], j);
+              }, 500);
+            }
+            YAHOO.util.Dom.setStyle(item, 'color', 'red');
+            YAHOO.util.Dom.setStyle(item, 'fontSize', '9px');
+          });
+          anim.animate()
+        })(paras[i], i);
+    });
+  })();</pre>
+  
+  The second example is bad because it's hard to understand, inflexible and repetitive. It
+  will also create global variables if you forget the enclosing @(function() { ... })()@. All
+  these factors make it hard to customise and easy to introduce bugs into. Ojay lets you
+  write animation code that focuses on what you actually want to see on the screen, without
+  fussing over how to implement it.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yui.yahooapis.com/2.4.1/build/animation/animation-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  h3. The basics
+  
+  All Ojay collections have an @animate()@ method, which causes an animation to run against
+  all the members of the collection. Its first argument should be a set of CSS properties
+  to supply to YUI's animation layer, and its second argument should be the number of
+  seconds the animation should take.
+  
+  <pre>
+  Ojay('li').animate({marginTop: {to: 40}}, 2.5);</pre>
+  
+  That's the bare minimum you need to get an animation going - a collection of elements,
+  some animation parameters and a duration. The parameters and duration can also be supplied
+  as functions that return a value depending on an element's list position in the collecion
+  - see the first example on this page. For the parameters object, you can supply functions
+  at any level. For example these are all equivalent:
+  
+  <pre>
+  Ojay('li').animate({
+    marginTop: {
+      to: function(i) { return 40*i; }
+    }
+  }, 2.5);
+  
+  Ojay('li').animate({
+    marginTop: function(i) {
+      return {
+        to: 40*i
+      };
+    }
+  }, 2.5);
+  
+  Ojay('li').animate(function(i) {
+    return {
+      marginTop: {to: 40*i}
+    };
+  }, 2.5);
+  
+   Ojay('li').animate(function(i) {
+    return {
+      marginTop: {
+        to: function(i) { return 40*i; }
+      }
+    };
+  }, 2.5);</pre>
+  
+  Ojay will resolve any nested functions into a set of values that YUI will understand.
+  This means you can write really flexible customised animation code without having to
+  manually loop over lots of elements setting up animations for each one.
+  
+  To make each element animation perform the same animation over a different time period:
+  
+  <pre>
+  Ojay('li').animate({marginTop: {to: 40}},
+      function(i) { return 0.5 * (i+1); });</pre>
+  
+  Your functions can contain whatever logic you like, as long as they return an appropriate
+  type of value (usually a number).
+  
+  h3. Easing
+  
+  The final (third) argument to @animate()@ is an options hash where you can specify
+  options to customise your animation. YUI defines several 'easing' functions in
+  the @YAHOO.util.Easing@ object, which can be used to alter the animation's progression.
+  To use one of these, just pass its name into the options hash:
+  
+  <pre>
+  Ojay('li').animate({marginTop: {to: 40}}, 2.5,
+      {easing: 'elasticOut'});</pre>
+  
+  The default easing used is @easeBoth@. The list of available easings can be seen "in
+  the YUI docs":http://developer.yahoo.com/yui/docs/YAHOO.util.Easing.html.
+  
+  h3. The @after@ callback
+  
+  The other option available is the @after@ callback, which is a function that gets
+  called on every element in the collection when its own animation ends. To use the @after@
+  hook, specify it in the options hash. Your callback gets passed the element and its
+  position in the collection:
+  
+  <pre>
+  Ojay('li').animate({
+    marginTop: {to: 40}
+  },
+  
+  // duration
+  function(i) { return 0.5*i; },
+  
+  // options
+  {
+    after: function(element, i) {
+      if (i > 2)
+        element.setStyle({fontSize: '20px'});
+    }
+  });</pre>
+  
+  You can also use a bit of "@MethodChain@":/articles/method_chain.html magic to call
+  a chain on each member of the collection:
+  
+  <pre>
+  Ojay('li').animate({
+    marginTop: {to: 40}
+  },
+  
+  // duration
+  function(i) { return 0.5*i; },
+  
+  // options
+  {
+    after: it().children('span').animate( ... )
+  });</pre>
+  
+  h3. Callback functions after the whole animation
+  
+  As well as callbacks for each element, you can use callbacks on the whole collection
+  when all its members have finished animating. @animate@ always returns a
+  "@MethodChain@":/articles/method_chain.html object, so you can chain behaviour after it:
+  
+  <pre>
+  // Turn all elements red when all animations stop
+  Ojay('li').animate({marginTop: {to: 40}}, 2.5)
+      .setStyle({color: 'red'});</pre>
+  
+  If you insert a function into the chain, @this@ refers to the collection object. If
+  you want to chain more methods onto the collection, make sure your function returns
+  @this@ for subsequent methods to be called on.
+  
+  <pre>
+  // Turn all elements red when all animations stop
+  Ojay('li').animate({marginTop: {to: 40}}, 2.5)
+      ._(function() {
+        if (someCondition) {
+          this.children('a').setStyle({color: 'red'});
+        }
+        return this;
+      })
+      .parents().setStyle({marginTop: '200px'});</pre>

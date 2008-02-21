@@ -1,0 +1,33 @@
+%h1 History tests
+
+=javascripts 'test/fixtures/gallery'
+
+%script{:type => 'text/javascript'}
+  :plain
+    var foo = new Gallery('foo');
+    var bar = new Gallery('bar');
+    var baz = new Gallery('baz');
+    
+    Ojay.History.manage(foo, 'foo');
+    Ojay.History.manage(bar, 'bar');
+    Ojay.History.initialize({asset: './index.html'});
+
+%p This one is history managaed...
+#foo
+%script{:type => 'text/javascript'}
+  :plain
+    foo.setup();
+
+%p So is this one...
+#bar
+%script{:type => 'text/javascript'}
+  :plain
+    bar.setup();
+
+%p This one is not...
+#baz
+%script{:type => 'text/javascript'}
+  :plain
+    baz.setup();
+
+=link 'Go to test index', './index.html'

@@ -1,0 +1,204 @@
+- @title = 'History management'
+:textile
+  h3. History management
+  
+  @Ojay.History@ is a wrapper for "@YAHOO.util.History@":http://developer.yahoo.com/yui/history/
+  that aims to make it much easier to use, and to encourage better code design by separating
+  your code's logic from the logic required to use history management. It lets you write
+  classes and objects that can have history management easily 'plugged in' to them.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yui.yahooapis.com/2.4.1/build/history/history-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/history.js@
+  
+  h3. Introduction
+  
+  To use history management, Ojay requires you to create objects with a certain structure. If
+  you're building the sort of interface that would benefit from history management, it is good
+  practise to have its logic bundled up in (at least one) object or class, rather than a tangled
+  mess of global functions and variables. @Ojay.History@ can manage any JavaScript object that
+  has at least the following two methods:
+  
+  * @getInitialState()@ - should return a list of all parameters required to represent the state
+    of the object at any time, with their default values.
+  
+  * @changeState(state)@ - should accept a set of parameters and change the state of the object
+    and its UI accordingly
+  
+  @Ojay.History@ intercepts these two methods and allows your object to be history managed
+  with one simple method call:
+  
+  <pre>
+  Ojay.History.manage(myObject, 'its_name');</pre>
+  
+  After telling @Ojay.History@ to manage all the things you want managed, you need to call its
+  @initialize()@ method.
+  
+  <pre>
+  Ojay.History.initialize()</pre>
+  
+  This takes care of setting up various hidden elements required by YUI for you. Once the history
+  manager has been initialized, you cannot ask it to manage any more objects.
+  
+  h3. Example: photo gallery
+  
+  Let's say you're building a photo gallery. It has several pages that can be scrolled through,
+  and allows the user to pop up images as an overlay on the page. Let's sketch out a design
+  for the code.
+  
+  First, you need to know what parameters you need to describe the object's state. In this case,
+  we need the following pieces of information:
+  
+  * Which page are we on?
+  * Is the overlay visible?
+  * Which image is visible in the overlay?
+  
+  This is all the information we need to describe the state of the gallery at any point in time.
+  So, our @getInitialState()@ method is going to look like this:
+  
+  <pre>
+  getInitialState: function() { return {
+    page:             1,
+    overlayVisible:   false,
+    overlayImage:     'foo.jpg'
+  }}</pre>
+  
+  When the object is history managed, this method will return the bookmarked state of the object
+  instead - you don't need to alter your code to get this information, it happens automatically.
+  
+  Second, we need a method for responding to changes in these parameters:
+  
+  <pre>
+  changeState: function(state) {
+    if (state.page !== undefined)
+      this.scrollToPage(state.page);
+    
+    if (state.overlayVisible !== undefined) {
+      if (state.overlayVisible)
+        this.showOverlay();
+      else
+        this.hideOverlay();
+    }
+    
+    if (state.overlayImage !== undefined)
+      this.setOverlayImage(state.overlayImage);
+  }</pre>
+  
+  Let's put all this together into a skeleton @Gallery@ class. Since we need to initialize the history
+  manager at the top of the page, the class just takes an element ID to instantiate it. When the page
+  is done loading, we call its @setup()@ method to set up all DOM requirements and event listeners.
+  
+  <pre>
+  var Gallery = new JS.Class({
+      
+      // Instantiation - just store an element ID
+      initialize: function(id) {
+          this.elementID = id;
+      },
+      
+      // State parameters and default values
+      getInitialState: function() { return {
+          page:             1,
+          overlayVisible:   false,
+          overlayImage:     'foo.jpg'
+      }},
+      
+      // Respond to state changes
+      changeState: function(state) {
+          if (state.page !== undefined)
+              this.scrollToPage(state.page);
+          if (state.overlayVisible !== undefined) {
+              if (state.overlayVisible)
+                  this.showOverlay();
+              else
+                  this.hideOverlay();
+          }
+          if (state.overlayImage !== undefined)
+              this.setOverlayImage(state.overlayImage);
+      },
+      
+      setup: function() {
+          this.element = Ojay('#' + this.elementID);
+          
+          // setup DOM stuff...
+          
+          this.addEventListeners();
+          this.state = this.getInitialState();
+          this.scrollToPage(this.state.page);
+          
+          // deal with overlay using this.state...
+      },
+      
+      // Set up event listeners
+      addEventListeners: function() {
+          this.prevButton.on('click', this.method('decrementPage'));
+          this.nextButton.on('click', this.method('incrementPage'));
+          this.images.on('click', function(element) {
+              this.openOverlay(element.node.src);
+          }, this);
+      },
+      
+      // Use changeState() to ask for changes to the UI
+      decrementPage: function() {
+          this.changeState({page: this.state.page - 1});
+      },
+      incrementPage: function() {
+          this.changeState({page: this.state.page + 1});
+      },
+      openOverlay: function(src) {
+          this.changeState({overlayVisible: true,
+                  overlayImage: src});
+      },
+      
+      // Methods for changing the UI - called via changeState()
+      scrollToPage: function(page) {
+          this.state.page = page;
+          // do scrolling...
+      },
+      showOverlay: function() { ... },
+      hideOverlay: function() { ... },
+      setOverlayImage: function(image) { ... }
+  });</pre>
+  
+  This may look slightly involved, but notice the pattern - the event listeners are set up to
+  call @decrementPage()@, @incrementPage()@ and @openOverlay()@. These methods all call
+  @changeState()@ to tell the object its state has changed, and @changeState()@ then calls
+  some other methods which handle the change in state. The event listeners must not be the
+  same as the state-changing methods, or you will get circular method calls!
+  
+  When you want a gallery on the page, all you do is this:
+  
+  <pre>
+  // at the top of the page
+  var gallery = new Gallery('galleryDiv');
+  Ojay.History.manage(gallery, 'galleryName');
+  Ojay.History.initialize();
+  
+  // when the page has loaded...
+  gallery.setup();</pre>
+  
+  The key advantage of this approach is that you now have an object that works without
+  knowing anything about history management, but that has hooks that allow a history manager
+  to track changes to its state. Writing your classes like this means you can choose to
+  bolt history management onto them later without hard-wiring history managment code
+  into the class itself.
+  
+  h3. Initialization
+  
+  When you call @Ojay.History.initialize()@, it creates a hidden @iframe@ and @input@ field
+  that YUI uses to record history events. The @iframe@ needs to load an existing asset
+  from your server for this to work - the default is @/robots.txt@. The default ID for
+  the @iframe@ is @yui-history-iframe@, and for the @input@ it is @yui-history-field@. If
+  you want to change any of these defaults, pass options to the @initialize()@ method.
+  
+  <pre>
+  Ojay.History.initialize({
+    asset: '/index.html',
+    iframeID: 'myIframe',
+    inputID: 'myInput'
+  });</pre>

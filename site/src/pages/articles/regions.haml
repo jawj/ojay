@@ -1,0 +1,32 @@
+- @title = 'Regions'
+:textile
+  h3. Regions
+  
+  Ojay comes with a class called @Ojay.Region@, which is a "decorator":http://en.wikipedia.org/wiki/Decorator_pattern
+  for the "@YAHOO.util.Region@":http://developer.yahoo.com/yui/docs/YAHOO.util.Region.html class.
+  It is used to represent the area occupied by an element on a web page. All region objects
+  have four properties: @top@, @bottom@, @left@ and @right@, which specify the edges of the
+  rectangle containing the element, measured in pixels. All dimensions returned by region
+  objects are in pixels.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  h3. Region API
+  
+  @Region@ objects are returned by the @Ojay('#myElement').getRegion()@ method. Region objects
+  have the following methods:
+  
+  * @getWidth()@ - returns the width of the region
+  * @getHeight()@ - returns the height of the region
+  * @getDiagonal()@ - returns the diagonal length of the region
+  * @getArea()@ - returns the area of the region in square pixels
+  * @getCenter()@ - returns an object with @left@ and @top@ properties describing the center of the region.
+  * @contains(region)@ - returns @true@ iff the receiver completely contains @region@.
+  * @intersects(region)@ - returns @true@ iff the receiver overlaps @region@.
+  * @intersection(region)@ - returns the region occupied by both the receiver and @region@.
+  * @union(region)@ - returns the region that just contains both the receiver and @region@.

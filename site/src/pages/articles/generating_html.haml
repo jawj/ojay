@@ -1,0 +1,91 @@
+- @title = 'Generating HTML'
+:textile
+  h3. Generating HTML
+  
+  There are two ways that browsers and JavaScript can represent HTML: as strings or as
+  @HTMLElement@ objects. Ojay allows you to easily generate HTML objects, and to insert
+  both these and basic strings into the document in a cross-browser way.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  h3. @Ojay.HTML@
+  
+  @Ojay.HTML@ is an object that allows you to generate HTML objects. It has methods named
+  after all the tags in the HTML 4 spec, and you use these to generate objects. Some examples:
+  
+  <pre>
+  Ojay.HTML.div('Some text')
+  // <div>Some text</div>
+  
+  Ojay.HTML.p({id: 'foo', className: 'bar'}, 'This is a paragraph')
+  // <p id="foo" class="bar">This is a paragraph</p>
+  
+  Ojay.HTML.input({type: 'text', name: 'email'})
+  // <input type="text" name="email" /></pre>
+  
+  Note that the return values of @Ojay.HTML.xxx()@ are @HTMLElement@ objects, not strings.
+  
+  You can nest tags within each other using functions:
+  
+  <pre>
+  Ojay.HTML.ul({id: 'list'}, function(H) {
+    H.li('Item one');
+    H.li('Item two');
+    ['Cats', 'Dogs', 'Pets'].forEach(H.method('li'));
+  })
+  
+  // -> <ul id="list">
+          <li>Item one</li>
+          <li>Item two</li>
+          <li>Cats</li>
+          <li>Dogs</li>
+          <li>Pets</li>
+        </ul></pre>
+  
+  Using functions like this means you can use whatever logic you like to customise
+  the HTML generated.
+  
+  Notice the @H.method('li')@ - this returns the @li()@ method of @H@, bound to the @H@ object
+  so it will execute in the correct scope. If you just said @forEach(H.li)@, the word @this@
+  inside the @li()@ method will no longer refer to the right thing when it is called. For more
+  information, see the article on "method binding":http://jsclass.jcoglan.com/binding.html on
+  the @JS.Class@ website.
+  
+  h3. Inserting HTML into the document
+  
+  All Ojay collections have a couple of methods for inserting HTML into their elements.
+  These are @setContent()@ and @insert()@.
+  
+  @setContent()@ simply replaces the contents of the element with the given argument,
+  using either a string or HTML. These are equivalent:
+  
+  <pre>
+  Ojay('h1').setContent('<strong>Title</strong>');
+  Ojay('h1').setContent(Ojay.HTML.strong('Title'));</pre>
+  
+  If you use a string, the content will be inserted into all the members of the collection.
+  If you use an @HTMLElement@, it will only be inserted into the first member, and
+  any event listeners attached to it will be preserved. For example:
+  
+  <pre>
+  var stuff = Ojay.HTML.strong('Title');
+  Ojay(stuff).on('click').setStyle({color: 'red'});
+  Ojay('h1').setContent(stuff);</pre>
+  
+  The other method, @insert()@, takes two arguments: some HTML (a string or an object)
+  and a position - either @"top"@, @"bottom"@, @"before"@ or @"after"@.
+  
+  <pre>
+  Ojay('#foo').insert('New content', 'top');</pre>
+  
+  The positions are interpreted as follows:
+  
+  * @top@: content is inserted inside the element, at the beginning
+  * @bottom@: content is inserted inside the element at the end
+  * @before@: content is added before the element
+  * @after@: content is added after the element

@@ -1,0 +1,30 @@
+- @title = 'Utility methods'
+:textile
+  h3. Utility methods
+  
+  Ojay has a handful of utility functions that don't really fit into any of its specific
+  modules and are available through the @Ojay@ namespace.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  h3. Available methods
+  
+  * @Ojay.byId(id)@ - can be used to grab an Ojay collection by ID in situations where your
+    page contains IDs that will trip up the CSS interpreter. For example:
+    
+    <pre>
+    var myElement = Ojay.byId('site:model.user.email');</pre>
+  
+  * @Ojay.getDocumentSize()@ - returns an object with @width@ and @height@ properties
+    representing the size of the document.
+  
+  * @Ojay.getScrollOffsets()@ - returns an object with @left@ and @top@ properties that
+    represent the current scroll state of the page.
+  
+  * @Ojay.getViewportSize()@ - returns an object with @width@ and @height@ properties
+    representing the size of the visible area of the document within the window.
