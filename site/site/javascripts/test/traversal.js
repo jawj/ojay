@@ -45,7 +45,7 @@ YAHOO.util.Event.onDOMReady(function() {
         
         testSiblings: function() {
             var actual = Ojay('#content li#theitem').siblings();
-            var expected = Ojay('#content #thelist li[id!="theitem"]');
+            var expected = Ojay('#content #thelist li[id!=theitem]');
             this.arrayAssert.itemsAreEqual(expected, actual);
             
             actual = Ojay('#content li#theitem').siblings('.ojay');
