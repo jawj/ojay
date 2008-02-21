@@ -32,8 +32,8 @@ Ojay.Overlay = JS.Class({
             INTERFACE: new JS.Interface(['hide', 'show']),
             
             _stub: {
-                hide: function(overlay, chain) { return chain; },
-                show: function(overlay, chain) { return chain; }
+                hide: function(overlay) { return overlay; },
+                show: function(overlay) { return overlay; }
             },
             
             /**
