@@ -110,9 +110,10 @@ Ojay.Overlay = JS.Class({
      * @returns {Object}
      */
     getPosition: function(strings) {
+        var pos = this._position, left = pos.left, top = pos.top;
         return strings
-                ? {left: this._position.left, top: this._position.top}
-                : {left: parseInt(this._position.left), top: parseInt(this._position.top)};
+                ? {left: left, top: top}
+                : {left: parseInt(left), top: parseInt(top)};
     },
     
     /**
@@ -149,9 +150,10 @@ Ojay.Overlay = JS.Class({
      * @returns {Object}
      */
     getSize: function(strings) {
+        var size = this._dimensions, width = size.width, height = size.height;
         return strings
-                ? {width: this._dimensions.width, height: this._dimensions.height}
-                : {width: parseInt(this._dimensions.width), height: parseInt(this._dimensions.height)};
+                ? {width: width, height: height}
+                : {width: parseInt(width), height: parseInt(height)};
     },
     
     /**
