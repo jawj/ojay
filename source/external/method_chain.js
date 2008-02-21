@@ -106,3 +106,18 @@ JS.MethodChain = (function() {
 })();
 
 var it = its = function() { return new JS.MethodChain; };
+
+JS.Class.INSTANCE_METHODS.wait = function(time) {
+  var chain = new JS.MethodChain;
+  switch (true) {
+    case typeof time == 'number' :
+      setTimeout(chain.fire.bind(chain, this), time * 1000);
+      break;
+    case this.forEach && typeof time == 'function' :
+      this.forEach(function() {
+        setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
+      });
+      break;
+  }
+  return chain;
+};

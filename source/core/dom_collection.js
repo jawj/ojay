@@ -377,37 +377,6 @@
         },
         
         /**
-         * <p>Provides a nicer syntax for executing statements asynchronously using
-         * <tt>setTimeout()</tt>. It frees you from having to worry about function binding and
-         * scope, and lets you specify times in seconds rather than milliseconds. Works by
-         * returning a <tt>MethodChain</tt> object that implements all the methods of
-         * <tt>DomCollection</tt>. For more information, consult the <tt>MethodChain</tt>
-         * documentation.</p>
-         *
-         * <p>For added flexibilily, you can pass a function instead of a number so that each
-         * element waits a different amount of time before firing the chain. For example:</p>
-         *
-         * <pre><code>    Ojay('li').wait(function(i) { return 0.2 * i; }).setStyle({color: 'red'});</code></pre>
-         *
-         * @param {Number|Function} time The number of seconds to delay before execution
-         * @returns {MethodChain}
-         */
-        wait: function(time) {
-            var collector = new JS.MethodChain();
-            switch (typeof time) {
-                case "number":
-                    setTimeout(collector.fire.bind(collector, this), Number(time) * 1000);
-                    break;
-                case "function":
-                    this.forEach(function(element, i) {
-                        setTimeout(collector.fire.bind(collector, element), time(i, element) * 1000);
-                    });
-                    break;
-            }
-            return collector;
-        },
-        
-        /**
          * <p>Returns true iff the first element in the collection matches the given CSS or
          * XPath selector.</p>
          * @param {String} selector A CSS or XPath selector string
