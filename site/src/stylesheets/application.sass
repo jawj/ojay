@@ -3,6 +3,8 @@
 !light_grey     = #eee
 !dark_grey      = #444
 !brown          = #807065
+!teal           = #61A098
+!light_blue     = #C2ECE7
 !green          = #bbdd92
 !columns        = 6
 !column_width   = 130px
@@ -28,7 +30,7 @@ body, #container
 #header
   :height         178px
   :background     url(header.gif) left bottom repeat-x
-  :border-bottom  = 6px solid !green
+  :border-bottom  = 6px solid !teal
   
   h1
     :width          283px
@@ -60,15 +62,15 @@ body, #container
 #footer
   :color          = !white
   :padding        22px 0
-  :border-top     = 6px solid !green
+  :border-top     = 6px solid !teal
   
   a
-    :color        = !green
+    :color        = !light_blue
     :text-decoration none
   
   a:hover
-    :color        = !dark_grey
-    :background   = !green
+    :color        = !white
+    :background   = !teal
 
 .clear
   :clear          both
@@ -93,6 +95,21 @@ body, #container
   
   a
     :text-decoration none
+  
+  #download
+    :margin-top     = !leading * !font_size
+    
+    a
+      :display        block
+      :background     url(download.gif) center top no-repeat
+      :font-size      24px
+      :padding-top    94px
+      :height         = !leading * 24px
+      :text-align     center
+      :color          = !black
+  
+  ul
+    :padding-left     32px
 
 tt, pre, code
   :font-family    Courier New, monospace
@@ -121,7 +138,7 @@ tt, pre, code
 
 #front-example
   :color          = !dark_grey
-  :background     = !green
+  :background     = !light_blue
   :font
     :size         14px
     :style        normal
@@ -134,8 +151,8 @@ tt, pre, code
   :font-size      0.8em
 
 pre
-  :background     = !brown
-  :color          = !white
+  :background     = !light_blue
+  :color          = !black
   :font-family    Monaco, Consolas, Lucida Console, Courier New, monospace
   :font-size      0.8em
   :padding        1.0em 0
@@ -154,11 +171,11 @@ ul ul
   :margin         0
 
 a
-  :color          = !brown
+  :color          = !teal
   :font-weight    bold
 
 a:hover
-  :background     = !brown
+  :background     = !teal
   :color          = !white
   :text-decoration none
 
