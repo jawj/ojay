@@ -1,0 +1,17 @@
+%h1 HTTP tests</h1>
+
+#updater Click me to update!
+#script-runner Click me to run script
+#on200 Check for 200
+#not-found Check for nonexistent page
+#get-util Use the Get utility
+#post-util Post cross-domain
+
+%form{:action => ''}
+  %label{:for => 'email'} Email
+  %input{:id => 'email', :name => 'email'}/
+  %br/
+  %input{:type => 'submit', :id => 'submit', :name => 'submit', :value => 'Go!'}/
+#message
+
+=javascripts 'test/http'

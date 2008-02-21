@@ -1,0 +1,172 @@
+- @title = 'DOM methods'
+:textile
+  h3. DOM methods
+  
+  Ojay provides a stack of methods for making DOM (Document Object Model) actions
+  easier. When you create a new Ojay collection using @Ojay(selector)@, that collection
+  has many methods that allow you to retrieve data from and perform actions on
+  the collection of DOM nodes it contains.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  h3. @node@
+  
+  Ojay collections are array-like objects that contain lists of DOM nodes. So if I
+  call @Ojay('p')[0]@ I will get back a raw @HTMLElement@ paragraph element. Calling
+  @Ojay('p').at(0)@ gives you a single-memeber Ojay collection wrapping that same
+  element.
+  
+  All Ojay collections have a special property, @node@ that refers to the first
+  native @HTMLElement@ in the collection. So, @Ojay('p')[0]@ is the same as
+  @Ojay('p').node@ and @Ojay('p').at(0).node@.
+  
+  h3. How DOM methods work
+  
+  There are two broad types of methods: getter (accessor) methods, and setter
+  (mutator) methods. Getters return data and information about an object without
+  changing the object, and setters change the object's state.
+  
+  In Ojay, all getter methods return data about the first member of the collection.
+  If you want information about some other member, grab it using @at()@.
+  
+  <pre>
+  style = Ojay('p').getStyle('fontSize');
+  style = Ojay('p').at(7).getStyle('fontSize');</pre>
+  
+  All setter methods perform some action, like setting a style or animating the
+  collection, and return the collection. This means that setter methods are
+  chainable, so you can write:
+  
+  <pre>
+  Ojay('p').setStyle({color: 'red'}).addClass('anim')
+      .animate({left: {by: 200}}, 5);</pre>
+  
+  A handful of methods - @on()@, @animate()@ and @wait()@ - actually return
+  "@MethodChain@":/articles/method_chain.html objects, but the basic thing to
+  remember is
+  
+  * Getter methods return data from the first member
+  * Setter methods act on all members and are chainable
+  
+  h3. Class name methods
+  
+  Ojay has the following methods for manipulating class names on HTML elements:
+  
+  * @addClass(className)@ - adds the given @className@ to all members of the
+    collection.
+    
+  * @removeClass(className)@ - removes the given @className@ from all members
+    of the collection.
+    
+  * @replaceClass(oldClass, newClass)@ - replaces @oldClass@ with @newClass@
+    on all members of the collection.
+    
+  * @setClass(className)@ - sets the class name on all members to @className@
+    all previous class names are discarded.
+    
+  * @hasClass(className)@ - returns @true@ iff the first member of the collection
+    has the given @className@.
+  
+  All except @hasClass@ are chainable. Examples:
+  
+  <pre>
+  Ojay('a').addClass('popup').removeClass('foo');
+  Ojay('#widget').hasClass('bar')   // -> true or false</pre>
+  
+  h3. Styling methods
+  
+  These manipulate CSS styling properties on elements. @setStyle()@ is chainable,
+  @getStyle()@ is not. @hide()@ and @show()@ are chainable.
+  
+  * @setStyle(properties)@ - sets the style of all elements to the given values.
+  * @getStyle(name)@ - returns the value of the named style from the first
+    member in the collection.
+  * @hide()@ - hides all members by setting their @display@ style to @"none"@.
+  * @show()@ - unhides all members by setting their @display@ style to @""@.
+  
+  Examples:
+  
+  <pre>
+  Ojay('h1).setStyle({margin: '16px 0', fontSize: '24px'});
+  var color = Ojay('#widget').getStyle('color');</pre>
+  
+  h3. Document traversal methods
+  
+  Ojay gives each collection some methods to find DOM nodes relative to their
+  members. These are:
+  
+  * @parents()@
+  * @ancestors()@
+  * @children()@
+  * @descendants()@
+  * @siblings()@
+  
+  All these return an Ojay collection containing the elements with the specified
+  relationship to the current collection. Each one takes an optional argument -
+  a CSS selector - to filter the result.
+  
+  Examples:
+  
+  <pre>
+  // Get all elements containing links as children
+  Ojay('a').parents()
+  
+  // Get all an element's descendants with a given class
+  Ojay('#something').descendants('.classname')</pre>
+  
+  A couple of related methods are:
+  
+  * @matches(selector)@ - returns @true@ iff the first member of the collection
+    matches the given CSS @selector@.
+  * @query()@ - returns the elements of the collection that match the given
+    @selector@.
+  
+  h3. @wait()@
+  
+  @wait()@ delays execution of a chain for the given length of time. The time
+  can be specified as a number of seconds, or as a function that returns a
+  number based on the position of an element in the collection.
+  
+  <pre>
+  Ojay('h1').wait(3).animate({
+    fontSize: {to: 200, unit: 'px'}
+  }, 4.5);
+  
+  Ojay('li').wait(function(i) { return 0.3*i })
+      .setStyle({color: 'red'})
+      .children().hide();</pre>
+  
+  h3. Region methods
+  
+  Ojay provides a wrapper layer around the @YAHOO.util.Region@ class to make it
+  a little easier to work with. To get the region of the first element in a collection
+  just call:
+  
+  <pre>
+  var region = Ojay('#some-element').getRegion();</pre>
+  
+  This returns an @Ojay.Region@ object, with various methods for getting properties
+  of the region. See "the region documentation":/articles/regions.html for more info.
+  
+  Ojay does provide some shortcuts for getting region properties from an element.
+  These include:
+  
+  * @getWidth()@, @getHeight()@
+  * @getTop()@, @getRight()@, @getBottom()@, @getLeft()@
+  * @getCenter()@
+  * @areaIntersects()@, @areaContains()@
+  * @intersection()@
+  
+  These are shortcuts for:
+  
+  * @Ojay('#foo').getRegion().getWidth()@, etc
+  * @Ojay('#foo').getRegion().top@, etc
+  * @Ojay('#foo').getRegion().getCenter()@
+  * @Ojay('#foo').getRegion().intersects()@, @Ojay('#foo').getRegion().contains()@
+  * @Ojay('#foo').getRegion().intersection()@
+  

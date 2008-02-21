@@ -1,0 +1,27 @@
+%h1 DOM traversal tests
+
+#foo
+  %p#first-p
+  %p.something
+  %ul#first-ul
+    %li List item 1
+
+#bar
+  .contains-blockquote
+    %blockquote
+      %p
+
+#baz
+  .wizzbang
+    #fizzbuzz
+      %a{:id => 'om_link', :href => 'http://othermedia.co.uk'} Other Media
+      %a{:href => 'http://google.com'} Google
+
+%ul#thelist
+  %li List item
+  %li.ojay List item
+  %li List item
+  %li#theitem List item
+  %li.ojay List item
+
+=javascripts 'test/traversal'

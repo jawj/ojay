@@ -1,0 +1,37 @@
+%h1 Insertion tests
+
+%style{:type => 'text/css'}
+  :plain
+    #acceptselements, #acceptstext { border: 1px solid #ccc; margin-top: 30px; }
+    .firstpara { border: 1px solid #999; }
+    .secondpara { border: 1px solid #666; }
+
+.setcontent something
+.setcontent else
+
+%p Element insertions:
+#acceptselements
+  %p.firstpara Foo 
+  %p.secondpara Bar
+
+%p String insertions:
+#acceptstext
+  %p.firstpara Foo
+  %p.secondpara Bar
+
+%select#select
+
+%table{:cellspacing => '10'}
+  %thead
+    %tr
+      %th#th Original header
+
+%ul#theList
+  %li
+  %li
+  %li
+  %li
+  %li
+  %li
+
+=javascripts 'test/insertion'

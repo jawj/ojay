@@ -1,0 +1,211 @@
+- @title = 'Using JS.MethodChain'
+:textile
+  h3. @JS.MethodChain@
+  
+  @MethodChain@ is one of the core building-blocks of Ojay. You probably won't use it
+  explicitly yourself, but it powers a lot of Ojay's syntax and you should understand
+  how it works in order to get the most out of Ojay. It is part of the "@JS.Class@":http://jsclass.jcoglan.com
+  library of design patterns.
+  
+  JavaScript is an object-oriented language, in which we call _methods_ on _objects_. That
+  is, you often see @myString.toUpperCase()@ and @list.map(function() { ... })@.
+  @toUpperCase@ is a method of strings, and @map@ is a method of arrays. A method
+  is simply a function that you call through an object using the dot notation, and
+  which interacts with the object (the thing before the dot) in some way to return data
+  or execute some actions.
+  
+  @MethodChain@ is a class that lets you queue up a chain of method calls and fire
+  them whenever you like. It has a lot of its own methods, most of which do nothing
+  when initially called. All they do is add their name and arguments to a list
+  inside a @MethodChain@ object, and return that same chain object. For example:
+  
+  <pre>
+  var chain = new JS.MethodChain();
+  
+  chain.map(function(s) {
+    return s.toUpperCase();
+  }).join(", ").replace(/[aeiou]/ig, "_");</pre>
+  
+  (This example is just to illustrate a principle - Ojay does not necessarily provide
+  the exact methods shown above. It provides a lot of methods for simplifying DOM and
+  Ajax actions, but it cannot provide every method name in the JavaScript language.)
+  
+  We just called three methods on @chain@: @map()@ with a function argument, @join()@
+  with a string, and @replace()@ with a regexp and replacement. Each method does nothing
+  but add itself to a list inside @chain@ and then returns @chain@ to call more methods
+  on. Note that the contents of the @map()@ function are of no interest to @chain@, it
+  just stores the function as an argument with @map()@.
+  
+  All @JS.MethodChain@ objects have a reserved method called @fire()@. This does not
+  add itself to the list. Instead, it accepts one argument, @base@, and returns the
+  result of executing the stored chain with @base@ as the first receiving object. e.g.:
+  
+  <pre>
+  chain.fire(['foo', 'bar']);
+  // -> "F__, B_R"
+  
+  // the same as calling
+  ['foo', 'bar'].map(function(s) {
+    return s.toUpperCase();
+  }).join(", ").replace(/[aeiou]/ig, "_")</pre>
+  
+  Every time you call methods on an existing chain, they get added to the existing
+  list. For example:
+  
+  <pre>
+  chain.toLowerCase().match(/[a-z]/g);
+  
+  chain.fire(['foo', 'bar']);
+  // -> ["f", "b", "r"]</pre>
+  
+  h3. How Ojay uses @MethodChain@
+  
+  Several of Ojay's commonly used methods return a @MethodChain@ object to help you
+  produce really expressive code. For example, the event handler method @on()@ returns
+  a chain:
+  
+  <pre>
+  Ojay('p').on('mouseover').setStyle({color: 'red'});</pre>
+  
+  @setStyle@ is being called on a chain set up inside the @on()@ function. When you
+  mouse over a paragraph, Ojay will fire the chain against the paragraph that triggered
+  the event.
+  
+  Other DOM methods that return chains like this are @wait()@ and @animate()@. @wait()@
+  fires the chain on its receiving object after the given number of seconds:
+  
+  <pre>
+  // Make links' parent elements green after 4 seconds
+  Ojay('a').wait(4).parents().setStyle({color: '#00ff00'});</pre>
+  
+  @animate()@ fires its chain against the whole collection after it has finished all
+  its animations. It also lets you use a chain to indicate what should happen to each
+  member of the collection when it stops animating:
+  
+  <pre>
+  Ojay('#animated li').animate(
+    
+    // style properties
+    { marginLeft: {to: function(i) { return 40*i }} },
+    
+    // duration for each element
+    function(i) { return 0.3*i },
+    
+    // extra options
+    {
+      easing: 'easeBoth',
+      after: it().setStyle({color: 'red', fontSize: '9px'})
+    }
+  ).wait(0.5).animate({marginTop: {to: 30}}, 1.5,
+      {easing: 'elasticOut'});</pre>
+  
+  <ul id="animated">
+    <li>This is list item #1</li>
+    <li>This is list item #2</li>
+    <li>This is list item #3</li>
+    <li>This is list item #4</li>
+    <li>This is list item #5</li>
+  </ul>
+  
+  Click <span id="animator" class="link">here</span> to run this code.
+  
+  Watch the animation run: When each element stops moving, it turns red thanks to
+  @it().setStyle({...})@. When the whole group has stopped moving, the final
+  chain is fired against the whole collection.
+  
+  @it@ and @its@ are two special variables created by Ojay for this purpose. They are just
+  shorthand functions that return a new @MethodChain@ object. @animate()@'s @after@ option
+  expects to be passed a function to use as a callback. @MethodChain@ objects have a
+  @toFunction()@ method, which @animate()@ uses to convert its arguments where required.
+  @toFunction()@ returns a function that fires the chain on the argument it's
+  given, i.e.:
+  
+  <pre>
+  chain.toFunction()
+  
+  // returns this function...
+  // function(object) { return chain.fire(object); }</pre>
+  
+  @animate()@ passes each member of the collection to this callback when its animation
+  has finished, so the chain gets fired against each member.
+  
+  Ajax methods also return chains that allow you to manipulate the response from the server.
+  @GET()@, @POST()@ et al fire their chain against the response object when it receives
+  a response from the server. For example:
+  
+  <pre>
+  Ojay.HTTP.GET('/index.html').insertInto('div#status');</pre>
+  
+  It's important to remember that code like this will run asynchronously. It might look
+  synchronous on the surface, but don't be fooled.
+  
+  h3. Scope changing
+  
+  By default, each method in a chain is called on the return value of the preivous
+  method in the chain. All chains have a special method called @_()@ that allows you
+  to insert objects and functions into the chain to change its scope.
+  
+  <pre>
+  // Hide paragraphs when links are clicked
+  Ojay('a').on('click')._('p').hide();
+  
+  // Call an Ajax method when a paragraph is clicked
+  Ojay('p').on('click')._(Ojay.HTTP).GET('/index.html')
+      .insertInto('h1');</pre>
+  
+  @_()@ also accepts functions to be added to the chain. Within the function, @this@
+  refers to the return value of the previous chain method, and its return value is
+  used as the receiver for the next method:
+  
+  <pre>
+  Ojay('p').on('click')._(Ojay.HTTP)._(function() {
+    // this === Ojay.HTTP
+    return this.GET('/index.html');
+  }).insertInto('h1');</pre>
+  
+  You can pass arguments after the function and they will be used when the function
+  is called. This a contrived example, but it illustrates the pattern:
+  
+  <pre>
+  // Get a method bound to its receiver
+  // setStyle will be a function
+  var setStyle = Ojay('h1').method('setStyle');
+  
+  Ojay('p').on('click')._(setStyle, {fontSize: '10px'});</pre>
+  
+  (Ojay is built using @JS.Class@ - to find out about its method binding features,
+  "visit its website":http://jsclass.jcoglan.com/binding.html.)
+  
+  h3. @MethodChain@ is generic
+  
+  The chain objects returned by all the methods mentioned above are identical. @MethodChain@
+  is a totally generic class that just collects method calls. It will not complain if you give
+  it a chain that won't run properly - it cannot know whether a chain will run until it is
+  @fire()@-ed. It will complain if you use a chain method that is not defined. Ojay defines
+  the most useful methods for DOM and Ajax work for you, but if you want to add more method
+  names to it, just do this:
+  
+  <pre>
+  // add methods explicitly
+  JS.MethodChain.addMethods(['map', 'toUpperCase', 'replace']);
+  
+  // add methods from some object or class
+  JS.MethodChain.addMethods(jQuery);</pre>
+  
+%script{:type => 'text/javascript'}
+  :plain
+    Ojay('#animator').on('click')._('#animated li').animate(
+      
+      // style properties
+      { marginLeft: {to: function(i) { return 40*i }} },
+      
+      // duration for each element
+      function(i) { return 0.3*i },
+      
+      // extra options
+      {
+        easing: 'easeBoth',
+        after: it().setStyle({color: 'red', fontSize: '9px'})
+      }
+    ).wait(0.5).animate({marginTop: {to: 30}}, 1.5,
+        {easing: 'elasticOut'});

@@ -1,0 +1,69 @@
+- @title = 'Mouse tracking'
+:textile
+  h3. Mouse tracking
+  
+  The module @Ojay.Mouse@ automatically tracks the position of the mouse pointer when included in
+  a web page. It also lets you observe the mouse and fire a callback function whenever it moves,
+  and provides support for @mouseenter@ and @mouseleave@ events. It requires @JS.Observable@, which
+  is distributed with Ojay.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/lib/observable.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/mouse.js@
+  
+  h3. The @Ojay.Mouse@ object
+  
+  Whenever you include the @Ojay.Mouse@ module on your pages, your code can find out the current
+  mouse position at any point in time by examining the property @Ojay.Mouse.position@. This is an
+  object with @left@ and @top@ properties that specify the mouse's position.
+  
+  If you want to be notified whenever the mouse moves, all you need to do is @subscribe()@. For
+  example, to get an element to follow the mouse around:
+  
+  <pre>
+  someElement.setStyle({position: 'absolute'});
+  
+  Ojay.Mouse.subscribe(function(position) {
+    someElement.setStyle({
+      left: position.left + 'px',
+      top: position.top + 'px'
+    });
+  });</pre>
+  
+  An optional second parameter specifies the execution context for your callback function:
+  
+  <pre>
+  var firstPara = Ojay('p').at(0);
+  
+  var callback = function(position) {
+    this.setStyle({ ... });
+  };
+  
+  Ojay.Mouse.subscribe(callback, firstPara);</pre>
+  
+  To stop observing the mouse, you @unsubscribe()@ the callback function _and the execution context_
+  you used to subscribe:
+  
+  <pre>
+  Ojay.Mouse.unsubscribe(callback, firstPara);</pre>
+  
+  h3. @mouseenter@ and @mouseleave@
+  
+  @mouseover@ and @mouseout@ can cause problems with moving over child elements. For this reason,
+  @Ojay.Mouse@ adds support for @mouseenter@ and @mouseleave@ events on Ojay collections:
+  
+  <pre>
+  Ojay('p').on('mouseleave').children().hide();</pre>
+  
+  If you use a callback function, it is passed the element that triggered the event (as a single-
+  element Ojay collection) and the position of the mouse at the time of event:
+  
+  <pre>
+  Ojay('h3').on('mouseenter', function(element, position) {
+    // console.log(position);
+  });</pre>

@@ -1,0 +1,187 @@
+- @title = 'Ajax programming'
+:textile
+  h3. Ajax and HTTP programming
+  
+  Ajax ('Asynchronous JavaScript and XML') is a technique that allows JavaScript
+  programs to fetch data from the server without refreshing the page. Essentially, all it
+  means is that JavaScript programs can make HTTP requests and handle the response
+  that comes back. XML does not have to be involved - the server can return whatever
+  it likes, be that plain text, HTML, XML, JSON, CSV, whatever. It's up to your
+  script to deal with whatever comes back.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yui.yahooapis.com/2.4.1/build/connection/connection-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/http.js@
+  
+  h3. How to make requests
+  
+  This is trivially simple - you just use HTTP verbs to GET from/POST to URLs.
+  
+  <pre>
+  Ojay.HTTP.GET('/index.html')</pre>
+  
+  The above code won't do anything interesting since we don't handle the response -
+  we'll get to that in a minute. The second argument is a parameter list, used to
+  build the query string or POST message for the request. Properties in the parameter
+  list override those in the URL:
+  
+  <pre>
+  Ojay.HTTP.GET('/index.html', {foo: 'bar', ajaxLayout: true})
+  // -> GET /index.html?foo=bar&ajaxLayout=true
+  
+  Ojay.HTTP.GET('/index.html?foo=45', {foo: 23})
+  // -> GET /index.html?foo=23
+  
+  Ojay.HTTP.POST('/submitForm.html', {name: 'Bob', email: '...'})
+  // -> POST /submitForm.html
+  //    message: name=Bob email=...</pre>
+  
+  h3. How to handle the response
+  
+  The final parameter is a set of callbacks that handle the response under various
+  conditions. The available callbacks are:
+  
+  * @onSuccess@ - is fired if the response has a 2xx code
+  * @onFailure@ - is fired if the response has a 3xx, 4xx or 5xx code
+  * @onXXX@, where @XXX@ is an HTTP status code. e.g. @on404@ is fired if the reponse
+    has a @404@ status code.
+  
+  Each callback is given the response object from the server, which Ojay adds some
+  handy methods to to make life easier. These are:
+  
+  * @insertInto(elements, position)@ - inserts the response body into the given elements.
+    @elements@ can be a CSS selector, and Ojay collection or a raw @HTMLElement@
+    reference. Script tags in the response are removed.
+    
+  * @evalScriptTags()@ - evaluates any script blocks in the response body.
+  
+  Some examples:
+  
+  <pre>
+  Ojay.HTTP.GET('/index.html', {}, {
+    onSuccess: function(response) {
+      response.insertInto('#myDiv');
+      // ... other logic
+    }
+  });
+  
+  // If your server uses HTTP status codes to
+  // describe the response, you can do this...
+  
+  Ojay.HTTP.POST('/doLogin.html', {name: '...', password: '...'}, {
+    onSuccess: function(response) {
+      // user logged in, so redirect...
+      window.location.href = '/protected/user/area.html';
+    },
+    on403: function(response) {
+      // login denied
+      alert('You did not login');
+    }
+  });</pre>
+  
+  h3. Using @MethodChain@
+  
+  @GET()@ and @POST()@ both return "@MethodChain@":/articles/method_chain.html objects
+  whose chain will fire on the @response@ object when it arrives from the server.
+  That means you can do stuff like this:
+  
+  <pre>
+  Ojay.HTTP.GET('/index.html').insertInto('div').evalScriptTags();
+  
+  // Make an Ajax call on click
+  
+  Ojay('a').on('click', Ojay.stopEvent)
+      ._(Ojay.HTTP).GET('/gallery.html')
+      .insertInto('#gallery');</pre>
+  
+  (Just for comparison, here's how to write the previous example in YUI:)
+  
+  <pre>
+  (function() {
+    var links = YAHOO.util.Selector.query('a');
+    YAHOO.util.Event.addListener(links, 'click', function(e) {
+      YAHOO.util.Event.preventDefault(e);
+      YAHOO.util.Event.stopPropagation(e);
+      YAHOO.util.Connect.asyncRequest('GET', '/gallery.html', {
+        success: function(resp) {
+          var elem = YAHOO.util.Selector.query('#gallery')[0];
+          elem.innerHTML = resp.responseText;
+        }
+      });
+    });
+  })();</pre>
+  
+  You need to remember that these chains are asynchronous, though:
+  
+  <pre>
+  var h1 = Ojay('h1#header');
+  h1.setContent('Title');
+  
+  Ojay.HTTP.GET('/index.html').insertInto(h1);
+  
+  h1.node.innerHTML  // -> "Title"</pre>
+  
+  The @insertInto(h1)@ calls takes place whenever the response arrives from the server,
+  and code execution does not halt while the browser is waiting for this response.
+  
+  h3. Cross-domain @GET@ and @POST@
+  
+  @GET@ and @POST@ can also be used cross-domain using @Ojay.HTTP@. To use cross-domain
+  @GET@, you need to include YUI's @Get@ utility:
+  
+  * @http://yui.yahooapis.com/2.4.1/build/get/get-beta-min.js@
+  
+  No additional files are required for cross-domain @POST@.
+  
+  Both these methods are designed for talking to web services, specifically those that
+  publish JSON. If a web service allows you to specify a callback to pass data to, you
+  can use the service like this:
+  
+  <pre>
+  Ojay.HTTP.GET('http://example.com/posts/45.json', {
+    user: 'your_username',
+    api_key: '4567rthdtyue566w34',
+    callback: 'handleJSON'
+  });
+  
+  var handleJSON = function(json) {
+    // process json object
+  };</pre>
+  
+  This will inject a script tag into your page that calls your @handleJSON()@ function
+  with the data from the service.
+  
+  Cross-domain POST works in a similar way, except you cannot use callbacks as same-origin
+  restrictions mean there is no way to access the response from a cross-domain POST request.
+  Still, you can send data to other sites easily:
+  
+  <pre>
+  Ojay.HTTP.POST('http://example.com/posts/create', {
+    user: 'your_username',
+    api_key: '4567rthdtyue566w34',
+    title: 'A new blog post',
+    content: 'Lorem ipsum dolor sit amet...'
+  });</pre>
+  
+  h3. @GET@ and @POST@ redirects
+  
+  Ojay's HTTP package provides convenient methods for doing both @GET@- and @POST@-based
+  redirects to other pages (on your domain or anywhere else), using the same parameter
+  object syntax as you'd use for Ajax calls. Simply use them like this:
+  
+  <pre>
+  Ojay.HTTP.GET.redirectTo('http://google.com/search', {
+    q: 'javascript redirects'
+  });
+  
+  Ojay.HTTP.POST.redirectTo('http://example.com/login', {
+    username: 'someGuy',
+    password: 'r67ge4546'
+  });</pre>
+  
+  (@YAHOO.util.Get@ is not required for redirects, only for cross-domain Ajax-style @GET@).

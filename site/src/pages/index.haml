@@ -1,0 +1,58 @@
+:textile
+  h3. What is it?
+  
+  Ojay is an open-source JavaScript library developed by London web agency "the OTHER media":http://othermedia.com.
+  It acts as a wrapper for the "Yahoo! User Interface":http://developer.yahoo.com/yui/ library, providing a more
+  intuitive programming model and some additional features. It is built for compatibility with YUI 2.4.0 onwards,
+  and is released under "a BSD-style license":/license.html
+  
+  <div id="example">
+  <a id="run-this-code">Run this code!</a>
+  <pre id="front-example">
+  $('a#run-this-code').on('click', $.stopEvent)
+      .setContent('Running...')
+      ._('#example').animate({
+          height: {to: 0},
+          opacity: {from: 1, to: 0}
+      }, 0.5)
+      ._($.HTTP).GET('/service/hello.html')
+      .insertInto('#example')
+      ._('#example').animate({
+          height: {to: 80},
+          opacity: {from: 0, to: 1}
+      }, 0.7);</pre>
+  </div>
+  
+  h3. Download version 0.2.0
+  
+  The 0.1.x series is the first official release. The download includes the source code, and packed and gzipped copies
+  of the build files.
+  
+  * "Download Ojay 0.2.0":/assets/ojay-0.2.0.zip
+  
+  h3. How do I use it?
+  
+  To start with, you'll need to include the following YUI modules on your page: @YAHOO.util.Dom@, @YAHOO.util.Event@,
+  and @YAHOO.util.Selector@. The first two form the base for interacting with the page via script, and the latter is
+  YUI's CSS selector engine, used by Ojay to grab element references.
+  
+  Various Ojay features have further dependencies - these are highlighted in the documentation for each feature.
+  
+  With those files in place, the following articles should get you started. YUI libraries and all of Ojay is built into every page
+  of this site, so you can try stuff out in "Firebug":http://www.getfirebug.com/ as you read through the examples.
+
+:plain
+  <script type="text/javascript">
+    $('a#run-this-code').on('click', $.stopEvent)
+        .setContent('Running...')
+        ._('#example').animate({
+          height: {to: 0},
+          opacity: {from: 1, to: 0}
+        }, 0.5)
+        ._($.HTTP).GET('/service/hello.html')
+        .insertInto('#example')
+        ._('#example').animate({
+          height: {to: 80},
+          opacity: {from: 0, to: 1}
+        }, 0.7);
+  </script>

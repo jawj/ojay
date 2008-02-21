@@ -1,0 +1,64 @@
+!!!
+- script_map = lambda { |s| "http://yui.yahooapis.com/2.4.1/build/#{ s.gsub(/(\-beta)?(\-min)?$/, '') }/#{s}.js" }
+%html
+  %head
+    %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
+    %title
+      = 'Ojay: ' + (@title || 'YUI development made easy')
+    =javascripts *( %w(yahoo-dom-event selector-beta-min animation-min connection-min get-beta-min history-min).map &script_map )
+    =javascripts 'ojay/all'
+    =stylesheets 'application'
+  %body
+    #container
+      #header
+        .sub
+          %h1 Ojay
+          #tom-link
+            =link 'theOTHERmedia', 'http://othermedia.com'
+      #main
+        .sub
+          #content
+            = yield
+          #sidebar
+            %ul#nav
+              %li
+                =link 'Home', '/'
+              %li
+                =link 'License'
+            %ul#docs
+              %li
+                =link 'Ojay\'s structure', '/articles/structure.html'
+              %li
+                =link 'Getting started', '/articles/started.html'
+              %li
+                =link 'Utility methods', '/articles/util.html'
+              %li
+                =link 'Core extensions', '/articles/core_extensions.html'
+              %li
+                =link 'Handling events', '/articles/events.html'
+              %li
+                =link 'DOM methods', '/articles/dom_methods.html'
+              %li
+                =link 'Animation', '/articles/animation.html'
+              %li
+                =link 'Generating HTML', '/articles/generating_html.html'
+              %li
+                =link 'Sequencing', '/articles/sequencing.html'
+              %li
+                =link 'Regions', '/articles/regions.html'
+              %li
+                =link 'Debugging', '/articles/debugging.html'
+              %li
+                =link '<tt>MethodChain</tt>', '/articles/method_chain.html'
+            %ul#packages
+              %li
+                =link 'Ajax/HTTP programming', '/articles/ajax.html'
+              %li
+                =link 'History management', '/articles/history.html'
+              %li
+                =link 'Mouse tracking', '/articles/mouse.html'
+          .clear
+      #footer
+        .sub
+          Copyright &copy; 2007&ndash;2008
+          =link 'the OTHER media', 'http://othermedia.com'

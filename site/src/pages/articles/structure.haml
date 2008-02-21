@@ -1,0 +1,72 @@
+- @title = 'The structure of Ojay'
+:textile
+  h3. The structure of Ojay
+  
+  Ojay is packaged as a series of JavaScript files that provide different modules of the library. When you download Ojay, you'll
+  be presented with the following folder structure:
+  
+  <ul>
+    <li>@/lib@
+      <ul>
+        <li>@class.js@</li>
+        <li>@observable.js@</li>
+      </ul>
+    </li>
+    <li>@/pkg@
+      <ul>
+        <li>@history.js@</li>
+        <li>@http.js@</li>
+        <li>@mouse.js@</li>
+      </ul>
+    </li>
+    <li>@core.js@</li>
+    <li>@all.js@</li>
+  </ul>
+  
+  Let's go through each folder:
+  
+  h3. @lib@
+  
+  The @lib@ directory contains files from external projects that Ojay depends on. @class.js@ and @observable.js@ come from
+  James Coglan's "@JS.Class@":http://jsclass.jcoglan.com project, that provides an easy-to-use object orientation framework
+  and some design patterns for use with JavaScript.
+  
+  The file @/lib/class.js@ is required by the Ojay core, and must be included before it on your web pages. @/lib/observable.js@
+  is used by some of Ojay's packages - their documentation will make it clear if they need it.
+  
+  h3. @pkg@
+  
+  The @pkg@ directory contains 'packages' - add-ons to the Ojay core that provide specialised pieces of functionality. These
+  currently include:
+  
+  * @history.js@ - A wrapper for @YAHOO.util.History@ for back button management
+  * @http.js@ - A wrapper for @YAHOO.util.Connect@ for Ajax
+  * @mouse.js@ - Tracks mouse movements and provides @mouseenter@/@mouseleave@ events
+  
+  h3. @core@
+  
+  @core.js@ contains the Ojay core libraries. These provide DOM manipulation, event management, animation, and some extensions
+  to JavaScript's @Array@, @String@ and @Function@ classes.
+  
+  @all.js@ includes everything in the download in a single file. It's a little large, but you can use it if you don't
+  want to worry about dependencies.
+  
+  h3. A typical page setup
+  
+  Here's a list of files you'd typically include in your page to get Ojay running:
+  
+  * @http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.4.1/build/selector/selector-beta-min.js@
+  * @http://yui.yahooapis.com/2.4.1/build/animation/animation-min.js@
+  * @http://yoursite.com/ojay/lib/class.js@
+  * @http://yoursite.com/ojay/core.js@
+  
+  If you're using Ajax, include these:
+  
+  * @http://yui.yahooapis.com/2.4.1/build/connection/connection-min.js@
+  * @http://yoursite.com/ojay/pkg/http.js@
+  
+  If you need back-button management, include these:
+  
+  * @http://yui.yahooapis.com/2.4.1/build/history/history-min.js@
+  * @http://yoursite.com/ojay/pkg/history.js@

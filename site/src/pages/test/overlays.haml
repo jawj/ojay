@@ -1,0 +1,39 @@
+%h1 Overlay tests
+
+%ul
+  %li
+    %a#new-overlay{:href => '#'}
+      Open new overlay
+  %li
+    %a#new-mask{:href => '#'}
+      Open mask
+
+:plain
+  <script type="text/javascript">
+    Ojay('#new-overlay').on('click', function(el,ev) {
+        ev.stopEvent();
+        var overlay = new Ojay.Overlay({width: 600, height: 400, left: 500});
+        overlay.show();
+        
+        overlay.setContent(Ojay.HTML.h3('Hello, world!'))
+                .insert(Ojay.HTML.ul(function(html) {
+                    Ojay(html.li('Move me')).on('click', function() {
+                        overlay.setPosition(400 * Math.random(), 400 * Math.random());
+                    });
+                    Ojay(html.li('Center me')).on('click')._(overlay).center();
+                    Ojay(html.li('Fit to content')).on('click')._(overlay).fitToContent().center();
+                    Ojay(html.li('Hide me')).on('click')._(overlay).hide();
+                    Ojay(html.li('Close me')).on('click')._(overlay).close();
+                }));
+    });
+    
+    Ojay('#new-mask').on('click', function(el,ev) {
+        ev.stopEvent();
+        new Ojay.PageMask().setColor(128, 200, 32).setOpacity(0.7).show();
+    });
+  </script>
+  
+  <style type="text/css">
+        .overlay-container { background: #999; color: #fff; font: 14px Arial, sans-serif; }
+        .overlay-content { padding: 40px; }
+  </style>

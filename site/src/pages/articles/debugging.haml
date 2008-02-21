@@ -1,0 +1,36 @@
+- @title = 'Debugging'
+:textile
+  h3. Debugging
+  
+  Ojay has some nice debugging support thanks to the @traced()@ function borrowed from
+  Oliver Steele's "Functional":http://osteele.com/sources/javascript/functional/ library.
+  Ojay's version is slightly modified but essentially does the same thing. It lets
+  you modifiy functions so that they print their input and output to the console in
+  Firebug.
+  
+  <pre>
+  var jibber = {
+    age: 68,
+    getAge: function(n) {
+      return "It's, er... " + (this.age/n) + ". I think.";
+    }.traced('getAge()')
+  };
+  
+  jibber.getAge(2);
+  
+  // console prints...
+  // getAge() called on Object age=68 with [2]
+  // getAge() -> It's, er... 34. I think.</pre>
+  
+  This lets you monitor all calls to a particular function throughout your code's
+  execution.
+  
+  h3. @Ojay.log()@
+  
+  To help you out a little, Ojay has a method that lets you log all calls to methods
+  called on Ojay collections. Just call:
+  
+  <pre>
+  Ojay.log('on', 'animate', 'addClass');</pre>
+  
+  and all subsequent calls to these methods will be logged to the console.
