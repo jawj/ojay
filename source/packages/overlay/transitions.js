@@ -54,16 +54,19 @@ Ojay.Overlay.Transitions
     },
     
     show: function(overlay, chain) {
-        var position = overlay.getPosition(), size = overlay.getSize(),
-                left = parseInt(position.left), top = parseInt(position.top),
-                width = parseInt(size.width), height = parseInt(size.height);
+        var position = overlay.getPosition(), size = overlay.getSize();
         overlay.getContainer()
-                .setStyle({opacity: 0, left: (left + width/2) + 'px', top: (top + height/2) + 'px', width: '1px', height: '1px'})
+                .setStyle({
+                    opacity: 0,
+                    left: (position.left + size.width/2) + 'px',
+                    top: (position.top + size.height/2) + 'px',
+                    width: '1px', height: '1px'
+                })
                 .show()
                 .animate({
                     opacity: {to: overlay.getOpacity()},
-                    left: {to: left}, top: {to: top},
-                    width: {to: width}, height: {to: height}
+                    left: {to: position.left}, top: {to: position.top},
+                    width: {to: size.width}, height: {to: size.height}
                 }, 0.4, {easing: 'easeOutStrong'})
                 ._(chain.toFunction());
         return chain;
