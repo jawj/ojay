@@ -80,7 +80,7 @@ Ojay.Overlay = JS.Class({
         if (elements._container) return elements._container;
         return elements._container = Ojay( Ojay.HTML.div({className: self.klass.CONTAINER_CLASS}, function(html) {
             elements._content = Ojay( html.div({className: self.klass.CONTENT_CLASS}) );
-        }) ).setStyle({position: 'absolute'}).hide();
+        }) ).setStyle({position: 'absolute', overflow: 'hidden'}).hide();
     },
     
     /**
@@ -269,11 +269,12 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * @param {String} transition
      * @returns {Overlay}
      */
-    close: function() {
+    close: function(transition) {
         if (this._inState(CLOSED)) return this;
-        if (this._inState(VISIBLE)) return this.hide().close();
+        if (this._inState(VISIBLE)) return this.hide(transition).close();
         this._elements._container.remove();
         this._setState(CLOSED);
         return this;
