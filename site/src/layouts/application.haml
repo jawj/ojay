@@ -1,11 +1,11 @@
 !!!
-- script_map = lambda { |s| "http://yui.yahooapis.com/2.4.1/build/#{ s.gsub(/(\-beta)?(\-min)?$/, '') }/#{s}.js" }
+- script_map = lambda { |s| "http://yui.yahooapis.com/2.5.0/build/#{ s.gsub(/(\-beta)?(\-min)?$/, '') }/#{s}.js" }
 %html
   %head
     %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
     %title
       = 'Ojay: ' + (@title || 'YUI development made easy')
-    =javascripts *( %w(yahoo-dom-event selector-beta-min animation-min connection-min get-beta-min history-min).map &script_map )
+    =javascripts *( %w(yahoo-dom-event selector-beta-min animation-min connection-min get-min history-min).map &script_map )
     =javascripts 'ojay/all'
     =stylesheets 'application'
   %body
