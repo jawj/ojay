@@ -21,7 +21,7 @@
             = yield
           #sidebar
             #download
-              =link 'Download 0.1.2', '/assets/ojay-0.1.2.zip'
+              =link 'Download 0.1.2', 'http://ojay.googlecode.com/files/ojay-0.1.2.zip'
             %ul#nav
               %li
                 =link 'Home', '/'
@@ -66,3 +66,15 @@
         .sub
           Copyright &copy; 2007&ndash;2008
           =link 'the OTHER media', 'http://othermedia.com'
+    :plain
+      <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+        var pageTracker = _gat._getTracker("UA-3702125-1");
+        if (/ojay\.othermedia\.org/.test(window.location.href)) {
+          pageTracker._initData();
+          pageTracker._trackPageview();
+        }
+      </script>
