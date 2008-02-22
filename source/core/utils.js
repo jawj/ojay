@@ -1,6 +1,8 @@
 (function(Dom) {
     JS.extend(Ojay, /** @scope Ojay */{
         
+        VERSION: '0.1.2',
+        
         query: YAHOO.util.Selector.query,
         
         /**
