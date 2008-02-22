@@ -262,7 +262,7 @@ Ojay.History = (function(History) {
             var inputID     = options.inputID || 'yui-history-field';
             var iframeID    = options.iframeID || 'yui-history-iframe';
             
-            var body = Ojay('body'), input, iframe;
+            var body = Ojay(document.body), input, iframe;
             
             input = Ojay.HTML.input({type: 'hidden', id: inputID});
             body.insert(input, 'top');

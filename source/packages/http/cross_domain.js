@@ -13,7 +13,7 @@
     var IFRAME_NAME = '__ojay_cross_domain__';
     
     var createIframe = function() {
-        Ojay('body').insert('<iframe name="' + IFRAME_NAME + '" style="display: none;"></iframe>', 'top');
+        Ojay(document.body).insert('<iframe name="' + IFRAME_NAME + '" style="display: none;"></iframe>', 'top');
         createIframe = function() {};
     };
     
@@ -122,7 +122,7 @@
         send: function(url, parameters) {
             var form = this._buildPostForm(url, parameters, true);
             createIframe();
-            Ojay('body').insert(form.node, 'top');
+            Ojay(document.body).insert(form.node, 'top');
             form.node.submit();
             form.remove();
         },
@@ -153,7 +153,7 @@
     
     HTTP.POST.redirectTo = function(url, parameters) {
         var form = HTTP._buildPostForm(url, parameters, false).node;
-        Ojay('body').insert(form, 'top');
+        Ojay(document.body).insert(form, 'top');
         form.submit();
     };
     
