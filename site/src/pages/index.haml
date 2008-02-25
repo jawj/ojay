@@ -1,10 +1,13 @@
 :textile
   h3. What is it?
   
-  Ojay is an open-source JavaScript library developed by London web agency "the OTHER media":http://othermedia.com.
-  It acts as a wrapper for the "Yahoo! User Interface":http://developer.yahoo.com/yui/ library, providing a more
-  intuitive programming model and some additional features. It is built for compatibility with YUI 2.4.0 onwards,
-  and is released under "a BSD-style license":/license.html
+  Ojay is an open-source JavaScript library developed by London web agency "the OTHER media":http://othermedia.com
+  for use in all its ongoing client projects. It acts as a wrapper for "YUI":http://developer.yahoo.com/yui/,
+  providing a more intuitive programming model and some additional features. It is built for compatibility with
+  YUI 2.4.0 onwards, and is released under "a BSD-style license":/license.html.
+  
+  One of its key features is the ability to chain function calls together, even when asynchronicity is involved.
+  So, you can write lists of instructions where you would normally have nested callbacks:
   
   <div id="example">
   <a id="run-this-code">Run this code!</a>
@@ -12,15 +15,15 @@
   $('a#run-this-code').on('click', $.stopEvent)
       .setContent('Running...')
       ._('#example').animate({
-          height: {to: 0},
-          opacity: {from: 1, to: 0}
-      }, 0.5)
+          height:   {to: 0},
+          opacity:  {from: 1, to: 0}
+          }, 0.5)
       ._($.HTTP).GET('/service/hello.html')
       .insertInto('#example')
       ._('#example').animate({
-          height: {to: 80},
-          opacity: {from: 0, to: 1}
-      }, 0.7);</pre>
+          height:   {to: 80},
+          opacity:  {from: 0, to: 1}
+          }, 0.7);</pre>
   </div>
   
   h3. Download version 0.1.2
@@ -38,13 +41,14 @@
   
   Various Ojay features have further dependencies - these are highlighted in the documentation for each feature.
   
-  With those files in place, the following articles should get you started. YUI libraries and all of Ojay is built into every page
+  With those files in place, the articles in the sidebar should get you started. YUI libraries and all of Ojay is built into every page
   of this site, so you can try stuff out in "Firebug":http://www.getfirebug.com/ as you read through the examples.
   
   h3. Development
   
   Ojay is an open-source project, released under the BSD license. You can browse the source code, file bug reports
-  and contribute patches on "our Google Code site":http://ojay.googlecode.com.
+  and contribute patches on "our Google Code site":http://ojay.googlecode.com. We also have a "mailing list":http://groups.google.com/group/ojay-talk,
+  or you can get it touch with the library's author at "james.coglan@othermedia.com":mailto:james.coglan@othermedia.com.
 
 :plain
   <script type="text/javascript">
