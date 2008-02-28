@@ -10,7 +10,7 @@ var stub = function() { return this; };
  * @constructor
  * @class Overlay
  */
-Ojay.Overlay = JS.Class({
+Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     include: [JS.State, JS.Observable],
     
     extend: {
