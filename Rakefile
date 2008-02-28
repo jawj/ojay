@@ -9,8 +9,7 @@ COPYRIGHT = File.read('COPYRIGHT')
 SOURCE_DIR = 'source'
 PACKAGE_DIR = 'build'
 PACKAGES = {
-  'lib/class'       => %w(class method_chain).map { |s| "external/#{s}" },
-  'lib/observable'  => %w(external/observable),
+  'lib/class'       => %w(class method_chain observable state).map { |s| "external/#{s}" },
   
   'core' => priv + %w(
     core/core               core/utils
