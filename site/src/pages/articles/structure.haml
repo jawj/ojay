@@ -9,7 +9,6 @@
     <li>@/lib@
       <ul>
         <li>@class.js@</li>
-        <li>@observable.js@</li>
       </ul>
     </li>
     <li>@/pkg@
@@ -27,12 +26,11 @@
   
   h3. @lib@
   
-  The @lib@ directory contains files from external projects that Ojay depends on. @class.js@ and @observable.js@ come from
-  James Coglan's "@JS.Class@":http://jsclass.jcoglan.com project, that provides an easy-to-use object orientation framework
-  and some design patterns for use with JavaScript.
+  The @lib@ directory contains files from external projects that Ojay depends on. @class.js@ comes from James Coglan's
+  "@JS.Class@":http://jsclass.jcoglan.com project, which provides an easy-to-use object orientation framework and some design
+  patterns for use with JavaScript. The distribution included with Ojay includes the @Observer@ and @State@ patterns.
   
-  The file @/lib/class.js@ is required by the Ojay core, and must be included before it on your web pages. @/lib/observable.js@
-  is used by some of Ojay's packages - their documentation will make it clear if they need it.
+  The file @/lib/class.js@ is required by the Ojay core, and must be included before it on your web pages.
   
   h3. @pkg@
   
