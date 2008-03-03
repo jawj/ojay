@@ -4,10 +4,10 @@ Ojay.Validation = function(description) {
 
 JS.extend(Ojay.Validation, /** @scope Ojay.Validation */ {
     isPresent: function(value) {
-        return String(value).trim() != '';
+        return value ? (String(value).trim() != '') : false;
     },
     
-    isNumber: function(value) {
+    isNumeric: function(value) {
         return this.NUMBER_FORMAT.test(String(value));
     },
     

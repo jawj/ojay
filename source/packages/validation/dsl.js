@@ -41,8 +41,7 @@ var FormDSL = JS.Class({
     },
     
     requires: function(name) {
-        var requirements = this.form.requirements;
-        return (requirements[name] || (requirements[name] = new FormRequirement(this.form, name))).dsl;
+        return this.form.getRequirement(name).dsl;
     }
 });
 
@@ -52,22 +51,42 @@ var RequirementDSL = JS.Class({
     },
     
     toHaveLength: function(options) {
-        // TODO
+        this.requirement.add(function(value) {
+            if (typeof options == 'number' && value.length != options)
+                    return 'must contain exactly ' + options + ' characters';
+            if (options.minimum !== undefined && value.length < options.minimum)
+                    return 'must contain at least ' + options.minimum + ' characters';
+            if (options.maximum !== undefined && value.length > options.maximum)
+                    return 'must contain at most ' + options.maximum + ' characters';
+            return true;
+        });
         return this;
     },
     
     toHaveValue: function(options) {
-        // TODO
+        this.requirement.add(function(value) {
+            if (!Ojay.Validation.isNumeric(value)) return 'must be a number';
+            value = Number(value);
+            if (options.minimum !== undefined && value < options.minimum)
+                    return 'must be at least ' + options.minimum;
+            if (options.maximum !== undefined && value > options.maximum)
+                    return 'must be at most ' + optinos.maximum;
+            return true;
+        });
         return this;
     },
     
     toMatch: function(format) {
-        // TODO
+        this.requirement.add(function(value) {
+            return format.test(value) || 'is not valid';
+        });
         return this;
     },
     
     toBeNumeric: function() {
-        // TODO
+        this.requirement.add(function(value) {
+            return Ojay.Validation.isNumeric(value) || 'is not a number';
+        });
         return this;
     },
     
@@ -93,9 +112,9 @@ var FormDescription = JS.Class({
         
         this.form.on('submit', this.method('handleSubmission'));
         
+        this.requirements = {};
         this.dsl = new FormDSL(this);
         this.when = new WhenDSL(this);
-        this.requirements = {};
     },
     
     hasForm: function() {
@@ -103,15 +122,63 @@ var FormDescription = JS.Class({
         return !!(node && node.tagName.toLowerCase() == 'form');
     },
     
+    getRequirement: function(name) {
+        return this.requirements[name] || (this.requirements[name] = new FormRequirement(this, name));
+    },
+    
     handleSubmission: function(form, evnt) {
-        // TODO
+        if (!this.isValid()) evnt.stopDefault();
+    },
+    
+    getData: function() {
+        var data = YAHOO.util.Connect.setForm(this.form.node).split('&').reduce(function(memo, pair) {
+            var data = pair.split('=').map(decodeURIComponent);
+            memo[data[0].trim()] = data[1].trim();
+            return memo;
+        }, {});
+        YAHOO.util.Connect.resetFormState();
+        return data;
+    },
+    
+    validate: function() {
+        var data = this.getData(), key, requirement, errors = [], result;
+        for (key in data) {
+            requirement = this.requirements[key];
+            if (!requirement) continue;
+            result = requirement.test(data[key]);
+            if (result !== true) errors = errors.concat(result);
+        }
+        this.errors = errors;
+    },
+    
+    isValid: function() {
+        this.validate();
+        return this.errors.length === 0;
     }
 });
+
+var isPresent = function(value) {
+    return Ojay.Validation.isPresent(value) || 'is required';
+};
 
 var FormRequirement = JS.Class({
     initialize: function(form, field) {
         this.form = form;
         this.field = field;
+        this.tests = [];
         this.dsl = new RequirementDSL(this);
-    }
+    },
+    
+    add: function(block) {
+        this.tests.push(block);
+    },
+    
+    test: function(value) {
+        var errors = [], tests = this.tests.length ? this.tests : [isPresent];
+        tests.forEach(function(block) {
+            var result = block(value);
+            if (result !== true) errors.push(result);
+        });
+        return errors.length ? errors : true;
+    }.traced('test()')
 });
