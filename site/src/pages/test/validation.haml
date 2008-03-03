@@ -1,0 +1,13 @@
+%h1 Validation tests
+
+%form#login
+  %div
+    %span Username
+    %input{:name => 'username'}
+  %div
+    %span Password
+    %input{:name => 'password', :type => 'password'}
+  %div
+    %input{:type => 'submit', :value => 'Sign in'}
+
+=javascripts 'test/validation'

@@ -22,14 +22,15 @@ PACKAGES = {
     core/method_chain
   ),
   
-  'pkg/http'        => priv + %w(ajax cross_domain).map { |s| "packages/http/#{s}" },
-  'pkg/mouse'       => priv + %w(packages/mouse/mouse),
-  'pkg/keyboard'    => priv + %w(begin_closure utils keyboard rules monitor disabler events end_closure).map { |s| "packages/keyboard/#{s}" },
   'pkg/history'     => priv + %w(packages/history/history),
-  'pkg/overlay'     => priv + %w(begin_closure overlay transitions page_mask end_closure).map { |s| "packages/overlay/#{s}" }
+  'pkg/http'        => priv + %w(ajax cross_domain).map { |s| "packages/http/#{s}" },
+  'pkg/keyboard'    => priv + %w(begin_closure utils keyboard rules monitor disabler events end_closure).map { |s| "packages/keyboard/#{s}" },
+  'pkg/mouse'       => priv + %w(packages/mouse/mouse),
+  'pkg/overlay'     => priv + %w(begin_closure overlay transitions page_mask end_closure).map { |s| "packages/overlay/#{s}" },
+  'pkg/validation'  => priv + %w(begin_closure validators dsl end_closure).map { |s| "packages/validation/#{s}" }
 }
 
-ALL_PACKAGES = %w(lib/class lib/observable core pkg/http pkg/mouse pkg/keyboard pkg/history pkg/overlay)
+ALL_PACKAGES = %w(lib/class lib/observable core pkg/history pkg/http pkg/keyboard pkg/mouse pkg/overlay pkg/validation)
 
 task :default do
   if ENV['q']
