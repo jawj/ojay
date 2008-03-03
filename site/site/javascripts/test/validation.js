@@ -1,6 +1,6 @@
 Ojay.Validation(function() { with(this) {
     
     form('login')
-        .requires('username')
-        .requires('password');
+        .requires('username').toHaveLength({between: [3,12]})
+        .requires('password').toMatch(/foo/);
 }});

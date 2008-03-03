@@ -42,7 +42,37 @@ var FormDSL = JS.Class({
     
     requires: function(name) {
         var requirements = this.form.requirements;
-        return requirements[name] || (requirements[name] = new FormRequirement(this.form, name));
+        return (requirements[name] || (requirements[name] = new FormRequirement(this.form, name))).dsl;
+    }
+});
+
+var RequirementDSL = JS.Class({
+    initialize: function(requirement) {
+        this.requirement = requirement;
+    },
+    
+    toHaveLength: function(options) {
+        // TODO
+        return this;
+    },
+    
+    toHaveValue: function(options) {
+        // TODO
+        return this;
+    },
+    
+    toMatch: function(format) {
+        // TODO
+        return this;
+    },
+    
+    toBeNumeric: function() {
+        // TODO
+        return this;
+    },
+    
+    requires: function(name) {
+        return this.requirement.form.dsl.requires(name);
     }
 });
 
@@ -82,19 +112,6 @@ var FormRequirement = JS.Class({
     initialize: function(form, field) {
         this.form = form;
         this.field = field;
-    },
-    
-    toHaveLength: function(options) {
-        // TODO
-        return this;
-    },
-    
-    toMatch: function(format) {
-        // TODO
-        return this;
-    },
-    
-    requires: function(name) {
-        return this.form.dsl.requires(name);
+        this.dsl = new RequirementDSL(this);
     }
 });
