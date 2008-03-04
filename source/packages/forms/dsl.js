@@ -19,7 +19,7 @@
  *     }});
  */
 
-forms = {};
+var forms = {};
 
 var getForm = function(id) {
     return forms[id] || (forms[id] = new FormDescription(id));
@@ -147,6 +147,7 @@ var FormDescription = JS.Class({
             if (!requirement) continue;
             result = requirement.test(data[key]);
             if (result !== true) errors = errors.concat(result);
+            requirement.setValid(result === true);
         }
         this.errors = errors;
     },
@@ -167,6 +168,10 @@ var FormRequirement = JS.Class({
         this.field = field;
         this.tests = [];
         this.dsl = new RequirementDSL(this);
+        
+        this.elements = this.form.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
+            return tagName + '[name=' + field + ']';
+        }).join(', '));
     },
     
     add: function(block) {
@@ -180,5 +185,9 @@ var FormRequirement = JS.Class({
             if (result !== true) errors.push(result);
         });
         return errors.length ? errors : true;
-    }.traced('test()')
+    }.traced('test()'),
+    
+    setValid: function(valid) {
+        this.elements[valid === true ? 'removeClass' : 'addClass']('invalid');
+    }
 });
