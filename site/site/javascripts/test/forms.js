@@ -1,4 +1,4 @@
-Ojay.Validation(function() { with(this) {
+Ojay.Forms(function() { with(this) {
     
     form('login')
         .requires('username').toHaveLength({minimum: 6})

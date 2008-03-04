@@ -1,8 +1,8 @@
-Ojay.Validation = function(description) {
+Ojay.Forms = function(description) {
     description.call(DSL);
 };
 
-JS.extend(Ojay.Validation, /** @scope Ojay.Validation */ {
+JS.extend(Ojay.Forms, /** @scope Ojay.Forms */ {
     isPresent: function(value) {
         return value ? (String(value).trim() != '') : false;
     },

@@ -1,7 +1,7 @@
 /**
  * A DSL for describing form requirements. EXPERIMENTAL. Expected usage:
  *
- *     Ojay.Validation(function() { with(this) {
+ *     Ojay.Forms(function() { with(this) {
  *  
  *         form('loginForm')
  *             .requires('username')
@@ -65,7 +65,7 @@ var RequirementDSL = JS.Class({
     
     toHaveValue: function(options) {
         this.requirement.add(function(value) {
-            if (!Ojay.Validation.isNumeric(value)) return 'must be a number';
+            if (!Ojay.Forms.isNumeric(value)) return 'must be a number';
             value = Number(value);
             if (options.minimum !== undefined && value < options.minimum)
                     return 'must be at least ' + options.minimum;
@@ -85,7 +85,7 @@ var RequirementDSL = JS.Class({
     
     toBeNumeric: function() {
         this.requirement.add(function(value) {
-            return Ojay.Validation.isNumeric(value) || 'is not a number';
+            return Ojay.Forms.isNumeric(value) || 'is not a number';
         });
         return this;
     },
@@ -158,7 +158,7 @@ var FormDescription = JS.Class({
 });
 
 var isPresent = function(value) {
-    return Ojay.Validation.isPresent(value) || 'is required';
+    return Ojay.Forms.isPresent(value) || 'is required';
 };
 
 var FormRequirement = JS.Class({
