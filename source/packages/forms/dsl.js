@@ -37,8 +37,12 @@ var DSL = {
     displayErrorsIn: function(element) {
         element = Ojay(element);
         return function(errors) {
-            element.setContent(Ojay.HTML.ul(function(HTML) {
-                errors.forEach(HTML.method('li'));
+            var n = errors.length;
+            if (n == 0) return element.setContent('');
+            var were = (n == 1) ? 'was' : 'were', s = (n == 1) ? '' : 's';
+            element.setContent(Ojay.HTML.div({className: 'error-explanation'}, function(HTML) {
+                HTML.p('There ' + were + ' ' + n + ' error' + s + ' with the form:');
+                HTML.ul(function(HTML) { errors.forEach(HTML.method('li')); });
             }));
         };
     },
