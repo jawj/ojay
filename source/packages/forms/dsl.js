@@ -227,9 +227,20 @@ var WhenDSL = JS.Class({
     }
 });
 
+/**
+ * <p>The <tt>FormDescription</tt> class encapsulates sets of rules about how a form is to
+ * behave. Each instance holds a set of requirements, which are tested against the form's
+ * data each time the form is submitted in order to decide whether to submit it.</p>
+ * @constructor
+ * @class FormDescription
+ * @private
+ */
 var FormDescription = JS.Class({
     include: JS.Observable,
     
+    /**
+     * @param {String} id
+     */
     initialize: function(id) {
         this.form = Ojay.byId(id);
         if (!this.hasForm()) return;
@@ -241,19 +252,33 @@ var FormDescription = JS.Class({
         this.when = new WhenDSL(this);
     },
     
+    /**
+     * @returns {Boolean}
+     */
     hasForm: function() {
         var node = this.form.node;
         return !!(node && node.tagName.toLowerCase() == 'form');
     },
     
+    /**
+     * @param {String} name
+     * @returns {FormRequirement}
+     */
     getRequirement: function(name) {
         return this.requirements[name] || (this.requirements[name] = new FormRequirement(this, name));
     },
     
+    /**
+     * @param {DomCollection} form
+     * @param {Event} evnt
+     */
     handleSubmission: function(form, evnt) {
         if (!this.isValid()) evnt.stopDefault();
     },
     
+    /**
+     * @returns {Object} The data contained in the form. Requires YAHOO.util.Connect
+     */
     getData: function() {
         var data = YAHOO.util.Connect.setForm(this.form.node).split('&').reduce(function(memo, pair) {
             var data = pair.split('=').map(decodeURIComponent);
@@ -264,6 +289,9 @@ var FormDescription = JS.Class({
         return data;
     },
     
+    /**
+     *
+     */
     validate: function() {
         var data = this.getData(), key, requirement, errors = [], result;
         for (key in data) {
@@ -277,6 +305,9 @@ var FormDescription = JS.Class({
         this.notifyObservers(this);
     },
     
+    /**
+     * @returns {Boolean}
+     */
     isValid: function() {
         this.validate();
         return this.errors.length === 0;
@@ -287,7 +318,20 @@ var isPresent = function(value) {
     return Ojay.Forms.isPresent(value) || 'is required';
 };
 
+/**
+ * <p>The <tt>FormRequirement</tt> class encapsulates a set of tests against the value of a single
+ * form field. The tests are defined externally and added using the <tt>add()</tt> method. Each
+ * test should be a function that takes a value and decides whether or not it is valid. The
+ * <tt>FormRequirement</tt> instance can be used to run all the tests against a field.</p>
+ * @constructor
+ * @class FormRequirement
+ * @private
+ */
 var FormRequirement = JS.Class({
+    /**
+     * @param {FormDescription} form
+     * @param {String} field
+     */
     initialize: function(form, field) {
         this.form = form;
         this.field = field;
@@ -304,15 +348,25 @@ var FormRequirement = JS.Class({
                 : null;
     },
     
+    /**
+     * @returns {String}
+     */
     getName: function() {
         var name = this.name || (this.label ? this.label.node.innerHTML.stripTags() : this.field);
         return name.charAt(0).toUpperCase() + name.substring(1);
     },
     
+    /**
+     * @param {Function} block
+     */
     add: function(block) {
         this.tests.push(block);
     },
     
+    /**
+     * @param {String} value
+     * @returns {Array|Boolean}
+     */
     test: function(value) {
         var errors = [], tests = this.tests.length ? this.tests : [isPresent];
         tests.forEach(function(block) {
@@ -322,6 +376,9 @@ var FormRequirement = JS.Class({
         return errors.length ? errors : true;
     }.traced('test()'),
     
+    /**
+     * @param {Boolean} valid
+     */
     setValid: function(valid) {
         this.elements[valid === true ? 'removeClass' : 'addClass']('invalid');
     }
