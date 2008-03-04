@@ -7,8 +7,8 @@
     %span Username
     %input{:name => 'username'}
   %div
-    %span Email
-    %input{:name => 'email'}
+    %label{:for => 'email'} Your email
+    %input{:name => 'email', :id => 'email'}
   %div
     %span Password
     %input{:name => 'password', :type => 'password'}
@@ -19,6 +19,6 @@
 
 :plain
   <style type="text/css">
-    span { float: left; width: 100px; }
+    span, label { float: left; width: 100px; }
     .invalid { background: #fcc; border: 1px solid #900; }
   </style>

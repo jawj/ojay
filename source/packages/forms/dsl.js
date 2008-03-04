@@ -51,8 +51,10 @@ var FormDSL = JS.Class({
         this.form = form;
     },
     
-    requires: function(name) {
-        return this.form.getRequirement(name).dsl;
+    requires: function(name, displayed) {
+        var requirement = this.form.getRequirement(name);
+        requirement.name = displayed;
+        return requirement.dsl;
     }
 });
 
@@ -190,10 +192,16 @@ var FormRequirement = JS.Class({
         this.elements = this.form.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
             return tagName + '[name=' + field + ']';
         }).join(', '));
+        
+        var id;
+        this.label = (id = (this.elements.node || {}).id)
+                ? Ojay('label').filter(function(l) { return l.node.htmlFor == id; })
+                : null;
     },
     
     getName: function() {
-        return this.field.charAt(0).toUpperCase() + this.field.substring(1);
+        var name = this.name || (this.label ? this.label.node.innerHTML.stripTags() : this.field);
+        return name.charAt(0).toUpperCase() + name.substring(1);
     },
     
     add: function(block) {
