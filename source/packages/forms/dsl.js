@@ -13,7 +13,7 @@
  *             .requires('city').toHaveLength({minimum: 3})
  *             .requires('email').toMatch(EMAIL_FORMAT);
  *         
- *         when('addressForm').isInvalid(function(errors) {
+ *         when('addressForm').isValidated(function(errors) {
  *             // Put errors somewhere
  *         });
  *     }});
@@ -32,6 +32,15 @@ var DSL = {
     
     when: function(id) {
         return getForm(id).when || null;
+    },
+    
+    displayErrorsIn: function(element) {
+        element = Ojay(element);
+        return function(errors) {
+            element.setContent(Ojay.HTML.ul(function(HTML) {
+                errors.forEach(HTML.method('li'));
+            }));
+        };
     },
     
     EMAIL_FORMAT: Ojay.Forms.EMAIL_FORMAT
@@ -53,26 +62,28 @@ var RequirementDSL = JS.Class({
     },
     
     toHaveLength: function(options) {
+        var min = options.minimum, max = options.maximum;
         this.requirement.add(function(value) {
             if (typeof options == 'number' && value.length != options)
                     return 'must contain exactly ' + options + ' characters';
-            if (options.minimum !== undefined && value.length < options.minimum)
-                    return 'must contain at least ' + options.minimum + ' characters';
-            if (options.maximum !== undefined && value.length > options.maximum)
-                    return 'must contain at most ' + options.maximum + ' characters';
+            if (min !== undefined && value.length < min)
+                    return 'must contain at least ' + min + ' characters';
+            if (max !== undefined && value.length > max)
+                    return 'must contain at most ' + max + ' characters';
             return true;
         });
         return this;
     },
     
     toHaveValue: function(options) {
+        var min = options.minimum, max = options.maximum;
         this.requirement.add(function(value) {
             if (!Ojay.Forms.isNumeric(value)) return 'must be a number';
             value = Number(value);
-            if (options.minimum !== undefined && value < options.minimum)
-                    return 'must be at least ' + options.minimum;
-            if (options.maximum !== undefined && value > options.maximum)
-                    return 'must be at most ' + optinos.maximum;
+            if (min !== undefined && value < min)
+                    return 'must be at least ' + min;
+            if (max !== undefined && value > max)
+                    return 'must be at most ' + max;
             return true;
         });
         return this;
@@ -102,12 +113,16 @@ var WhenDSL = JS.Class({
         this.form = form;
     },
     
-    isInvalid: function(block, context) {
-        // TODO
+    isValidated: function(block, context) {
+        this.form.subscribe(function(form) {
+            block.call(context || null, form.errors);
+        });
     }
 });
 
 var FormDescription = JS.Class({
+    include: JS.Observable,
+    
     initialize: function(id) {
         this.form = Ojay.byId(id);
         if (!this.hasForm()) return;
@@ -152,6 +167,7 @@ var FormDescription = JS.Class({
             requirement.setValid(result === true);
         }
         this.errors = errors;
+        this.notifyObservers(this);
     },
     
     isValid: function() {
