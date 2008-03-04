@@ -32,7 +32,9 @@ var DSL = {
     
     when: function(id) {
         return getForm(id).when || null;
-    }
+    },
+    
+    EMAIL_FORMAT: Ojay.Forms.EMAIL_FORMAT
 };
 
 var FormDSL = JS.Class({
@@ -174,6 +176,10 @@ var FormRequirement = JS.Class({
         }).join(', '));
     },
     
+    getName: function() {
+        return this.field.charAt(0).toUpperCase() + this.field.substring(1);
+    },
+    
     add: function(block) {
         this.tests.push(block);
     },
@@ -182,8 +188,8 @@ var FormRequirement = JS.Class({
         var errors = [], tests = this.tests.length ? this.tests : [isPresent];
         tests.forEach(function(block) {
             var result = block(value);
-            if (result !== true) errors.push(result);
-        });
+            if (result !== true) errors.push(this.getName() + ' ' + result);
+        }, this);
         return errors.length ? errors : true;
     }.traced('test()'),
     
