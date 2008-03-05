@@ -182,6 +182,7 @@ var RequirementDSL = JS.Class({
         this.requirement.add(function(value, data) {
             return value == data[field] || 'must be confirmed';
         });
+        this.requirement.confirmed = field;
         return this;
     },
     

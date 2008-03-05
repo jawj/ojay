@@ -23,20 +23,29 @@ var FormRequirement = JS.Class({
         this.dsl = new RequirementDSL(this);
         
         this.elements = this.form.getInputs(field);
-        
-        this.label = this.elements.ancestors('label');
-        if (this.label.node) return;
-        var id = (this.elements.node || {}).id;
-        var labels = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
-        this.label = labels.length ? new Ojay.DomCollection(labels) : null;
+        this.label = this.getLabel();
     },
     
     /**
      * @returns {String}
      */
     getName: function() {
-        var name = this.name || (this.label ? this.label.node.innerHTML.stripTags() : this.field);
+        var label = this.confirmed ? this.getLabel(this.confirmed) : this.label;
+        var name = this.name || (label.node ? label.node.innerHTML.stripTags() : this.field);
         return name.charAt(0).toUpperCase() + name.substring(1);
+    },
+    
+    /**
+     * @param {String} field
+     * @returns {DomCollection}
+     */
+    getLabel: function(field) {
+        field = field ? this.form.getInputs(field) : this.elements;
+        var labels = field.ancestors('label');
+        if (labels.node) return labels;
+        var id = (field.node || {}).id;
+        labels = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
+        return new Ojay.DomCollection(labels);
     },
     
     /**
