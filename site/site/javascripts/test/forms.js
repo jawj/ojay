@@ -9,6 +9,7 @@ Ojay.Forms(function() { with(this) {
     
     form('search')
         .requires('q')
+        .requires('lucky')
         .submitsUsingAjax();
         
     when('search').responseArrives(displayResponseIn('#searches'));

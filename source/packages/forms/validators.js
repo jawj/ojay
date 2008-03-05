@@ -1,16 +1,24 @@
-Ojay.Forms = function(description) {
-    description.call(DSL);
-};
-
-JS.extend(Ojay.Forms, /** @scope Ojay.Forms */ {
-    isPresent: function(value) {
-        return value ? (String(value).trim() != '') : false;
+JS.extend(Ojay, /** @scope Ojay */ {
+    /**
+     * @param {String} value
+     * @returns {Boolean}
+     */
+    isBlank: function(value) {
+        return value ? false : (String(value).trim() == '');
     },
     
+    /**
+     * @param {String} value
+     * @returns {Boolean}
+     */
     isNumeric: function(value) {
         return this.NUMBER_FORMAT.test(String(value));
     },
     
+    /**
+     * @param {String} value
+     * @returns {Boolean}
+     */
     isEmailAddress: function(value) {
         return this.EMAIL_FORMAT.test(String(value));
     },
