@@ -22,14 +22,13 @@ var FormRequirement = JS.Class({
         this.tests = [];
         this.dsl = new RequirementDSL(this);
         
-        this.elements = this.form.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
-            return tagName + '[name=' + field + ']';
-        }).join(', '));
+        this.elements = this.form.getInputs(field);
         
-        var id;
-        this.label = (id = (this.elements.node || {}).id)
-                ? Ojay('label').filter(function(l) { return l.node.htmlFor == id; })
-                : null;
+        this.label = this.elements.ancestors('label');
+        if (this.label.node) return;
+        var id = (this.elements.node || {}).id;
+        var labels = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
+        this.label = labels.length ? new Ojay.DomCollection(labels) : null;
     },
     
     /**

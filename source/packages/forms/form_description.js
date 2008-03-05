@@ -58,6 +58,16 @@ var FormDescription = JS.Class({
     handleAjaxResponse: function(response) {},
     
     /**
+     * @param {String} name
+     * @return {DomCollection}
+     */
+    getInputs: function(name) {
+        return this.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
+            return tagName + '[name=' + name + ']';
+        }).join(', '));
+    },
+    
+    /**
      * @returns {Object} The data contained in the form. Requires YAHOO.util.Connect
      */
     getData: function() {

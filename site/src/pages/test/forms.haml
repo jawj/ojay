@@ -4,8 +4,9 @@
 
 %form#login
   %div
-    %span Username
-    %input{:name => 'username'}
+    %label
+      Username
+      %input{:name => 'username'}
   %div
     %label{:for => 'email'} Your email
     %input{:name => 'email', :id => 'email'}
@@ -37,7 +38,6 @@
 :plain
   <style type="text/css">
     form { margin: 18px 0; }
-    span, label { float: left; width: 100px; }
     input.invalid, .error-explanation { background: #fcc; border: 1px solid #900; }
     label.invalid { color: #f00; font-weight: bold; }
     .error-explanation { padding: 12px; margin: 12px; }
