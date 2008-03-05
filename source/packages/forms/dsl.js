@@ -150,6 +150,42 @@ var RequirementDSL = JS.Class({
     },
     
     /**
+     * <p>Specifies that the given checkbox field must be checked.</p>
+     * @returns {RequirementDSL}
+     */
+    toBeChecked: function() {
+        var element = this.requirement.elements.node;
+        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this.requirement.field + '" is not a checkbox');
+        this.requirement.add(function(value) {
+            return value == element.value || 'must be checked';
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must be a number in order to be considered valid.</p>
+     * @returns {RequirementDSL}
+     */
+    toBeNumeric: function() {
+        this.requirement.add(function(value) {
+            return Ojay.isNumeric(value) || 'is not a number';
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must confirm the value in another field.</p>
+     * @param {String} field
+     * @returns {RequirementDSL}
+     */
+    toConfirm: function(field) {
+        this.requirement.add(function(value, data) {
+            return value == data[field] || 'must be confirmed';
+        });
+        return this;
+    },
+    
+    /**
      * <p>Specifies that the required field must have a certain length in order to be considered
      * valid. Valid inputs are a number (to specifiy an exact length), or an object with
      * <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
@@ -201,29 +237,6 @@ var RequirementDSL = JS.Class({
             return format.test(value) || 'is not valid';
         });
         return this;
-    },
-    
-    /**
-     * <p>Specifies that the required field must be a number in order to be considered valid.</p>
-     * @returns {RequirementDSL}
-     */
-    toBeNumeric: function() {
-        this.requirement.add(function(value) {
-            return Ojay.isNumeric(value) || 'is not a number';
-        });
-        return this;
-    },
-    
-    /**
-     * <p>Specifies that the given checkbox field must be checked.</p>
-     * @returns {RequirementDSL}
-     */
-    toBeChecked: function() {
-        var element = this.requirement.elements.node;
-        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this.requirement.field + '" is not a checkbox');
-        this.requirement.add(function(value) {
-            return value == element.value || 'must be checked';
-        });
     }
 });
 

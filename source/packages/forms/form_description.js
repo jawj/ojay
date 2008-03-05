@@ -87,7 +87,7 @@ var FormDescription = JS.Class({
         var data = this.getData(), key, requirement, errors = [], result;
         for (key in this.requirements) {
             requirement = this.requirements[key];
-            result = requirement.test(data[key]);
+            result = requirement.test(data[key], data);
             if (result !== true) errors = errors.concat(result);
             requirement.setValid(result === true);
         }

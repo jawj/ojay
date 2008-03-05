@@ -50,10 +50,10 @@ var FormRequirement = JS.Class({
      * @param {String} value
      * @returns {Array|Boolean}
      */
-    test: function(value) {
+    test: function(value, data) {
         var errors = [], tests = this.tests.length ? this.tests : [isPresent], value = value || '';
         tests.forEach(function(block) {
-            var result = block(value);
+            var result = block(value, data);
             if (result !== true) errors.push(this.getName() + ' ' + result);
         }, this);
         return errors.length ? errors : true;
