@@ -121,6 +121,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      * http://osteele.com/sources/javascript/functional/
      *
      * @param {String} name The function name used when messages are logged to the console
+     * @param {String} func The console function to use. Defaults to 'info'
      * @returns {Function}
      */
     traced: function(name, func) {
