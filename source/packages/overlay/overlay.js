@@ -226,6 +226,14 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     states: {
         
         INVISIBLE:  {
+            center: function() {
+                var container = this._elements._container;
+                container.setStyle({visibility: 'hidden'});
+                this.show('none').center().hide('none');
+                container.setStyle({visibility: ''});
+                return this;
+            },
+            
             show: function(transition) {
                 this.setState('SHOWING');
                 transition = this.klass.Transitions.get(transition || 'none');
