@@ -6,4 +6,10 @@ Ojay.Forms(function() { with(this) {
         .requires('password');
     
     when('login').isValidated(displayErrorsIn('#results'));
+    
+    form('search')
+        .requires('q')
+        .submitsUsingAjax();
+        
+    when('search').responseArrives(displayResponseIn('#searches'));
 }});

@@ -1,6 +1,6 @@
 %h1 Forms tests
 
-%div#results
+#results
 
 %form#login
   %div
@@ -15,10 +15,20 @@
   %div
     %input{:type => 'submit', :value => 'Sign in'}
 
+%form#search{:action => '/service/search.html', :method => 'GET'}
+  %div
+    %label{:for => 'q'} Search terms
+    %input{:name => 'q', :id => 'q'}
+  %div
+    %input{:type => 'submit', :value => 'Go'}
+
+#searches
+
 =javascripts 'test/forms'
 
 :plain
   <style type="text/css">
+    form { margin: 18px 0; }
     span, label { float: left; width: 100px; }
     .invalid, .error-explanation { background: #fcc; border: 1px solid #900; }
     .error-explanation { padding: 12px; margin: 12px; }

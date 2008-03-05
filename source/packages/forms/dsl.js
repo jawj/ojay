@@ -77,6 +77,16 @@ var DSL = {
         };
     },
     
+    /**
+     * <p>Returns a helper function for use with <tt>when().responseArrives()</tt>. The returned
+     * function will take the HTTP response body and display it in the specified element.</p>
+     * @param {String|HTMLElement|DomCollection} element
+     * @returns {Function}
+     */
+    displayResponseIn: function(element) {
+        return it().insertInto(Ojay(element));
+    },
+    
     EMAIL_FORMAT: Ojay.Forms.EMAIL_FORMAT
 };
 
@@ -106,8 +116,19 @@ var FormDSL = JS.Class({
         var requirement = this.form.getRequirement(name);
         requirement.name = displayed;
         return requirement.dsl;
+    },
+    
+    /**
+     * @param {Object} options
+     * @returns {FormDSL}
+     */
+    submitsUsingAjax: function(options) {
+        this.form.ajax = true;
+        return this;
     }
 });
+
+var FormDSLMethods = ['requires', 'submitsUsingAjax'];
 
 /**
  * <p>The <tt>RequirementDSL</tt> class creates DSL objects used to describe form requirements.
@@ -187,25 +208,21 @@ var RequirementDSL = JS.Class({
             return Ojay.Forms.isNumeric(value) || 'is not a number';
         });
         return this;
-    },
-    
-    /**
-     * <p>Provided to allow you to return to the <tt>FormDSL</tt>you want using after entering
-     * into using a <tt>RequirementDSL</tt> object.</p>
-     * @param {String} name
-     * @returns {RequirementDSL}
-     */
-    requires: function(name) {
-        return this.requirement.form.dsl.requires(name);
     }
 });
+
+FormDSLMethods.forEach(function(method) {
+    RequirementDSL.instanceMethod(method, function() {
+        var base = this.requirement.form.dsl;
+        return base[method].apply(base, arguments);
+}); });
 
 /**
  * <p>The <tt>WhenDSL</tt> class creates DSL objects used to describe form requirements. All
  * <tt>FormRequirement</tt> objects have one of these objects associated with them. The WhenDSL
  * is used specifically to describe events linked to forms.</p>
  * @constructor
- * @class RequirementDSL
+ * @class WhenDSL
  * @private
  */
 var WhenDSL = JS.Class({
@@ -219,11 +236,24 @@ var WhenDSL = JS.Class({
     /**
      * <p>Allows a hook to be registered to say what should be done with the list of error
      * messages when a particular form is validated.</p>
+     * @param {Function} block
+     * @param {Object} context
      */
     isValidated: function(block, context) {
         this.form.subscribe(function(form) {
             block.call(context || null, form.errors);
         });
+    },
+    
+    /**
+     * @param {Function} block
+     * @param {Object} context
+     */
+    responseArrives: function(block, context) {
+        if (!this.form.ajax) return;
+        block = Function.from(block);
+        if (context) block = block.bind(context);
+        this.form.handleAjaxResponse = block;
     }
 });
 
@@ -273,8 +303,18 @@ var FormDescription = JS.Class({
      * @param {Event} evnt
      */
     handleSubmission: function(form, evnt) {
-        if (!this.isValid()) evnt.stopDefault();
+        var valid = this.isValid();
+        if (this.ajax || !valid) evnt.stopDefault();
+        if (!this.ajax || !valid) return;
+        var form = this.form.node;
+        Ojay.HTTP[(form.method || 'POST').toUpperCase()](form.action,
+                this.data, {onSuccess: this.handleAjaxResponse});
     },
+    
+    /**
+     * @param {HTTP.Response} response
+     */
+    handleAjaxResponse: function(response) {},
     
     /**
      * @returns {Object} The data contained in the form. Requires YAHOO.util.Connect
@@ -286,7 +326,7 @@ var FormDescription = JS.Class({
             return memo;
         }, {});
         YAHOO.util.Connect.resetFormState();
-        return data;
+        return this.data = data;
     },
     
     /**
