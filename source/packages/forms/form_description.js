@@ -21,6 +21,10 @@ var FormDescription = JS.Class({
         this.requirements = {};
         this.dsl = new FormDSL(this);
         this.when = new WhenDSL(this);
+        
+        this.inputs = {};
+        this.labels = {};
+        this.names = {};
     },
     
     /**
@@ -62,9 +66,35 @@ var FormDescription = JS.Class({
      * @return {DomCollection}
      */
     getInputs: function(name) {
-        return this.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
+        return this.inputs[name] || ( this.inputs[name] = this.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
             return tagName + '[name=' + name + ']';
-        }).join(', '));
+        }).join(', ')) );
+    },
+    
+    /**
+     * @param {String} name
+     * @returns {DomCollection}
+     */
+    getLabel: function(name) {
+        if (this.labels[name]) return this.labels[name];
+        var input = this.getInputs(name);
+        if (!input.node) return this.labels[name] = null;
+        var label = input.ancestors('label');
+        if (label.node) return this.labels[name] = label;
+        var id = input.node.id;
+        label = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
+        return this.labels[name] = Ojay(label);
+    },
+    
+    /**
+     * @param {String} name
+     * @returns {String}
+     */
+    getName: function(field) {
+        if (this.names[field]) return this.names[field];
+        var label = this.getLabel(field);
+        var name = ((label.node || {}).innerHTML || field).stripTags();
+        return this.names[field] = name.charAt(0).toUpperCase() + name.substring(1);
     },
     
     /**

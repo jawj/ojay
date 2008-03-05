@@ -118,7 +118,7 @@ var FormDSL = JS.Class({
      */
     requires: function(name, displayed) {
         var requirement = this.form.getRequirement(name);
-        requirement.name = displayed;
+        if (displayed) this.form.names[name] = displayed;
         return requirement.dsl;
     },
     
@@ -132,7 +132,9 @@ var FormDSL = JS.Class({
     }
 });
 
-var FormDSLMethods = ['requires', 'submitsUsingAjax'];
+FormDSL.include({expects: FormDSL.prototype.requires});
+
+var FormDSLMethods = ['requires', 'expects', 'submitsUsingAjax'];
 
 /**
  * <p>The <tt>RequirementDSL</tt> class creates DSL objects used to describe form requirements.
@@ -157,7 +159,7 @@ var RequirementDSL = JS.Class({
         var element = this.requirement.elements.node;
         if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this.requirement.field + '" is not a checkbox');
         this.requirement.add(function(value) {
-            return value == element.value || 'must be checked';
+            return value == element.value || ['must be checked'];
         });
         return this;
     },
@@ -168,7 +170,7 @@ var RequirementDSL = JS.Class({
      */
     toBeNumeric: function() {
         this.requirement.add(function(value) {
-            return Ojay.isNumeric(value) || 'is not a number';
+            return Ojay.isNumeric(value) || ['is not a number'];
         });
         return this;
     },
@@ -180,9 +182,8 @@ var RequirementDSL = JS.Class({
      */
     toConfirm: function(field) {
         this.requirement.add(function(value, data) {
-            return value == data[field] || 'must be confirmed';
+            return value == data[field] || ['must be confirmed', field];
         });
-        this.requirement.confirmed = field;
         return this;
     },
     
@@ -197,11 +198,11 @@ var RequirementDSL = JS.Class({
         var min = options.minimum, max = options.maximum;
         this.requirement.add(function(value) {
             if (typeof options == 'number' && value.length != options)
-                    return 'must contain exactly ' + options + ' characters';
+                    return ['must contain exactly ' + options + ' characters'];
             if (min !== undefined && value.length < min)
-                    return 'must contain at least ' + min + ' characters';
+                    return ['must contain at least ' + min + ' characters'];
             if (max !== undefined && value.length > max)
-                    return 'must contain at most ' + max + ' characters';
+                    return ['must contain at most ' + max + ' characters'];
             return true;
         });
         return this;
@@ -219,9 +220,9 @@ var RequirementDSL = JS.Class({
             if (!Ojay.isNumeric(value)) return 'must be a number';
             value = Number(value);
             if (min !== undefined && value < min)
-                    return 'must be at least ' + min;
+                    return ['must be at least ' + min];
             if (max !== undefined && value > max)
-                    return 'must be at most ' + max;
+                    return ['must be at most ' + max];
             return true;
         });
         return this;
@@ -235,7 +236,7 @@ var RequirementDSL = JS.Class({
      */
     toMatch: function(format) {
         this.requirement.add(function(value) {
-            return format.test(value) || 'is not valid';
+            return format.test(value) || ['is not valid'];
         });
         return this;
     }

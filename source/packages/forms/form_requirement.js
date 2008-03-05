@@ -1,5 +1,5 @@
 var isPresent = function(value) {
-    return !Ojay.isBlank(value) || 'is required';
+    return !Ojay.isBlank(value) || ['is required'];
 };
 
 /**
@@ -23,29 +23,7 @@ var FormRequirement = JS.Class({
         this.dsl = new RequirementDSL(this);
         
         this.elements = this.form.getInputs(field);
-        this.label = this.getLabel();
-    },
-    
-    /**
-     * @returns {String}
-     */
-    getName: function() {
-        var label = this.confirmed ? this.getLabel(this.confirmed) : this.label;
-        var name = this.name || (label.node ? label.node.innerHTML.stripTags() : this.field);
-        return name.charAt(0).toUpperCase() + name.substring(1);
-    },
-    
-    /**
-     * @param {String} field
-     * @returns {DomCollection}
-     */
-    getLabel: function(field) {
-        field = field ? this.form.getInputs(field) : this.elements;
-        var labels = field.ancestors('label');
-        if (labels.node) return labels;
-        var id = (field.node || {}).id;
-        labels = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
-        return new Ojay.DomCollection(labels);
+        this.label = this.form.getLabel(field);
     },
     
     /**
@@ -59,11 +37,14 @@ var FormRequirement = JS.Class({
      * @param {String} value
      * @returns {Array|Boolean}
      */
-    test: function(value, data) {
+    test: function(value, data, errors) {
         var errors = [], tests = this.tests.length ? this.tests : [isPresent], value = value || '';
         tests.forEach(function(block) {
-            var result = block(value, data);
-            if (result !== true) errors.push(this.getName() + ' ' + result);
+            var result = block(value, data), message, field;
+            if (result !== true) {
+                message = result[0]; field = result[1] || this.field;
+                errors.push(this.form.getName(field) + ' ' + message);
+            }
         }, this);
         return errors.length ? errors : true;
     }.traced('test()'),
