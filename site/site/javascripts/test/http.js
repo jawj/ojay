@@ -6,11 +6,11 @@ YAHOO.util.Event.onDOMReady(function() {
             ._(Ojay.HTTP).GET('snippet.html').insertInto(updater)
             ._(updater).animate({opacity: {to: 1}}, 0.5);
     
-    Ojay('#script-runner').on('click')._(Ojay.HTTP.GET, 'script.html').evalScriptTags();
+    Ojay('#script-runner').on('click')._(Ojay.HTTP.GET, 'script.html').evalScripts();
     
     Ojay('#on200').on('click')._(Ojay.HTTP.GET, 'script.html?foo=bar', {ajaxLayout: true}, {
         on200: function(response) {
-            response.evalScriptTags();
+            response.evalScripts();
         }
     });
     

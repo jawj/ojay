@@ -234,8 +234,15 @@ Ojay.HTTP.Response = JS.Class(/** @scope Ojay.HTTP.Response.prototype */{
     /**
      * @returns {HTTP.Response}
      */
-    evalScriptTags: function() {
+    evalScripts: function() {
         if (this.responseText) this.responseText.evalScripts();
         return this;
-    }
+    },
+    
+    /**
+     * @returns {HTTP.Response}
+     */
+    evalScriptTags: function() {
+        return this.evalScripts();
+    }.traced('evalScriptTags() is deprecated. Use evalScripts() instead.', 'warn')
 });

@@ -123,12 +123,12 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      * @param {String} name The function name used when messages are logged to the console
      * @returns {Function}
      */
-    traced: function(name) {
-        var method = this, name = name || this;
+    traced: function(name, func) {
+        var method = this, name = name || this, func = func || 'info';
         return function() {
-            window.console && console.info(name, 'called on', this, 'with', arguments);
+            window.console && console[func](name, ' called on ', this, ' with ', arguments);
             var result = method.apply(this, arguments);
-            window.console && console.info(name, '->', result);
+            window.console && console[func](name, ' -> ', result);
             return result;
         };
     },
