@@ -212,6 +212,18 @@ var RequirementDSL = JS.Class({
             return Ojay.isNumeric(value) || 'is not a number';
         });
         return this;
+    },
+    
+    /**
+     * <p>Specifies that the given checkbox field must be checked.</p>
+     * @returns {RequirementDSL}
+     */
+    toBeChecked: function() {
+        var element = this.requirement.elements.node;
+        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this.requirement.field + '" is not a checkbox');
+        this.requirement.add(function(value) {
+            return value == element.value || 'must be checked';
+        });
     }
 });
 
