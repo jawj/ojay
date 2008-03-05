@@ -10,6 +10,9 @@
   %li
     %a#center-fade{:href => '#'}
       Center an overlay then fade it in
+  %li
+    %a#fit-and-zoom{:href => '#'}
+      Fit to content and zoom in
 
 :plain
   <script type="text/javascript">
@@ -38,6 +41,11 @@
     Ojay('#center-fade').on('click', function(el,ev) {
         ev.stopEvent();
         new Ojay.Overlay().setContent('Centered!').center().show('fade');
+    });
+    
+    Ojay('#fit-and-zoom').on('click', function(el,ev) {
+        ev.stopEvent();
+        new Ojay.Overlay().setContent('<div style="width: 100px;">Centered!</div>').fitToContent().center().show('zoom');
     });
   </script>
   

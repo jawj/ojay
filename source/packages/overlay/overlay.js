@@ -1,5 +1,15 @@
 var stub = function() { return this; };
 
+var whileHidden = function(method) {
+    return function() {
+        var container = this._elements._container;
+        container.setStyle({visibility: 'hidden'});
+        this.show('none')[method]().hide('none');
+        container.setStyle({visibility: ''});
+        return this;
+    };
+};
+
 /**
  * <p>The <tt>Overlay</tt> class is designed to model the most basic container for overlaying
  * content on top of the page. It allows HTML content to be put in an absolutely positioned
@@ -226,13 +236,9 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     states: {
         
         INVISIBLE:  {
-            center: function() {
-                var container = this._elements._container;
-                container.setStyle({visibility: 'hidden'});
-                this.show('none').center().hide('none');
-                container.setStyle({visibility: ''});
-                return this;
-            },
+            center: whileHidden('center'),
+            
+            fitToContent: whileHidden('fitToContent'),
             
             show: function(transition) {
                 this.setState('SHOWING');
