@@ -42,6 +42,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      *     add(7,8)(23)  // --> 38</code></pre>
      *
      * @param {Number} n The number of required arguments (optional, will be inferred from the argument list)
+     * @returns {Function}
      */
     curry: function(n) {
         var method = this, n = n || this.length;
@@ -99,6 +100,8 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      *     
      *     var caps = strings.map(upper);
      *     // --> ['FOO', 'BAR', 'BAZ', ... ]</code></pre>
+     *
+     * @returns {Function}
      */
     functionize: function() {
         if (this._functionized) return this._functionized;
@@ -116,13 +119,17 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      *
      * Copyright: Copyright 2007 by Oliver Steele.  All rights reserved.
      * http://osteele.com/sources/javascript/functional/
+     *
+     * @param {String} name The function name used when messages are logged to the console
+     * @param {String} func The console function to use. Defaults to 'info'
+     * @returns {Function}
      */
-    traced: function(name) {
-        var method = this, name = name || this;
+    traced: function(name, func) {
+        var method = this, name = name || this, func = func || 'info';
         return function() {
-            window.console && console.info(name, 'called on', this, 'with', arguments);
+            window.console && console[func](name, ' called on ', this, ' with ', arguments);
             var result = method.apply(this, arguments);
-            window.console && console.info(name, '->', result);
+            window.console && console[func](name, ' -> ', result);
             return result;
         };
     }

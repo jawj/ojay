@@ -30,7 +30,7 @@
  * the <tt>position</tt> argument. Again, use <tt>scope</tt> to set the meaning of <tt>this</tt>
  * inside the callback.</p>
  */
-Ojay.Mouse = JS.Singleton({
+Ojay.Mouse = JS.Singleton(/** @scope Ojay.Mouse */{
     include: JS.Observable,
     
     initialize: function() {
@@ -96,8 +96,7 @@ Ojay.Mouse = JS.Singleton({
     }
 });
 
-YAHOO.util.Event.addListener(document, 'mousemove',
-        Ojay.Mouse.method('updatePosition'));
+Ojay(document).on('mousemove', Ojay.Mouse.method('updatePosition'));
 
 /**
  * <p><tt>DomCollection#on</tt> is wrapped to provide <tt>mouseenter</tt> and <tt>mouseleave</tt>

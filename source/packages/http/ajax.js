@@ -178,12 +178,8 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
                 var response = new Ojay.HTTP.Response(transport);
                 var success  = this._callbacks.onSuccess;
                 var onStatus = this._callbacks['on' + response.status];
-                if (typeof success == 'function') {
-                    try { success(response); } catch(e) {}
-                }
-                if (typeof onStatus == 'function') {
-                    try { onStatus(response); } catch(e) {}
-                }
+                if (success !== undefined) Function.from(success)(response);
+                if (onStatus !== undefined) Function.from(onStatus)(response);
                 this.chain.fire(response);
             },
             
@@ -192,12 +188,8 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
                 var response = new Ojay.HTTP.Response(transport);
                 var failure  = this._callbacks.onFailure;
                 var onStatus = this._callbacks['on' + response.status];
-                if (typeof failure == 'function') {
-                    try { failure(response); } catch(e) {}
-                }
-                if (typeof onStatus == 'function') {
-                    try { onStatus(response); } catch(e) {}
-                }
+                if (failure !== undefined) Function.from(failure)(response);
+                if (onStatus !== undefined) Function.from(onStatus)(response);
             }
             
         }, postData);

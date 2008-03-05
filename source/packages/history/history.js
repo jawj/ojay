@@ -187,7 +187,7 @@ Ojay.History = (function(History) {
             return state;
         };
     
-    return {
+    return /** @scope Ojay.History */{
         /**
          * <p>The interface that objects must implement in order to be history managed.</p>
          */
