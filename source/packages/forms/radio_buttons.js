@@ -28,7 +28,8 @@ Ojay.Forms.RadioButtons = JS.Class({
      * @param {Forms.RadioButtons.Item} item
      */
     check: function(item) {
-        if (this._checkedItem) this._checkedItem.setChecked(false);
+        var current = this._checkedItem;
+        if (current && current != item) current.setChecked(false);
         this._checkedItem = item;
     },
     

@@ -9,11 +9,9 @@ var ButtonStates = JS.Module({
      * <p>Called inside class constructors to set up the behaviour of a form input and its label.</p>
      */
     setupButton: function() {
-        this.setChecked(this._input.node.checked);
-        
-        this._input.setStyle({opacity: 0, position: 'absolute', left: '-5000px', top: '-5000px'});
+        // TODO: Taken out for testing - put back in before release
+        // this._input.setStyle({opacity: 0, position: 'absolute', left: '-5000px', top: '-5000px'});
         this._input.on('click')._(this).setChecked();
-        this._input.on('change')._(this).setChecked();
         this._input.on('focus')._(this).setFocused(true);
         this._input.on('blur')._(this).setFocused(false);
         
@@ -21,6 +19,8 @@ var ButtonStates = JS.Module({
         this._label.addClass('js');
         this._label.on('mouseover')._(this).setHovered(true);
         this._label.on('mouseout')._(this).setHovered(false);
+        
+        this.setChecked();
     },
     
     /**
@@ -44,11 +44,12 @@ var ButtonStates = JS.Module({
      * <p>Adds or removes the class name 'focused' from the input and its label depending on whether the
      * input is checked. If the input is part of a <tt>RadioButtons</tt> group, notifies the group in
      * order to change the state of the currently checked input.</p>
-     * @param {Boolean} notify
+     * @param {Boolean} state
      */
-    setChecked: function(notify) {
-        this.checked = this._input.node.checked;
-        if (this.checked && this._group && notify !== false) this._group.check(this);
+    setChecked: function(state) {
+        this.checked = (state === undefined) ? this._input.node.checked : !!state;
+        if (this._group) this.checked && this._group.check(this);
+        else this._input.node.checked = this.checked;
         [this._input, this._label].forEach(it()[this.checked ? 'addClass' : 'removeClass']('checked'));
     }
 });

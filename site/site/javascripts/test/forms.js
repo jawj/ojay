@@ -24,8 +24,8 @@ Ojay.Forms(function() { with(this) {
     when('search').responseArrives(displayResponseIn('#searches'));
 }});
 
-new Ojay.Forms.RadioButtons('#buttons input[name=foo-radio]');
-new Ojay.Forms.Checkbox('#buttons input[name=checky]');
+radios = new Ojay.Forms.RadioButtons('#buttons input[name=foo-radio]');
+check = new Ojay.Forms.Checkbox('#buttons input[name=checky]');
 
 Ojay('#check-foo').on('click', function(el,ev) {
     ev.stopEvent();
