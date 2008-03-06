@@ -37,6 +37,17 @@
 
 #searches
 
+%form#buttons
+  %input{:type => 'radio', :name => 'foo-radio', :value => 1, :id => 'foo-radio-1'}
+  %label{:for => 'foo-radio-1'} Value 1
+  %input{:type => 'radio', :name => 'foo-radio', :value => 2, :id => 'foo-radio-2'}
+  %label{:for => 'foo-radio-2'} Value 2
+  %input{:type => 'radio', :name => 'foo-radio', :value => 3, :id => 'foo-radio-3'}
+  %label{:for => 'foo-radio-3'} Value 3
+  %input{:type => 'radio', :name => 'foo-radio', :value => 4, :id => 'foo-radio-4'}
+  %label{:for => 'foo-radio-4'} Value 4
+  %button{:id => 'check-foo'} Check value
+
 =javascripts 'test/forms'
 
 :plain
@@ -46,4 +57,9 @@
     input.invalid, .error-explanation { background: #fcc; border: 1px solid #900; }
     label.invalid { color: #f00; font-weight: bold; }
     .error-explanation { padding: 12px; margin: 12px; }
+    
+    #buttons label { display: inline; float: left; border: 1px solid #666; background: #eee; padding: 8px; margin-right: 8px; }
+    #buttons label.checked { border-color: #393; background: #9f6; }
+    #buttons label.focused { border-width: 2px; font-weight: bold; }
+    #buttons label.hovered { background: #cef; }
   </style>
