@@ -42,6 +42,7 @@ Ojay.Forms.ButtonGroup = JS.Class({
     extend: {
         Item: JS.Class({
             initialize: function(group, input) {
+                this._group = group;
                 this._input = input;
                 this._label = Ojay.Forms.getLabel(input);
                 this.setChecked(input.node.checked);
@@ -57,6 +58,7 @@ Ojay.Forms.ButtonGroup = JS.Class({
             },
             
             setFocused: function(state) {
+                if (this._input.node.checked) this._group.check(this);
                 [this._input, this._label].forEach(function(element) {
                         element[!!state ? 'addClass' : 'removeClass']('focused'); });
             },
