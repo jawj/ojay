@@ -48,7 +48,7 @@ var ButtonStates = JS.Module({
      */
     setChecked: function(state) {
         this.checked = (state === undefined) ? this._input.node.checked : !!state;
-        if (this._group) this.checked && this._group.check(this);
+        if (this._group) this.checked && (this._input.node.checked = true) && this._group.check(this);
         else this._input.node.checked = this.checked;
         [this._input, this._label].forEach(it()[this.checked ? 'addClass' : 'removeClass']('checked'));
     }
