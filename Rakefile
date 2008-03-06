@@ -23,11 +23,11 @@ PACKAGES = {
   ),
   
   'pkg/http'        => priv + %w(ajax cross_domain).map { |s| "packages/http/#{s}" },
-  'pkg/forms'       => priv + %w(begin_closure validators form_description form_requirement dsl end_closure).map { |s| "packages/forms/#{s}" },
+  'pkg/forms'       => priv + %w(begin validators description requirement dsl radio_buttons end).map { |s| "packages/forms/#{s}" },
   'pkg/history'     => priv + %w(packages/history/history),
-  'pkg/keyboard'    => priv + %w(begin_closure utils keyboard rules monitor disabler events end_closure).map { |s| "packages/keyboard/#{s}" },
+  'pkg/keyboard'    => priv + %w(begin utils keyboard rules monitor disabler events end).map { |s| "packages/keyboard/#{s}" },
   'pkg/mouse'       => priv + %w(packages/mouse/mouse),
-  'pkg/overlay'     => priv + %w(begin_closure overlay transitions page_mask end_closure).map { |s| "packages/overlay/#{s}" }
+  'pkg/overlay'     => priv + %w(begin overlay transitions page_mask end).map { |s| "packages/overlay/#{s}" }
 }
 
 ALL_PACKAGES = %w(lib/class lib/observable core pkg/http pkg/forms pkg/history pkg/keyboard pkg/mouse pkg/overlay)
