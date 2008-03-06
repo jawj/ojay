@@ -19,6 +19,7 @@ var FormDescription = JS.Class({
         this.form.on('submit', this.method('handleSubmission'));
         
         this.requirements = {};
+        this.validators = [];
         this.dsl = new FormDSL(this);
         this.when = new WhenDSL(this);
         
@@ -122,6 +123,7 @@ var FormDescription = JS.Class({
             requirement.setValid(result === true);
         }
         this.errors = errors;
+        this.validators.forEach(function(validator) { validator.block.call(validator.context || null, data, errors); });
         this.notifyObservers(this);
     },
     

@@ -123,6 +123,17 @@ var FormDSL = JS.Class({
     },
     
     /**
+     * <p>Adds a validator function to the form that allows the user to inspect the data
+     * and add new errors.</p>
+     * @param {Function} block
+     * @param {Object} context
+     * @returns {FormDSL}
+     */
+    validates: function(block, context) {
+        this.form.validators.push({block: block, context: context});
+    },
+    
+    /**
      * @param {Object} options
      * @returns {FormDSL}
      */
@@ -134,7 +145,7 @@ var FormDSL = JS.Class({
 
 FormDSL.include({expects: FormDSL.prototype.requires});
 
-var FormDSLMethods = ['requires', 'expects', 'submitsUsingAjax'];
+var FormDSLMethods = ['requires', 'expects', 'validates', 'submitsUsingAjax'];
 
 /**
  * <p>The <tt>RequirementDSL</tt> class creates DSL objects used to describe form requirements.
