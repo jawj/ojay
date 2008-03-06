@@ -19,10 +19,6 @@
  *     }});
  */
 
-Ojay.Forms = function(description) {
-    description.call(DSL);
-};
-
 // Store to hold sets of form rules, entry per page form.
 var forms = {};
 

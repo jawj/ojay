@@ -33,3 +33,17 @@ JS.extend(Ojay, /** @scope Ojay */ {
      */
     EMAIL_FORMAT: /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b$/i
 });
+
+Ojay.Forms = function(description) {
+    description.call(DSL);
+};
+
+Ojay.Forms.getLabel = function(input) {
+    input = Ojay(input);
+    if (!input.node) return null;
+    var label = input.ancestors('label');
+    if (label.node) return label.at(0);
+    var id = input.node.id;
+    label = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
+    return Ojay(label.slice(0,1));
+};

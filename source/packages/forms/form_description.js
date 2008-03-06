@@ -77,14 +77,7 @@ var FormDescription = JS.Class({
      * @returns {DomCollection}
      */
     getLabel: function(name) {
-        if (this.labels[name]) return this.labels[name];
-        var input = this.getInputs(name);
-        if (!input.node) return this.labels[name] = null;
-        var label = input.ancestors('label');
-        if (label.node) return this.labels[name] = label;
-        var id = input.node.id;
-        label = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
-        return this.labels[name] = Ojay(label);
+        return this.labels[name] || ( this.labels[name] = Ojay.Forms.getLabel(this.getInputs(name)) );
     },
     
     /**
