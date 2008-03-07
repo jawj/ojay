@@ -18,6 +18,8 @@ Ojay.Forms.RadioButtons = JS.Class({
      */
     initialize: function(inputs) {
         this._items = Ojay(inputs).map(function(input) { return new this.klass.Item(this, input); }, this);
+        if (this._items.map('_input.node.name').unique().length > 1)
+            throw new Error('Attempt to create a RadioButtons object with radios of different names');
         this._checkedItem = this._items.filter('checked')[0] || null;
     },
     
@@ -44,6 +46,15 @@ Ojay.Forms.RadioButtons = JS.Class({
         })[0];
     },
     
+    /**
+     * <p>Returns the current value of the radio button group.</p>
+     * @returns {String}
+     */
+    getValue: function() {
+        var item = this._items.filter('_input.node.checked')[0];
+        return item ? item._input.node.value : null;
+    },
+    
     extend: {
         /**
          * @constructor
@@ -57,6 +68,8 @@ Ojay.Forms.RadioButtons = JS.Class({
              * @param {DomCollection} input
              */
             initialize: function(group, input) {
+                if (!input || !input.node || input.node.type != 'radio')
+                    throw new TypeError('Attempt to create a RadioButtons object with non-radio element');
                 this._group = group;
                 this._input = input;
                 this.setupButton();

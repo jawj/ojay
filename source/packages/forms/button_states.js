@@ -16,9 +16,10 @@ var ButtonStates = JS.Module({
         this._input.on('blur')._(this).setFocused(false);
         
         this._label = Ojay.Forms.getLabel(this._input);
-        this._label.addClass('js');
         this._label.on('mouseover')._(this).setHovered(true);
         this._label.on('mouseout')._(this).setHovered(false);
+        
+        [this._input, this._label].forEach(it().addClass('js'));
         
         this.setChecked();
         this.setDisabled();
