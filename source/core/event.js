@@ -28,6 +28,27 @@
             Ojay.stopPropagate(element, evnt);
         },
         
+        /**
+         * <p>Returns an event callback that checks the event target against each given CSS
+         * selector and fires all the applicable callbacks. Based on prior ideas from:</p>
+         *
+         * <ul>
+         *     <li>http://icant.co.uk/sandbox/eventdelegation/</li>
+         *     <li>http://www.danwebb.net/2008/2/8/event-delegation-made-easy-in-jquery</li>
+         * </ul>
+         *
+         * @param {Object} map A map of CSS selectors to callbacks
+         * @returns {Function}
+         */
+        delegateEvent: function(map) {
+            return function(element, evnt) {
+                var target = evnt.getTarget();
+                for (var selector in map) {
+                    if (target.matches(selector)) map[selector](target, evnt);
+                }
+            };
+        },
+        
         _getTarget: function() { return Ojay(Event.getTarget(this)); }
     });
     
