@@ -108,18 +108,19 @@ var FormDescription = JS.Class({
      *
      */
     _validate: function() {
-        var data = this._getData(), key, requirement, errors = [], result;
-        for (key in this._requirements) {
-            requirement = this._requirements[key];
-            result = requirement._test(data[key], data);
-            if (result !== true) errors = errors.concat(result);
-            requirement._setValid(result === true);
-        }
-        this._errors = errors;
-        var dataWrapper = new FormData(data), errorWrapper = new FormErrors(errors);
-        this._validators.forEach(function(validator) {
-            validator._block.call(validator._context || null, dataWrapper, errorWrapper);
-        });
+        this._errors = new FormErrors(this);
+        var data = new FormData(this._getData()), key;
+        
+        for (key in this._requirements)
+            this._requirements[key]._test(data.get(key), data);
+        
+        this._validators.forEach(function(validate) { validate(data, this._errors); }, this);
+        
+        var fields = this._errors._fields();
+        for (key in this._inputs)
+            [this._getInputs(key), this._getLabel(key)].forEach(
+                it()[fields.indexOf(key) == -1 ? 'removeClass' : 'addClass']('invalid'));
+        
         this.notifyObservers(this);
     },
     
@@ -128,6 +129,6 @@ var FormDescription = JS.Class({
      */
     _isValid: function() {
         this._validate();
-        return this._errors.length === 0;
+        return this._errors._count() === 0;
     }
 });

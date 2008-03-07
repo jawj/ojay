@@ -122,11 +122,10 @@ var FormDSL = JS.Class({
      * <p>Adds a validator function to the form that allows the user to inspect the data
      * and add new errors.</p>
      * @param {Function} block
-     * @param {Object} context
      * @returns {FormDSL}
      */
-    validates: function(block, context) {
-        this._form._validators.push({_block: block, _context: context});
+    validates: function(block) {
+        this._form._validators.push(block);
     },
     
     /**
@@ -189,7 +188,7 @@ var RequirementDSL = JS.Class({
      */
     toConfirm: function(field) {
         this._requirement._add(function(value, data) {
-            return value == data[field] || ['must be confirmed', field];
+            return value == data.get(field) || ['must be confirmed', field];
         });
         return this;
     },
@@ -279,7 +278,7 @@ var WhenDSL = JS.Class({
      */
     isValidated: function(block, context) {
         this._form.subscribe(function(form) {
-            block.call(context || null, form._errors);
+            block.call(context || null, form._errors._messages());
         });
     },
     
