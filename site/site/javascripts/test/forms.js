@@ -19,7 +19,7 @@ Ojay.Forms(function() { with(this) {
         });
     
     when('search').isValidated(function(errors) {
-        console && console.log(errors);
+        window.console && console.log(errors);
     });
     
     when('search').responseArrives(displayResponseIn('#searches'));
