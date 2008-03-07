@@ -45,7 +45,7 @@ var DSL = {
      * @returns {FormDSL}
      */
     form: function(id) {
-        return getForm(id).dsl || null;
+        return getForm(id)._dsl || null;
     },
     
     /**
@@ -54,7 +54,7 @@ var DSL = {
      * @returns {WhenDSL}
      */
     when: function(id) {
-        return getForm(id).when || null;
+        return getForm(id)._when || null;
     },
     
     /**
@@ -103,7 +103,7 @@ var FormDSL = JS.Class({
      * @param {FormDescription} form
      */
     initialize: function(form) {
-        this.form = form;
+        this._form = form;
     },
     
     /**
@@ -113,9 +113,9 @@ var FormDSL = JS.Class({
      * @returns {RequirementDSL}
      */
     requires: function(name, displayed) {
-        var requirement = this.form.getRequirement(name);
-        if (displayed) this.form.names[name] = displayed;
-        return requirement.dsl;
+        var requirement = this._form._getRequirement(name);
+        if (displayed) this._form._names[name] = displayed;
+        return requirement._dsl;
     },
     
     /**
@@ -126,7 +126,7 @@ var FormDSL = JS.Class({
      * @returns {FormDSL}
      */
     validates: function(block, context) {
-        this.form.validators.push({block: block, context: context});
+        this._form._validators.push({_block: block, _context: context});
     },
     
     /**
@@ -134,7 +134,7 @@ var FormDSL = JS.Class({
      * @returns {FormDSL}
      */
     submitsUsingAjax: function(options) {
-        this.form.ajax = true;
+        this._form._ajax = true;
         return this;
     }
 });
@@ -155,7 +155,7 @@ var RequirementDSL = JS.Class({
      * @param {FormRequirement} requirement
      */
     initialize: function(requirement) {
-        this.requirement = requirement;
+        this._requirement = requirement;
     },
     
     /**
@@ -163,9 +163,9 @@ var RequirementDSL = JS.Class({
      * @returns {RequirementDSL}
      */
     toBeChecked: function() {
-        var element = this.requirement.elements.node;
-        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this.requirement.field + '" is not a checkbox');
-        this.requirement.add(function(value) {
+        var element = this._requirement._elements.node;
+        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this._requirement._field + '" is not a checkbox');
+        this._requirement._add(function(value) {
             return value == element.value || ['must be checked'];
         });
         return this;
@@ -176,8 +176,8 @@ var RequirementDSL = JS.Class({
      * @returns {RequirementDSL}
      */
     toBeNumeric: function() {
-        this.requirement.add(function(value) {
-            return Ojay.isNumeric(value) || ['is not a number'];
+        this._requirement._add(function(value) {
+            return Ojay.isNumeric(value) || ['must be a number'];
         });
         return this;
     },
@@ -188,7 +188,7 @@ var RequirementDSL = JS.Class({
      * @returns {RequirementDSL}
      */
     toConfirm: function(field) {
-        this.requirement.add(function(value, data) {
+        this._requirement._add(function(value, data) {
             return value == data[field] || ['must be confirmed', field];
         });
         return this;
@@ -203,7 +203,7 @@ var RequirementDSL = JS.Class({
      */
     toHaveLength: function(options) {
         var min = options.minimum, max = options.maximum;
-        this.requirement.add(function(value) {
+        this._requirement._add(function(value) {
             if (typeof options == 'number' && value.length != options)
                     return ['must contain exactly ' + options + ' characters'];
             if (min !== undefined && value.length < min)
@@ -223,7 +223,7 @@ var RequirementDSL = JS.Class({
      */
     toHaveValue: function(options) {
         var min = options.minimum, max = options.maximum;
-        this.requirement.add(function(value) {
+        this._requirement._add(function(value) {
             if (!Ojay.isNumeric(value)) return 'must be a number';
             value = Number(value);
             if (min !== undefined && value < min)
@@ -242,7 +242,7 @@ var RequirementDSL = JS.Class({
      * @returns {RequirementDSL}
      */
     toMatch: function(format) {
-        this.requirement.add(function(value) {
+        this._requirement._add(function(value) {
             return format.test(value) || ['is not valid'];
         });
         return this;
@@ -251,7 +251,7 @@ var RequirementDSL = JS.Class({
 
 FormDSLMethods.forEach(function(method) {
     RequirementDSL.instanceMethod(method, function() {
-        var base = this.requirement.form.dsl;
+        var base = this._requirement._form._dsl;
         return base[method].apply(base, arguments);
 }); });
 
@@ -268,7 +268,7 @@ var WhenDSL = JS.Class({
      * @param {FormDescription} form
      */
     initialize: function(form) {
-        this.form = form;
+        this._form = form;
     },
     
     /**
@@ -278,8 +278,8 @@ var WhenDSL = JS.Class({
      * @param {Object} context
      */
     isValidated: function(block, context) {
-        this.form.subscribe(function(form) {
-            block.call(context || null, form.errors);
+        this._form.subscribe(function(form) {
+            block.call(context || null, form._errors);
         });
     },
     
@@ -288,9 +288,9 @@ var WhenDSL = JS.Class({
      * @param {Object} context
      */
     responseArrives: function(block, context) {
-        if (!this.form.ajax) return;
+        if (!this._form._ajax) return;
         block = Function.from(block);
         if (context) block = block.bind(context);
-        this.form.handleAjaxResponse = block;
+        this._form._handleAjaxResponse = block;
     }
 });

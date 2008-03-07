@@ -13,26 +13,26 @@ var FormDescription = JS.Class({
      * @param {String} id
      */
     initialize: function(id) {
-        this.form = Ojay.byId(id);
-        if (!this.hasForm()) return;
+        this._form = Ojay.byId(id);
+        if (!this._hasForm()) return;
         
-        this.form.on('submit', this.method('handleSubmission'));
+        this._form.on('submit', this.method('_handleSubmission'));
         
-        this.requirements = {};
-        this.validators = [];
-        this.dsl = new FormDSL(this);
-        this.when = new WhenDSL(this);
+        this._requirements = {};
+        this._validators = [];
+        this._dsl = new FormDSL(this);
+        this._when = new WhenDSL(this);
         
-        this.inputs = {};
-        this.labels = {};
-        this.names = {};
+        this._inputs = {};
+        this._labels = {};
+        this._names = {};
     },
     
     /**
      * @returns {Boolean}
      */
-    hasForm: function() {
-        var node = this.form.node;
+    _hasForm: function() {
+        var node = this._form.node;
         return !!(node && node.tagName.toLowerCase() == 'form');
     },
     
@@ -40,34 +40,34 @@ var FormDescription = JS.Class({
      * @param {String} name
      * @returns {FormRequirement}
      */
-    getRequirement: function(name) {
-        return this.requirements[name] || (this.requirements[name] = new FormRequirement(this, name));
+    _getRequirement: function(name) {
+        return this._requirements[name] || (this._requirements[name] = new FormRequirement(this, name));
     },
     
     /**
      * @param {DomCollection} form
      * @param {Event} evnt
      */
-    handleSubmission: function(form, evnt) {
-        var valid = this.isValid();
-        if (this.ajax || !valid) evnt.stopDefault();
-        if (!this.ajax || !valid) return;
-        var form = this.form.node;
+    _handleSubmission: function(form, evnt) {
+        var valid = this._isValid();
+        if (this._ajax || !valid) evnt.stopDefault();
+        if (!this._ajax || !valid) return;
+        var form = this._form.node;
         Ojay.HTTP[(form.method || 'POST').toUpperCase()](form.action,
-                this.data, {onSuccess: this.handleAjaxResponse});
+                this._data, {onSuccess: this._handleAjaxResponse});
     },
     
     /**
      * @param {HTTP.Response} response
      */
-    handleAjaxResponse: function(response) {},
+    _handleAjaxResponse: function(response) {},
     
     /**
      * @param {String} name
      * @return {DomCollection}
      */
-    getInputs: function(name) {
-        return this.inputs[name] || ( this.inputs[name] = this.form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
+    _getInputs: function(name) {
+        return this._inputs[name] || ( this._inputs[name] = this._form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
             return tagName + '[name=' + name + ']';
         }).join(', ')) );
     },
@@ -76,55 +76,55 @@ var FormDescription = JS.Class({
      * @param {String} name
      * @returns {DomCollection}
      */
-    getLabel: function(name) {
-        return this.labels[name] || ( this.labels[name] = Ojay.Forms.getLabel(this.getInputs(name)) );
+    _getLabel: function(name) {
+        return this._labels[name] || ( this._labels[name] = Ojay.Forms.getLabel(this._getInputs(name)) );
     },
     
     /**
      * @param {String} name
      * @returns {String}
      */
-    getName: function(field) {
-        if (this.names[field]) return this.names[field];
-        var label = this.getLabel(field);
+    _getName: function(field) {
+        if (this._names[field]) return this._names[field];
+        var label = this._getLabel(field);
         var name = ((label.node || {}).innerHTML || field).stripTags();
-        return this.names[field] = name.charAt(0).toUpperCase() + name.substring(1);
+        return this._names[field] = name.charAt(0).toUpperCase() + name.substring(1);
     },
     
     /**
      * @returns {Object} The data contained in the form. Requires YAHOO.util.Connect
      */
-    getData: function() {
-        var data = YAHOO.util.Connect.setForm(this.form.node).split('&').reduce(function(memo, pair) {
+    _getData: function() {
+        var data = YAHOO.util.Connect.setForm(this._form.node).split('&').reduce(function(memo, pair) {
             var data = pair.split('=').map(decodeURIComponent);
             memo[data[0].trim()] = data[1].trim();
             return memo;
         }, {});
         YAHOO.util.Connect.resetFormState();
-        return this.data = data;
+        return this._data = data;
     },
     
     /**
      *
      */
-    validate: function() {
-        var data = this.getData(), key, requirement, errors = [], result;
-        for (key in this.requirements) {
-            requirement = this.requirements[key];
-            result = requirement.test(data[key], data);
+    _validate: function() {
+        var data = this._getData(), key, requirement, errors = [], result;
+        for (key in this._requirements) {
+            requirement = this._requirements[key];
+            result = requirement._test(data[key], data);
             if (result !== true) errors = errors.concat(result);
-            requirement.setValid(result === true);
+            requirement._setValid(result === true);
         }
-        this.errors = errors;
-        this.validators.forEach(function(validator) { validator.block.call(validator.context || null, data, errors); });
+        this._errors = errors;
+        this._validators.forEach(function(validator) { validator._block.call(validator._context || null, data, errors); });
         this.notifyObservers(this);
     },
     
     /**
      * @returns {Boolean}
      */
-    isValid: function() {
-        this.validate();
-        return this.errors.length === 0;
+    _isValid: function() {
+        this._validate();
+        return this._errors.length === 0;
     }
 });
