@@ -126,6 +126,7 @@ var FormDSL = JS.Class({
      */
     validates: function(block) {
         this._form._validators.push(block);
+        return this;
     },
     
     /**

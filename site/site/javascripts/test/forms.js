@@ -32,3 +32,21 @@ Ojay('#check-foo').on('click', function(el,ev) {
     ev.stopEvent();
     alert(YAHOO.util.Connect.setForm('buttons'));
 });
+
+// Attemp to exploit security hole by removing errors after validation
+Ojay('#evil').on('click', function(el,ev) {
+    ev.stopEvent();
+    Ojay.Forms(function() { with(this) {
+        
+        var f = form('login'), a, b, k = [];
+        for (a in f) {
+            for (b in f[a]) {
+                if (f[a][b].addToBase) k = [a,b];
+        }   }
+        
+        form('login').validates(function(data, errors) {
+            if (!k[0]) return;
+            f[k[0]][k[1]] = new (f[k[0]][k[1]].klass);
+        });
+    }})
+});
