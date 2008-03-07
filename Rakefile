@@ -23,7 +23,7 @@ PACKAGES = {
   ),
   
   'pkg/http'        => priv + %w(ajax cross_domain).map { |s| "packages/http/#{s}" },
-  'pkg/forms'       => priv + %w(begin validators description requirement dsl button_states radio_buttons checkbox end).map { |s| "packages/forms/#{s}" },
+  'pkg/forms'       => priv + %w(begin validators description requirement data errors dsl button_states radio_buttons checkbox end).map { |s| "packages/forms/#{s}" },
   'pkg/history'     => priv + %w(packages/history/history),
   'pkg/keyboard'    => priv + %w(begin utils keyboard rules monitor disabler events end).map { |s| "packages/keyboard/#{s}" },
   'pkg/mouse'       => priv + %w(packages/mouse/mouse),

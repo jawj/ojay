@@ -116,7 +116,10 @@ var FormDescription = JS.Class({
             requirement._setValid(result === true);
         }
         this._errors = errors;
-        this._validators.forEach(function(validator) { validator._block.call(validator._context || null, data, errors); });
+        var dataWrapper = new FormData(data), errorWrapper = new FormErrors(errors);
+        this._validators.forEach(function(validator) {
+            validator._block.call(validator._context || null, dataWrapper, errorWrapper);
+        });
         this.notifyObservers(this);
     },
     

@@ -15,7 +15,7 @@ Ojay.Forms(function() { with(this) {
         .requires('q')
         .requires('lucky')
         .validates(function(data, errors) {
-            if (/delete/i.test(data.q)) errors.push('Looks like SQL injection!');
+            if ( /delete/i.test(data.get('q')) ) errors.add('Looks like SQL injection!');
         });
     
     when('search').isValidated(function(errors) {
