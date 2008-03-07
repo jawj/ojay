@@ -34,14 +34,14 @@ Ojay.Forms.RadioButtons = JS.Class({
     },
     
     /**
-     * <p>Causes the radio button with the given id (or value) to become checked.</p>
+     * <p>Returns the <tt>Item</tt> in the <tt>RadioButtons</tt> group with the given id or value.</p>
      * @param {String|Number} id
+     * @returns {Forms.RadioButtons.Item}
      */
-    setChecked: function(id) {
-        var item = this._items.filter(function(item) {
+    getInput: function(id) {
+        return this._items.filter(function(item) {
             return item._input.node.id == id || item._input.node.value == id;
         })[0];
-        if (item) item.setChecked(true);
     },
     
     extend: {

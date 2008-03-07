@@ -42,7 +42,7 @@
   %label{:for => 'foo-radio-1'} Value 1
   %input{:type => 'radio', :name => 'foo-radio', :value => 2, :id => 'foo-radio-2'}
   %label{:for => 'foo-radio-2'} Value 2
-  %input{:type => 'radio', :name => 'foo-radio', :value => 3, :id => 'foo-radio-3'}
+  %input{:type => 'radio', :name => 'foo-radio', :value => 3, :id => 'foo-radio-3', :disabled => 'disabled'}
   %label{:for => 'foo-radio-3'} Value 3
   %input{:type => 'radio', :name => 'foo-radio', :value => 4, :id => 'foo-radio-4'}
   %label{:for => 'foo-radio-4'} Value 4
@@ -65,4 +65,5 @@
     #buttons label.checked { border-color: #393; background: #9f6; }
     #buttons label.focused { border-width: 2px; font-weight: bold; }
     #buttons label.hovered { background: #cef; }
+    #buttons label.disabled { color: #666 !important; font-weight: normal !important; background: #fff !important; }
   </style>

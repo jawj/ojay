@@ -21,6 +21,7 @@ var ButtonStates = JS.Module({
         this._label.on('mouseout')._(this).setHovered(false);
         
         this.setChecked();
+        this.setDisabled();
     },
     
     /**
@@ -29,7 +30,7 @@ var ButtonStates = JS.Module({
      */
     setFocused: function(state) {
         if (this._input.node.checked) this.setChecked();
-        [this._input, this._label].forEach(it()[!!state ? 'addClass' : 'removeClass']('focused'));
+        this._setClass(state, 'focused');
     },
     
     /**
@@ -37,7 +38,7 @@ var ButtonStates = JS.Module({
      * @param {Boolean} state
      */
     setHovered: function(state) {
-        [this._input, this._label].forEach(it()[!!state ? 'addClass' : 'removeClass']('hovered'));
+        this._setClass(state, 'hovered');
     },
     
     /**
@@ -50,6 +51,20 @@ var ButtonStates = JS.Module({
         this.checked = (state === undefined) ? this._input.node.checked : !!state;
         if (this._group) this.checked && (this._input.node.checked = true) && this._group.check(this);
         else this._input.node.checked = this.checked;
-        [this._input, this._label].forEach(it()[this.checked ? 'addClass' : 'removeClass']('checked'));
+        this._setClass(this.checked, 'checked');
+    },
+    
+    /**
+     * <p>Adds or removes the class name 'disabled' from the input and its label depending on <tt>state</tt>.</p>
+     * @param {Boolean} state
+     */
+    setDisabled: function(state) {
+        this.disabled = (state === undefined) ? this._input.node.disabled : !!state;
+        this._input.node.disabled = this.disabled;
+        this._setClass(this.disabled, 'disabled');
+    },
+    
+    _setClass: function(state, name) {
+        [this._input, this._label].forEach(it()[!!state ? 'addClass' : 'removeClass'](name));
     }
 });
