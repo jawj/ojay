@@ -134,6 +134,14 @@ var FormDSL = JS.Class({
         submitsUsingAjax: function(options) {
             form._ajax = true;
             return this;
+        },
+        
+        /**
+         * @returns {FormDSL}
+         */
+        highlightsActiveField: function() {
+            form._highlightActiveField();
+            return this;
         }
         
     }); this.extend({expects: this.requires});

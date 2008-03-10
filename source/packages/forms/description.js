@@ -68,7 +68,7 @@ var FormDescription = JS.Class({
      */
     _getInputs: function(name) {
         return this._inputs[name] || ( this._inputs[name] = this._form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
-            return tagName + '[name=' + name + ']';
+            return tagName + (name ? '[name=' + name + ']' : '');
         }).join(', ')) );
     },
     
@@ -77,6 +77,7 @@ var FormDescription = JS.Class({
      * @returns {DomCollection}
      */
     _getLabel: function(name) {
+        if ((name.node || {}).name) name = name.node.name;
         return this._labels[name] || ( this._labels[name] = Ojay.Forms.getLabel(this._getInputs(name)) );
     },
     
@@ -130,5 +131,15 @@ var FormDescription = JS.Class({
     _isValid: function() {
         this._validate();
         return this._errors._count() === 0;
+    },
+    
+    /**
+     *
+     */
+    _highlightActiveField: function() {
+        this._getInputs('').forEach(function(input) {
+            input.on('focus').addClass('focused')._(this)._getLabel(input).addClass('focused');
+            input.on('blur').removeClass('focused')._(this)._getLabel(input).removeClass('focused');
+        }, this);
     }
 });
