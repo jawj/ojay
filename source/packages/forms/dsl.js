@@ -201,13 +201,13 @@ var RequirementDSL = JS.Class({
         toHaveLength: function(options) {
             var min = options.minimum, max = options.maximum;
             requirement._add(function(value) {
-                if (typeof options == 'number' && value.length != options)
-                        return ['must contain exactly ' + options + ' characters'];
-                if (min !== undefined && value.length < min)
-                        return ['must contain at least ' + min + ' characters'];
-                if (max !== undefined && value.length > max)
-                        return ['must contain at most ' + max + ' characters'];
-                return true;
+                return  (typeof options == 'number' && value.length != options &&
+                            ['must contain exactly ' + options + ' characters']) ||
+                        (min !== undefined && value.length < min &&
+                            ['must contain at least ' + min + ' characters']) ||
+                        (max !== undefined && value.length > max &&
+                            ['must contain at most ' + max + ' characters']) ||
+                        true;
             });
             return this;
         },
@@ -223,11 +223,11 @@ var RequirementDSL = JS.Class({
             requirement._add(function(value) {
                 if (!Ojay.isNumeric(value)) return 'must be a number';
                 value = Number(value);
-                if (min !== undefined && value < min)
-                        return ['must be at least ' + min];
-                if (max !== undefined && value > max)
-                        return ['must be at most ' + max];
-                return true;
+                return  (min !== undefined && value < min &&
+                            ['must be at least ' + min]) ||
+                        (max !== undefined && value > max &&
+                            ['must be at most ' + max]) ||
+                        true;
             });
             return this;
         },
