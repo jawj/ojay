@@ -188,6 +188,19 @@ var RequirementDSL = JS.Class({
         },
         
         /**
+         * <p>Specifies that the required field must have one of the values in the given list in
+         * order to be considered valid.</p>
+         * @param {Array} list
+         * @returns {RequirementDSL}
+         */
+        toBeOneOf: function(list) {
+            requirement._add(function(value) {
+                return list.indexOf(value) != -1 || ['is not valid'];
+            });
+            return this;
+        },
+        
+        /**
          * <p>Specifies that the required field must confirm the value in another field.</p>
          * @param {String} field
          * @returns {RequirementDSL}
