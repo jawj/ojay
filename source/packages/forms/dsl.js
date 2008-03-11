@@ -165,24 +165,26 @@ var RequirementDSL = JS.Class({
     this.extend({
         /**
          * <p>Specifies that the given checkbox field must be checked.</p>
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toBeChecked: function() {
+        toBeChecked: function(message) {
             var element = requirement._elements.node;
             if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + requirement._field + '" is not a checkbox');
             requirement._add(function(value) {
-                return value == element.value || ['must be checked'];
+                return value == element.value || [message || 'must be checked'];
             });
             return this;
         },
         
         /**
          * <p>Specifies that the required field must be a number in order to be considered valid.</p>
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toBeNumeric: function() {
+        toBeNumeric: function(message) {
             requirement._add(function(value) {
-                return Ojay.isNumeric(value) || ['must be a number'];
+                return Ojay.isNumeric(value) || [message || 'must be a number'];
             });
             return this;
         },
@@ -191,11 +193,12 @@ var RequirementDSL = JS.Class({
          * <p>Specifies that the required field must have one of the values in the given list in
          * order to be considered valid.</p>
          * @param {Array} list
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toBeOneOf: function(list) {
+        toBeOneOf: function(list, message) {
             requirement._add(function(value) {
-                return list.indexOf(value) != -1 || ['is not valid'];
+                return list.indexOf(value) != -1 || [message || 'is not valid'];
             });
             return this;
         },
@@ -203,11 +206,12 @@ var RequirementDSL = JS.Class({
         /**
          * <p>Specifies that the required field must confirm the value in another field.</p>
          * @param {String} field
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toConfirm: function(field) {
+        toConfirm: function(field, message) {
             requirement._add(function(value, data) {
-                return value == data.get(field) || ['must be confirmed', field];
+                return value == data.get(field) || [message || 'must be confirmed', field];
             });
             return this;
         },
@@ -217,17 +221,18 @@ var RequirementDSL = JS.Class({
          * valid. Valid inputs are a number (to specifiy an exact length), or an object with
          * <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
          * @param {Number|Object} options
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toHaveLength: function(options) {
+        toHaveLength: function(options, message) {
             var min = options.minimum, max = options.maximum;
             requirement._add(function(value) {
                 return  (typeof options == 'number' && value.length != options &&
-                            ['must contain exactly ' + options + ' characters']) ||
+                            [message || 'must contain exactly ' + options + ' characters']) ||
                         (min !== undefined && value.length < min &&
-                            ['must contain at least ' + min + ' characters']) ||
+                            [message || 'must contain at least ' + min + ' characters']) ||
                         (max !== undefined && value.length > max &&
-                            ['must contain at most ' + max + ' characters']) ||
+                            [message || 'must contain at most ' + max + ' characters']) ||
                         true;
             });
             return this;
@@ -237,17 +242,18 @@ var RequirementDSL = JS.Class({
          * <p>Specifies that the required field must have a certain value in order to be considered
          * valid. Input should be an object with <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
          * @param {Object} options
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toHaveValue: function(options) {
+        toHaveValue: function(options, message) {
             var min = options.minimum, max = options.maximum;
             requirement._add(function(value) {
-                if (!Ojay.isNumeric(value)) return 'must be a number';
+                if (!Ojay.isNumeric(value)) return message || 'must be a number';
                 value = Number(value);
                 return  (min !== undefined && value < min &&
-                            ['must be at least ' + min]) ||
+                            [message || 'must be at least ' + min]) ||
                         (max !== undefined && value > max &&
-                            ['must be at most ' + max]) ||
+                            [message || 'must be at most ' + max]) ||
                         true;
             });
             return this;
@@ -257,11 +263,12 @@ var RequirementDSL = JS.Class({
          * <p>Specifies that the required field must match a given regex in order to be considered
          * valid.</p>
          * @param {Regexp} format
+         * @param {String} message
          * @returns {RequirementDSL}
          */
-        toMatch: function(format) {
+        toMatch: function(format, message) {
             requirement._add(function(value) {
-                return format.test(value) || ['is not valid'];
+                return format.test(value) || [message || 'is not valid'];
             });
             return this;
         }
