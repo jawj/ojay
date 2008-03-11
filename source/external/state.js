@@ -27,22 +27,17 @@ JS.State = (function() {
     for (var method in state)
       (function(methodName) {
         klass.instanceMethod(methodName, function() {
-          var func = this._state[methodName];
+          var func = (this._state || {})[methodName];
           return func ? func.apply(this, arguments): this;
         }, false);
       })(method);
   };
   
   return JS.Module({
-    _state: {},
-    
     _getState: function(state) {
-      var object = this.klass.prototype._state;
-      switch (typeof state) {
-        case 'object':  return state;                         break;
-        case 'string':  return this.states[state] || object;  break;
-        default:        return object;
-      }
+      return  (typeof state == 'object' && state) ||
+              (typeof state == 'string' && ((this.states || {})[state] || {})) ||
+              {};
     },
     
     setState: function(state) {
@@ -55,10 +50,6 @@ JS.State = (function() {
         if (this._state == this._getState(arguments[i])) return true;
       }
       return false;
-    },
-    
-    included: function(klass) {
-      klass.include({states: {}}, false);
     }
   });
 })();
