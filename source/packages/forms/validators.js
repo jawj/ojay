@@ -40,7 +40,7 @@ Ojay.Forms = function(description) {
 
 Ojay.Forms.getLabel = function(input) {
     input = Ojay(input);
-    if (!input.node) return null;
+    if (!input.node) return Ojay();
     var label = input.ancestors('label');
     if (label.node) return label.at(0);
     var id = input.node.id;
