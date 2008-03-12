@@ -55,8 +55,8 @@ Ojay.Animation = JS.Class(/** @scope Ojay.Animation.prototype */{
             var parameters = paramSets[i], duration = durations[i];
             var anim = new YAHOO.util.ColorAnim(element.node, parameters, duration, this._easing);
             anim.onComplete.subscribe(function() {
-                if (YAHOO.env.ua.ie && parameters.opacity && parameters.opacity.to == 1)
-                    this.chain.setStyle({opacity: 1});
+                if (YAHOO.env.ua.ie && (parameters.opacity || {}).to !== undefined)
+                    element.setStyle({opacity: parameters.opacity.to});
                 
                 if (after) after(element, i);
                 

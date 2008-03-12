@@ -276,7 +276,7 @@
             for (var property in options) {
                 if (isIE && property == 'opacity') {
                     value = Number(options[property]);
-                    if (value === 0) options[property] = 0.01;
+                    if (value === 0) options[property] = 0.001;
                     if (value === 1) {
                         Dom.setStyle(this, 'filter', '');
                         continue;
