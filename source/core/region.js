@@ -40,7 +40,7 @@
          * @returns {Number} The length of the region's diagonal
          */
         getDiagonal: function() {
-            return Math.sqrt(Math.pow(this.getWidth(), 2) + Math.pow(this.getHeight(), 2));
+            return (this.getWidth().pow(2) + this.getHeight().pow(2)).sqrt();
         },
         
         /**
