@@ -337,8 +337,9 @@
                 this.node.innerHTML = '';
                 this.node.appendChild(html);
             } else {
-                this.toArray().forEach(function(element) {
-                    element.innerHTML = String(html);
+                this.forEach(function(element) {
+                    element.node.innerHTML = '';
+                    element.insert(html, 'bottom');
                 });
             }
             return this;
