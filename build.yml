@@ -1,0 +1,102 @@
+---
+# Package configuration for Ojay build process
+#
+source_dir: source
+build_dir: build
+packages:
+  lib/class:
+    encode_private_vars: false
+    include_copyright: false
+    source_dir: external
+    files:
+      - class
+      - method_chain
+      - observable
+      - state
+  core:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: .
+    files:
+      - core/core
+      - core/utils
+      - core/array
+      - core/function
+      - core/string
+      - core/number
+      - external/reiterate
+      - core/event
+      - core/dom_collection
+      - core/dom_insertion
+      - core/html_builder
+      - core/animation
+      - core/region
+      - core/sequence
+      - core/method_chain
+  pkg/http:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/http
+    files:
+      - ajax
+      - cross_domain
+  pkg/forms:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/forms
+    files:
+      - begin
+      - validators
+      - description
+      - requirement
+      - data
+      - errors
+      - dsl
+      - button_states
+      - radio_buttons
+      - checkbox
+      - end
+  pkg/history:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/history
+    files:
+      - history
+  pkg/keyboard:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/keyboard
+    files:
+      - begin
+      - utils
+      - keyboard
+      - rules
+      - monitor
+      - disabler
+      - events
+      - end
+  pkg/mouse:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/mouse
+    files:
+      - mouse
+  pkg/overlay:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/overlay
+    files:
+      - begin
+      - overlay
+      - transitions
+      - page_mask
+      - end
+all:
+  - lib/class
+  - core
+  - pkg/http
+  - pkg/forms
+  - pkg/history
+  - pkg/keyboard
+  - pkg/mouse
+  - pkg/overlay

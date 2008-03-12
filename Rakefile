@@ -1,36 +1,9 @@
 require 'rake'
 require 'fileutils'
+require 'yaml'
+require 'packr'
 
-priv = %w(priv)
-reserved = priv
-
-COPYRIGHT = File.read('COPYRIGHT')
-
-SOURCE_DIR = 'source'
-PACKAGE_DIR = 'build'
-PACKAGES = {
-  'lib/class'       => %w(class method_chain observable state).map { |s| "external/#{s}" },
-  
-  'core' => priv + %w(
-    core/core               core/utils
-    core/array              core/function
-    core/string             core/number
-    external/reiterate      core/event
-    core/dom_collection     core/dom_insertion
-    core/html_builder       core/animation
-    core/region             core/sequence
-    core/method_chain
-  ),
-  
-  'pkg/http'        => priv + %w(ajax cross_domain).map { |s| "packages/http/#{s}" },
-  'pkg/forms'       => priv + %w(begin validators description requirement data errors dsl button_states radio_buttons checkbox end).map { |s| "packages/forms/#{s}" },
-  'pkg/history'     => priv + %w(packages/history/history),
-  'pkg/keyboard'    => priv + %w(begin utils keyboard rules monitor disabler events end).map { |s| "packages/keyboard/#{s}" },
-  'pkg/mouse'       => priv + %w(packages/mouse/mouse),
-  'pkg/overlay'     => priv + %w(begin overlay transitions page_mask end).map { |s| "packages/overlay/#{s}" }
-}
-
-ALL_PACKAGES = %w(lib/class lib/observable core pkg/http pkg/forms pkg/history pkg/keyboard pkg/mouse pkg/overlay)
+config = YAML.load(File.read('build.yml'))
 
 task :default do
   if ENV['q']
@@ -41,19 +14,19 @@ task :default do
 end
 
 task :build => [:destroy, :create_directory] do
-  require 'packr'
+  copyright = File.read('COPYRIGHT')
   builds = {:src => {}, :min => {}, :pack => {}}
-  PACKAGES.each do |name, sources|
-    pack_private = sources.include?('priv')
-    files = sources.find_all { |s| !reserved.include?(s) }
-    builds[:src][name] = files.map { |f| File.read("#{SOURCE_DIR}/#{f}.js") }.join("\n")
+  
+  config['packages'].each do |name, package|
+    pack_private = package['encode_private_vars']
+    builds[:src][name] = package['files'].map { |f| File.read("#{config['source_dir']}/#{package['source_dir']}/#{f}.js") }.join("\n")
     builds[:min][name] = Packr.pack(builds[:src][name], :shrink_vars => true, :private => pack_private)
     builds[:pack][name] = Packr.pack(builds[:min][name], :base62 => true)
   end
   
-  builds[:src][:all] = ALL_PACKAGES.map { |p| builds[:src][p] }.join("\n")
-  builds[:min][:all] = ALL_PACKAGES.map { |p| builds[:min][p] }.join("\n")
-  builds[:pack][:all] = Packr.pack(builds[:min][:all], :base62 => true)
+  builds[:src]['all'] = config['all'].map { |p| builds[:src][p] }.join("\n")
+  builds[:min]['all'] = config['all'].map { |p| builds[:min][p] }.join("\n")
+  builds[:pack]['all'] = Packr.pack(builds[:min]['all'], :base62 => true)
   
   builds[:src].each do |name, code|
     min = "#{name}-min"
@@ -65,30 +38,31 @@ task :build => [:destroy, :create_directory] do
       "pack/#{name}" => code,
       "pack/#{min}" => builds[:pack][name]
     }.each do |path, code|
-      full_path = "#{PACKAGE_DIR}/#{path}.js"
-      FileUtils.mkdir_p(full_path.gsub(/[^\/]*$/, ''))
-      data = (File.dirname(full_path) =~ /\/lib$/ ? '' : COPYRIGHT) + code
+      
+      full_path = "#{config['build_dir']}/#{path}.js"
+      FileUtils.mkdir_p(File.dirname(full_path))
+      data = ((name == 'all' || config['packages'][name]['include_copyright']) ? copyright : '') + code
       File.open(full_path, 'wb') { |f| f.write(data) }
       puts " * Built #{path}, #{(File.size(full_path) / 1024).to_i} kb"
     end
   end
   
   %w(README LICENSE).each do |doc|
-    File.__send__(:copy, doc, "#{PACKAGE_DIR}/#{doc}")
+    File.__send__(:copy, doc, "#{config['build_dir']}/#{doc}")
   end
   
   FileUtils.mkdir_p('site/site/javascripts/ojay')
   # copy is private in some versions
-  File.__send__(:copy, "#{PACKAGE_DIR}/pack/all-min.js", 'site/site/javascripts/ojay/all.js')
+  File.__send__(:copy, "#{config['build_dir']}/pack/all-min.js", 'site/site/javascripts/ojay/all.js')
 end
 
 task :create_directory do
-  FileUtils.mkdir_p(PACKAGE_DIR) unless File.directory?(PACKAGE_DIR)
+  FileUtils.mkdir_p(config['build_dir']) unless File.directory?(config['build_dir'])
 end
 
 task :destroy do
   %w(min pack gzip).each do |build|
-    dir = "#{PACKAGE_DIR}/#{build}"
+    dir = "#{config['build_dir']}/#{build}"
     puts " * Removing #{dir}"
     FileUtils.rm_rf(dir) if File.directory?(dir)
   end
