@@ -41,7 +41,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      *     add(1)(2)(3)  // --> 6
      *     add(7,8)(23)  // --> 38</code></pre>
      *
-     * @param {Number} n The number of required arguments (optional, will be inferred from the argument list)
+     * @param {Number} n
      * @returns {Function}
      */
     curry: function(n) {
@@ -56,8 +56,8 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      * <p>Allows you to 'intercept' calls to existing functions and manipulate their input and
      * output, providing aspect-oriented programming functionality. More information and
      * examples <a href="http://prototypejs.org/api/function/wrap">in the Prototype docs</a>.</p>
-     * @param {Function} wrapper The function to wrap around the original function
-     * @returns {Function} The wrapped function
+     * @param {Function} wrapper
+     * @returns {Function}
      */
     wrap: function(wrapper) {
         var method = this;
@@ -120,8 +120,8 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
      * Copyright: Copyright 2007 by Oliver Steele.  All rights reserved.
      * http://osteele.com/sources/javascript/functional/
      *
-     * @param {String} name The function name used when messages are logged to the console
-     * @param {String} func The console function to use. Defaults to 'info'
+     * @param {String} name
+     * @param {String} func
      * @returns {Function}
      */
     traced: function(name, func) {

@@ -9,9 +9,9 @@
 Ojay.Sequence = JS.Class(/** @scope Ojay.Sequence.prototype */{
     
     /**
-     * @param Array list
-     * @param Function callback
-     * @param Object context
+     * @param {Array} list
+     * @param {Function} callback
+     * @param {Object} context
      */
     initialize: function(list, callback, context) {
         this._list = list;
@@ -30,7 +30,7 @@ Ojay.Sequence = JS.Class(/** @scope Ojay.Sequence.prototype */{
     /**
      * <p>Calls the callback function on the current needle and steps the counter forward by
      * one place. When looping, sets a timeout to call itself again after the specified time.</p>
-     * @returns Sequence
+     * @returns {Sequence}
      */
     stepForward: function() {
         if (this._looping === null) {
@@ -50,8 +50,8 @@ Ojay.Sequence = JS.Class(/** @scope Ojay.Sequence.prototype */{
     
     /**
      * <p>Makes the sequence step forward indefinately at timed intervals.</p>
-     * @param Number time
-     * @returns Sequence
+     * @param {Number} time
+     * @returns {Sequence}
      */
     loop: function(time) {
         this._interval = 1000 * Number(time || 0) || this._interval;
@@ -62,7 +62,7 @@ Ojay.Sequence = JS.Class(/** @scope Ojay.Sequence.prototype */{
     
     /**
      * <p>Stops the sequence looping. The needle will be placed after the last called-back needle.</p>
-     * @returns Sequence
+     * @returns {Sequence}
      */
     pause: function() {
         if (this._looping) this._looping = null;
@@ -71,7 +71,7 @@ Ojay.Sequence = JS.Class(/** @scope Ojay.Sequence.prototype */{
     
     /**
      * <p>Causes the sequence to stop looping when it reaches the end of the list.</p>
-     * @returns Sequence
+     * @returns {Sequence}
      */
     finish: function() {
         if (this._looping) this._pauseOnComplete = true;
@@ -104,9 +104,9 @@ Ojay.Sequence = JS.Class(/** @scope Ojay.Sequence.prototype */{
  *     // Stop when it next gets to the end of the list
  *     sequence.finish();</code></pre>
  *
- * @param Number time
- * @param Function callback
- * @returns Sequence
+ * @param {Number} time
+ * @param {Function} callback
+ * @returns {Sequence}
  */
 Array.prototype.sequence = function(callback) {
     return new Ojay.Sequence(this, callback);
@@ -116,9 +116,9 @@ Ojay.DomCollection.include(/** @scope Ojay.DomCollection.prototype */{
     /**
      * <p>Returns a <tt>Sequence</tt> operating on the members of the collection.
      * See <tt>Array#sequence</tt> for more information.</p>
-     * @param Number time
-     * @param Function callback
-     * @returns Sequence
+     * @param {Number} time
+     * @param {Function} callback
+     * @returns {Sequence}
      */
     sequence: function(callback) {
         return [].map.call(this, function(el) { return Ojay(el); })
