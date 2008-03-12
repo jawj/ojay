@@ -1,16 +1,16 @@
-(function(Dom) {
+(function(Ojay, Dom) {
     /**
      * <p>Wraps collections of DOM element references with an API for manipulation of page
      * elements. Includes methods for getting/setting class names and style attributes,
-     * traversing the DOM, and setting up event handlers.</p>
+     * traversing the DOM, setting up event handlers, and performing animation.</p>
      * @constructor
      * @class DomCollection
      */
     Ojay.DomCollection = JS.Class(/** @scope Ojay.DomCollection.prototype */{
         
         /**
-         * @param {Array} collection An array of HTMLElement references
-         * @returns {DomCollection} A reference to the DomCollection instance
+         * @param {Array} collection
+         * @returns {DomCollection}
          */
         initialize: function(collection) {
             this.length = 0;
@@ -42,7 +42,9 @@
          * @returns {DomCollection}
          */
         at: function(n) {
-            return new this.klass([this[Number(n).round()]]);
+            n = Number(n).round();
+            var item = (n >= 0 && n < this.length) ? [this[n]] : [];
+            return new this.klass(item);
         },
         
         /**
@@ -113,29 +115,29 @@
          * manner. Using these is recommended over writing your own callbacks to do this, as creating
          * new identical functions wastes memory.</p>
          *
-         * @param {String} eventName The name of the event to listen for
-         * @param {Function} callback An optional callback function
-         * @param {Object} scope An object to act as the execution scope for the callback (optional)
+         * @param {String} eventName
+         * @param {Function} callback
+         * @param {Object} scope
          * @returns {MethodChain}
          */
         on: function(eventName, callback, scope) {
-            var collector = new JS.MethodChain();
+            var chain = new JS.MethodChain;
             if (callback && typeof callback != 'function') scope = callback;
-            YAHOO.util.Event.addListener(this, eventName, function(evnt) {
+            YAHOO.util.Event.on(this, eventName, function(evnt) {
                 var wrapper = Ojay(this);
                 evnt.stopDefault   = Ojay.stopDefault.method;
                 evnt.stopPropagate = Ojay.stopPropagate.method;
                 evnt.stopEvent     = Ojay.stopEvent.method;
                 evnt.getTarget     = Ojay._getTarget;
                 if (typeof callback == 'function') callback.call(scope || null, wrapper, evnt);
-                collector.fire(scope || wrapper);
+                chain.fire(scope || wrapper);
             });
-            return collector;
+            return chain;
         },
         
         /**
          * <p>Runs an animation on all the elements in the collection. The method expects you to supply
-         * at last an object specifying CSS properties to animate, and the duration of the animation.</p>
+         * at least an object specifying CSS properties to animate, and the duration of the animation.</p>
          *
          * <pre><code>   Ojay('#some-list li').animate({marginLeft: {to: 200}}, 1.5)</code></pre>
          *
@@ -180,6 +182,9 @@
          * <p><tt>easing</tt>: The easing function name (from <tt>YAHOO.util.Easing</tt>) to control the
          * flow of the animation. Default is <tt>'easeBoth'</tt>.</p>
          *
+         * <p><tt>after</tt>: A function to be called for each memeber of the collection when it finishes
+         * its animation. The function receives the element and its position in the list as arguments.</p>
+         *
          * <p>An example:</p>
          *
          * <pre><code>   Ojay('#some-list li').animate({marginLeft: {to: 40}}, 5.0, {easing: 'elasticOut'});</code></pre>
@@ -198,62 +203,61 @@
         /**
          * <p>Adds the given string as a class name to all the elements in the collection and returns
          * a reference to the collection for chaining.</p>
-         * @param {String} className A string of space-separated class names
+         * @param {String} className
          * @returns {DomCollection}
          */
         addClass: function(className) {
-            Dom.addClass(this, String(className));
+            Dom.addClass(this, className);
             return this;
         },
         
         /**
          * <p>Removes the given class name(s) from all the elements in the collection and returns a
          * reference to the collection for chaining.</p>
-         * @param {String} className A string of space-separated class names
+         * @param {String} className
          * @returns {DomCollection}
          */
         removeClass: function(className) {
-            Dom.removeClass(this, String(className));
+            Dom.removeClass(this, className);
             return this;
         },
         
         /**
-         * <p>Replaces oldClass with newClass for every element in the collection and returns a
-         * reference to the collection for chaining.</p>
-         * @param {String} oldClass The class name to remove
-         * @param {String} newClass The class name to add
+         * <p>Replaces <tt>oldClass</tt> with <tt>newClass</tt> for every element in the collection
+         * and returns a reference to the collection for chaining.</p>
+         * @param {String} oldClass
+         * @param {String} newClass
          * @returns {DomCollection}
          */
         replaceClass: function(oldClass, newClass) {
-            Dom.replaceClass(this, String(oldClass), String(newClass));
+            Dom.replaceClass(this, oldClass, newClass);
             return this;
         },
         
         /**
          * <p>Sets the class name of all the elements in the collection to the given value and
          * returns a reference to the collection for chaining.</p>
-         * @param {String} className A string of space-separated class names
+         * @param {String} className
          * @returns {DomCollection}
          */
         setClass: function(className) {
-            for (var i = 0, n = this.length; i < n; i++)
-                this[i].className = String(className);
-            return this;
+            return this.setAttributes({className: className});
         },
         
         /**
          * <p>Returns true iff the first member of the collection has the given class name.</p>
-         * @param {String} className The class name to test for
+         * @param {String} className
          * @returns {Boolean}
          */
         hasClass: function(className) {
             if (!this.node) return undefined;
-            return Dom.hasClass(this.node, String(className));
+            return Dom.hasClass(this.node, className);
         },
         
         /**
          * <p>Returns the value of the named style property for the first element in the collection.</p>
-         * @param {String} name The name of the style value to get (camelCased)
+         * @param {String} name
+         * @returns {String}
          */
         getStyle: function(name) {
             if (!this.node) return undefined;
@@ -263,13 +267,13 @@
         /**
          * <p>Sets the style of all the elements in the collection using a series of key/value pairs.
          * Keys correspond to CSS style property names, and should be camel-cased where they would
-         * be hyphentated in style sheets. Returns the <tt>DomCollection</tt> instance for chaining.
+         * be hyphentated in stylesheets. Returns the <tt>DomCollection</tt> instance for chaining.
          * You need to use a string key for <tt>'float'</tt> as it's a reserved word in JavaScript.</p>
          *
          * <pre><code>    Ojay('p').setStyle({color: '#f00', fontSize: '14px', 'float': 'left'});</code></pre>
          *
-         * @param {Object} options A series of key/value pairs
-         * @returns {DomCollection} A reference to the DomCollection instance
+         * @param {Object} options
+         * @returns {DomCollection}
          */
         setStyle: function(options) {
             var value, isIE = !!YAHOO.env.ua.ie;
@@ -310,8 +314,7 @@
          * @returns {DomCollection}
          */
         hide: function() {
-            this.setStyle({display: 'none'});
-            return this;
+            return this.setStyle({display: 'none'});
         },
         
         /**
@@ -319,8 +322,7 @@
          * @returns {DomCollection}
          */
         show: function() {
-            this.setStyle({display: ''});
-            return this;
+            return this.setStyle({display: ''});
         },
         
         /**
@@ -328,7 +330,7 @@
          * collection to the given string value. If <tt>html</tt> is an <tt>HTMLElement</tt>, inserts
          * the element into the first item in the collection (inserting DOM nodes multiple times just
          * moves them from place to place).</p>
-         * @param {String|HTMLElement} html A string of HTML to fill the elements
+         * @param {String|HTMLElement} html
          * @returns {DomCollection}
          */
         setContent: function(html) {
@@ -351,17 +353,22 @@
          * <tt>'top'</tt>, <tt>'bottom'</tt>, <tt>'before'</tt> or <tt>'after'</tt>, and it defaults to
          * <tt>'bottom'</tt>. Returns the <tt>DomCollection</tt> for chaining.</p>
          *
+         * <p>If you supply an <tt>HTMLElement</tt> then it will only be inserted into the first element
+         * of the collection; inserting an element multiple times simply moves it around the document.
+         * If you want multiple insertions, you should clone the element yourself. Ojay does not clone it
+         * for you as this removes event handlers you may have registered with the element.</p>
+         *
          * <pre><code>    Ojay('#someDiv').insert('&lt;p&gt;Inserted after the DIV&lt;/p&gt;', 'after');
          *     
          *     Ojay('ul li').insert(Ojay.HTML.span({className: 'foo'}, 'Item: '), 'top');</code></pre>
          *
-         * @param {String|HTMLElement} html The HTML to insert
-         * @param {String} position The position at which to insert it (default is <tt>bottom</tt>)
+         * @param {String|HTMLElement} html
+         * @param {String} position
          * @returns {DomCollection}
          */
         insert: function(html, position) {
             if (position == 'replace') return this.setContent(html);
-            var insertion = new Ojay.DomInsertion(this.toArray(), html, position);
+            new Ojay.DomInsertion(this.toArray(), html, position);
             return this;
         },
         
@@ -378,9 +385,8 @@
         },
         
         /**
-         * <p>Returns true iff the first element in the collection matches the given CSS or
-         * XPath selector.</p>
-         * @param {String} selector A CSS or XPath selector string
+         * <p>Returns true iff the first element in the collection matches the given CSS selector.</p>
+         * @param {String} selector
          * @returns {Boolean}
          */
         matches: function(selector) {
@@ -391,7 +397,7 @@
         /**
          * <p>Returns a new <tt>DomCollection</tt> containing the elements of the collection
          * that match the selector if one is given.</p>
-         * @param {String} selector An optional CSS or XPath expression
+         * @param {String} selector
          * @returns {DomCollection}
          */
         query: function(selector, array) {
@@ -405,7 +411,7 @@
          * <p>Returns a new <tt>DomCollection</tt> of the unique parent nodes of all the elements
          * in the collection. If a selector string is supplied, only elements that match the
          * selector are included.</p>
-         * @param {String} selector An optional CSS or XPath expression
+         * @param {String} selector
          * @returns {DomCollection}
          */
         parents: function(selector) {
@@ -417,7 +423,7 @@
          * <p>Returns a new <tt>DomCollection</tt> of the unique ancestor nodes of all the elements
          * in the collection. If a selector string is supplied, only elements that match the
          * selection are included.</p>
-         * @param {String} selector An optional CSS or XPath expression
+         * @param {String} selector
          * @returns {DomCollection}
          */
         ancestors: function(selector) {
@@ -435,7 +441,7 @@
          * <p>Returns a new <tt>DomCollection</tt> of the unique child nodes of all the elements
          * in the collection. If a selector string is supplied, only elements that match the
          * selection are included.</p>
-         * @param {String} selector An optional CSS or XPath expression
+         * @param {String} selector
          * @returns {DomCollection}
          */
         children: function(selector) {
@@ -454,7 +460,7 @@
          * <p>Returns a new <tt>DomCollection</tt> of the unique descendant nodes of all the elements
          * in the collection. If a selector string is supplied, only elements that match the
          * selection are included.</p>
-         * @param {String} selector An optional CSS or XPath expression
+         * @param {String} selector
          * @returns {DomCollection}
          */
         descendants: function(selector) {
@@ -475,7 +481,7 @@
          * collection. The returned collection does not include elements present in the original
          * collection. If a selector string is supplied, only elements that match the selection are
          * included.</p>
-         * @param {String} selector An optional CSS or XPath expression
+         * @param {String} selector
          * @returns {DomCollection}
          */
         siblings: function(selector) {
@@ -563,6 +569,7 @@
         /**
          * <p>Returns the position of the center of the element as an object with <tt>left</tt> and
          * <tt>top</tt> properties. Values returned are in pixels.</p>
+         * @returns {Object}
          */
         getCenter: function() {
             if (!this.node) return undefined;
@@ -585,7 +592,7 @@
          * <p>Returns a <tt>Region</tt> representing the overlapping region of the first element in the
          * collection and the argument.</p>
          * @param {String|HTMLElement|DomCollection} element
-         * @returns {Region} or null if there is no overlap
+         * @returns {Region}
          */
         intersection: function(element) {
             if (!this.node) return undefined;
@@ -606,7 +613,7 @@
             return this.getRegion().contains(node.getRegion());
         }
     });
-})(YAHOO.util.Dom);
+})(Ojay, YAHOO.util.Dom);
 
 (function() {
     for (var method in Ojay.ARRAY_METHODS)

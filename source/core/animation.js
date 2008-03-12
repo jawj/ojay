@@ -3,35 +3,36 @@
  * <p>The <tt>Animation</tt> class is used to set up all animations in Ojay. It is entirely
  * for internal consumption, and not to be accessed directly. Use the <tt>animate</tt> method
  * in <tt>DomCollection</tt> instead, and look to that for documentation.</p>
+ * @constructor
+ * @class Animation
  */
 Ojay.Animation = JS.Class(/** @scope Ojay.Animation.prototype */{
     
     /**
-     * @param {DomCollection|Array} elements
+     * @param {DomCollection} elements
      * @param {Object|Function} parameters
      * @param {Number|Function} duration
      * @param {Object} options
      */
     initialize: function(elements, parameters, duration, options) {
-        this._collection        = Ojay(elements);
+        this._collection        = elements;
         this._parameters        = parameters || {};
         this._duration          = duration || 1.0;
         this._options           = options || {};
         this._easing            = YAHOO.util.Easing[this._options.easing || 'easeBoth'];
         var after = this._options.after, before = this._options.before;
-        this._afterCallback     = after ? Function.from(after) : undefined;
-        this._beforeCallback    = before ? Function.from(before) : undefined;
-        this.chain              = new JS.MethodChain();
+        this._afterCallback     = after && Function.from(after);
+        this._beforeCallback    = before && Function.from(before);
+        this.chain              = new JS.MethodChain;
     },
     
     /**
-     * @param {Number} i
-     * @param {HTMLElement|DomCollection} element
      * @param {Object|Function} options
+     * @param {DomCollection} element
+     * @param {Number} i
      * @returns {Object}
      */
     _evaluateOptions: function(options, element, i) {
-        element = Ojay(element);
         if (typeof options == 'function') options = options(i, element);
         if (typeof options != 'object') return options;
         var results = {};
@@ -40,7 +41,7 @@ Ojay.Animation = JS.Class(/** @scope Ojay.Animation.prototype */{
     }.curry(),
     
     /**
-     * <p>Returns the animation.</p>
+     * <p>Runs the animation.</p>
      */
     run: function() {
         var paramSets = this._collection.map(this._evaluateOptions(this._parameters));

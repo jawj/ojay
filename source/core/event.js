@@ -37,7 +37,7 @@
          *     <li>http://www.danwebb.net/2008/2/8/event-delegation-made-easy-in-jquery</li>
          * </ul>
          *
-         * @param {Object} map A map of CSS selectors to callbacks
+         * @param {Object} map
          * @returns {Function}
          */
         delegateEvent: function(map) {

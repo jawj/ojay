@@ -78,7 +78,7 @@
  * @constructor
  * @class HtmlBuilder
  */
-Ojay.HtmlBuilder = JS.Class({
+Ojay.HtmlBuilder = JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
     
     initialize: function(node) {
         this.rootNode = node || null;

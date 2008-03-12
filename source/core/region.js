@@ -23,28 +23,28 @@
         },
         
         /**
-         * @returns {Number} The width of the region in pixels
+         * @returns {Number}
          */
         getWidth: function() {
             return this.right - this.left;
         },
         
         /**
-         * @returns {Number} The height of the region in pixels
+         * @returns {Number}
          */
         getHeight: function() {
             return this.bottom - this.top;
         },
         
         /**
-         * @returns {Number} The length of the region's diagonal
+         * @returns {Number}
          */
         getDiagonal: function() {
             return (this.getWidth().pow(2) + this.getHeight().pow(2)).sqrt();
         },
         
         /**
-         * @returns {Object} The center point of the region
+         * @returns {Object}
          */
         getCenter: function() {
             return {
@@ -55,7 +55,7 @@
         
         /**
          * @param {Region} region
-         * @returns {Region} A new region representing the intersection of this region with the argument
+         * @returns {Region}
          */
         intersection: function(region) {
             var intersection = this._intersect(region);
@@ -77,7 +77,7 @@
         
         /**
          * @param {Region} region
-         * @returns {Region} The smallest region that contains both this and the argument
+         * @returns {Region}
          */
         union: function(region) {
             var union = this._union(region);

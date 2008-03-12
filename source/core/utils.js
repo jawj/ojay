@@ -32,7 +32,7 @@
          * <p>Gives control of the shorthand function back to whichever script implemented
          * it before Ojay. After using this function, use the <tt>Ojay()</tt> function
          * instead of the shorthand.</p>
-         * @returns {Boolean} true if the shorthand function was changed, false otherwise
+         * @returns {Boolean}
          */
         surrenderAlias: function() {
             if (this.__alias === null) {
@@ -46,7 +46,7 @@
         /**
          * <p>Tells Ojay to trace calls to the methods you name. Only accepts methods on
          * <tt>Ojay.DomCollection.prototype</tt>.</p>
-         * @param {String*} The name(s) of methods you want to log
+         * @param {String}
          */
         log: function() {
             Array.from(arguments).forEach(function(method) {

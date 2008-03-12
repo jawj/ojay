@@ -13,8 +13,8 @@
 Ojay.DomInsertion = JS.Class(/** @scope Ojay.DomInsertion.prototype */{
     
     /**
-     * @param {Array|HTMLElement} elements A collection of elements to insert into
-     * @param {String|HTMLElement} html HTML to insert
+     * @param {Array|HTMLElement} elements
+     * @param {String|HTMLElement} html
      * @param {String} position
      */
     initialize: function(elements, html, position) {
@@ -24,13 +24,7 @@ Ojay.DomInsertion = JS.Class(/** @scope Ojay.DomInsertion.prototype */{
         this._elements = elements.filter(function(el) { return el && el.nodeType === Ojay.HTML.ELEMENT_NODE; });
         this._html = html;
         this._position = position.toLowerCase();
-        this._insert();
-    },
-    
-    /**
-     * <p>Performs the insertion.</p>
-     */
-    _insert: function() {
+        
         if (this._elements.length === 0) return;
         if (this._html && this._html.nodeType) this._insertElement();
         if (typeof this._html == 'string') this._insertString();
@@ -63,8 +57,8 @@ Ojay.DomInsertion = JS.Class(/** @scope Ojay.DomInsertion.prototype */{
      * <p>Returns a collection of nodes by creating a new DIV and using <tt>innerHTML</tt>
      * to create the elements. Used when inserting into table elements and SELECT boxes,
      * which don't allow <tt>innerHTML</tt>modifications quite like everything else.</p>
-     * @param {String} tagName The name of the tag we're inserting into.
-     * @returns {Array} A collection of DOM nodes
+     * @param {String} tagName
+     * @returns {Array}
      */
     _getContentFromElement: function(tagName) {
         var tag = this.klass._TAGS[tagName];
