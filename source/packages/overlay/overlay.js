@@ -1,5 +1,3 @@
-var stub = function() { return this; };
-
 var whileHidden = function(method) {
     return function() {
         var container = this._elements._container;
@@ -11,16 +9,10 @@ var whileHidden = function(method) {
 };
 
 /**
- * <p>The <tt>Overlay</tt> class is designed to model the most basic container for overlaying
- * content on top of the page. It allows HTML content to be put in an absolutely positioned
- * box that is controllable via a simple API. Overlays can be stacked relative to each other,
- * repositioned and resized, and their content can be easily manipulated. If you're implementing
- * a more sophisticated overlay/window system, this class is designed to provide a good
- * starting point.</p>
  * @constructor
  * @class Overlay
  */
-Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
+Ojay.Overlay = JS.Class({
     include: [JS.State, JS.Observable],
     
     extend: {
@@ -30,7 +22,6 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
         DEFAULT_POSITION:   {left: 50, top: 50},
         DEFAULT_OPACITY:    1,
         CONTAINER_CLASS:    'overlay-container',
-        CONTENT_CLASS:      'overlay-content',
         
         Transitions: JS.Singleton({
             _store: {},
@@ -64,7 +55,7 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     },
     
     /**
-     * @params {Object} options
+     * @param {Object} options
      */
     initialize: function(options) {
         this._elements = {};
@@ -73,7 +64,6 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
         this.setState('INVISIBLE');
         this.setSize(options.width, options.height);
         this.setPosition(options.left, options.top);
-        this.setContent(options.content);
         this.setLayer(options.layer);
         this.setOpacity(options.opacity);
     },
@@ -84,9 +74,9 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     getHTML: function() {
         var self = this, elements = self._elements;
         if (elements._container) return elements._container;
-        return elements._container = Ojay( Ojay.HTML.div({className: self.klass.CONTAINER_CLASS}, function(html) {
-            elements._content = Ojay( html.div({className: self.klass.CONTENT_CLASS}) );
-        }) ).setStyle({position: 'absolute', overflow: 'hidden'}).hide();
+        return elements._container = Ojay(
+            Ojay.HTML.div({className: this.klass.CONTAINER_CLASS})
+        ).setStyle({position: 'absolute', overflow: 'hidden'}).hide();
     },
     
     /**
@@ -212,33 +202,10 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
         return this._layer;
     },
     
-    /**
-     * @param {String|HTMLElement} content
-     * @returns {Overlay}
-     */
-    setContent: function(content) {
-        if (this.inState('CLOSED')) return this;
-        this._elements._content.setContent(content || '');
-        return this;
-    },
-    
-    /**
-     * @param {String|HTMLElement} content
-     * @param {String} position
-     * @returns {Overlay}
-     */
-    insert: function(content, position) {
-        if (this.inState('CLOSED')) return this;
-        this._elements._content.insert(content, position);
-        return this;
-    },
-    
     states: {
         
-        INVISIBLE:  {
+        INVISIBLE: JS.Singleton({
             center: whileHidden('center'),
-            
-            fitToContent: whileHidden('fitToContent'),
             
             show: function(transition) {
                 this.setState('SHOWING');
@@ -252,11 +219,11 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
                 this.setState('CLOSED');
                 return this;
             }
-        },
+        }),
         
-        SHOWING:    {},
+        SHOWING: JS.Singleton({}),
         
-        VISIBLE:    {
+        VISIBLE: JS.Singleton({
             center: function() {
                 var region = this.getRegion();
                 var viewport = Ojay.getViewportSize(), scrolls = Ojay.getScrollOffsets(),
@@ -265,11 +232,6 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
                 if (left < this.klass.MINIMUM_OFFSET) left = this.klass.MINIMUM_OFFSET;
                 if (top < this.klass.MINIMUM_OFFSET) top = this.klass.MINIMUM_OFFSET;
                 return this.setPosition(left, top);
-            },
-            
-            fitToContent: function() {
-                var region = this._elements._content.getRegion();
-                return this.setSize(region.getWidth(), region.getHeight());
             },
             
             hide: function(transition) {
@@ -282,11 +244,11 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
             close: function(transition) {
                 return this.hide(transition)._(this).close();
             }
-        },
+        }),
         
-        HIDING:     {},
+        HIDING: JS.Singleton({}),
         
-        CLOSED:     {}
+        CLOSED: JS.Singleton({ })
     },
     
     _addUnits: function(x) {

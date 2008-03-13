@@ -18,7 +18,7 @@
   <script type="text/javascript">
     Ojay('#new-overlay').on('click', function(el,ev) {
         ev.stopEvent();
-        var overlay = new Ojay.Overlay({width: 600, height: 400, left: 500});
+        var overlay = new Ojay.ContentOverlay({width: 600, height: 400, left: 500});
         overlay.show();
         
         overlay.setContent(Ojay.HTML.h3('Hello, world!'))
@@ -40,12 +40,12 @@
     
     Ojay('#center-fade').on('click', function(el,ev) {
         ev.stopEvent();
-        new Ojay.Overlay().setContent('Centered!').center().show('fade');
+        new Ojay.ContentOverlay().setContent('Centered!').center().show('fade');
     });
     
     Ojay('#fit-and-zoom').on('click', function(el,ev) {
         ev.stopEvent();
-        new Ojay.Overlay().setContent('<div style="width: 100px;">Centered!</div>').fitToContent().center().show('zoom');
+        new Ojay.ContentOverlay().setContent('<div style="width: 100px;">Centered!</div>').fitToContent().center().show('zoom');
     });
   </script>
   

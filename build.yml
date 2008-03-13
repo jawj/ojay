@@ -89,6 +89,7 @@ packages:
       - begin
       - overlay
       - transitions
+      - content_overlay
       - page_mask
       - end
 all:

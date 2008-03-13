@@ -26,7 +26,6 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
     initialize: function(options) {
         this.klass._instances.push(this);
         this.callSuper();
-        this._elements._content.remove();
         this.setColor(this._options.color);
         if (!YAHOO.env.ua.ie)
             this._elements._container.setStyle({position: 'fixed'});
@@ -66,10 +65,3 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
 
 if (YAHOO.env.ua.ie)
     Ojay(window).on('resize', Ojay.PageMask.method('resizeAll'));
-
-// Stub content-related methods
-Ojay.PageMask.include({
-    setContent:     stub,
-    insert:         stub,
-    fitToContent:   stub
-});
