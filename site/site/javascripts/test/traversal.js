@@ -18,7 +18,7 @@ YAHOO.util.Event.onDOMReady(function() {
             var expected = Ojay('#content .contains-blockquote', '#content #bar', '#content', 'body', '#content #fizzbuzz', '#content div.wizzbang', '#content #baz');
             this.arrayAssert.itemsAreEqual(expected, actual);
             
-            actual = actual = Ojay('#content blockquote, #content a#om_link').ancestors('#content div[id]');
+            actual = Ojay('#content blockquote, #content a#om_link').ancestors('#content div[id]');
             expected = Ojay('#content #bar, #content #fizzbuzz, #content #baz');
             this.arrayAssert.itemsAreEqual(expected, actual);
         },

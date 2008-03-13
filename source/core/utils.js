@@ -1,7 +1,11 @@
 (function(Dom) {
     JS.extend(Ojay, /** @scope Ojay */{
         
-        query: YAHOO.util.Selector.query,
+        query: function(selector, node) {
+            return document.querySelectorAll
+                    ? Array.from((node || document).querySelectorAll(selector))
+                    : YAHOO.util.Selector.query(selector, node);
+        },
         
         /**
          * <p>Returns an Ojay Collection containing zero or one element that matches the ID. Used
