@@ -204,7 +204,7 @@ Ojay.Overlay = JS.Class({
     
     states: {
         
-        INVISIBLE: JS.Singleton({
+        INVISIBLE: {
             center: whileHidden('center'),
             
             show: function(transition) {
@@ -219,11 +219,11 @@ Ojay.Overlay = JS.Class({
                 this.setState('CLOSED');
                 return this;
             }
-        }),
+        },
         
-        SHOWING: JS.Singleton({}),
+        SHOWING: {},
         
-        VISIBLE: JS.Singleton({
+        VISIBLE: {
             center: function() {
                 var region = this.getRegion();
                 var viewport = Ojay.getViewportSize(), scrolls = Ojay.getScrollOffsets(),
@@ -244,11 +244,11 @@ Ojay.Overlay = JS.Class({
             close: function(transition) {
                 return this.hide(transition)._(this).close();
             }
-        }),
+        },
         
-        HIDING: JS.Singleton({}),
+        HIDING: {},
         
-        CLOSED: JS.Singleton({ })
+        CLOSED: {}
     },
     
     _addUnits: function(x) {

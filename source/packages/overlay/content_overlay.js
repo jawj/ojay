@@ -49,21 +49,15 @@ Ojay.ContentOverlay = JS.Class(Ojay.Overlay, /** @scope Ojay.ContentOverlay.prot
     
     states: {
         
-        INVISIBLE: JS.Singleton(Ojay.Overlay.prototype.states.INVISIBLE.klass, {
+        INVISIBLE: {
             fitToContent: whileHidden('fitToContent')
-        }),
+        },
         
-        SHOWING: JS.Singleton(Ojay.Overlay.prototype.states.SHOWING.klass, {}),
-        
-        VISIBLE: JS.Singleton(Ojay.Overlay.prototype.states.VISIBLE.klass, {
+        VISIBLE: {
             fitToContent: function() {
                 var region = this._elements._content.getRegion();
                 return this.setSize(region.getWidth(), region.getHeight());
             }
-        }),
-        
-        HIDING: JS.Singleton(Ojay.Overlay.prototype.states.HIDING.klass, {}),
-        
-        CLOSED: JS.Singleton(Ojay.Overlay.prototype.states.CLOSED.klass, {})
+        }
     }
 });

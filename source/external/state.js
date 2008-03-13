@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-JS.State = (function() {
+JS.State = (function(Class) {
   
   var addStateMethods = function(state, klass) {
     for (var method in state)
@@ -32,6 +32,25 @@ JS.State = (function() {
         }, false);
       })(method);
   };
+  
+  var buildStateCollection = function(collection, superStates, states) {
+    var state, method;
+    for (state in states) {
+      collection[state] = collection[state] || {};
+      for (method in states[state])
+        Class.addMethod(collection[state], superStates[state], method, states[state][method]);
+    }
+  };
+  
+  Class.addMethod = (function(wrapped) {
+    return function(object, superObject, name, func) {
+      if (name != 'states' || typeof func != 'object') return wrapped.apply(Class, arguments);
+      var collection = {}, superStates = superObject.states || {};
+      buildStateCollection(collection, superStates, superStates);
+      buildStateCollection(collection, superStates, func);
+      return wrapped.call(Class, object, superObject, 'states', collection);
+    };
+  })(Class.addMethod);
   
   return JS.Module({
     _getState: function(state) {
@@ -52,4 +71,4 @@ JS.State = (function() {
       return false;
     }
   });
-})();
+})(JS.Class);
