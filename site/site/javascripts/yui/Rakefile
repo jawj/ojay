@@ -1,0 +1,24 @@
+require 'rake'
+require 'packr'
+
+FILES = %w(yahoo-dom-event selector animation connection get history)
+
+task :extract do
+  version = ENV['v']
+  return unless File.directory?(version)
+  copyright = nil
+  code = FILES.inject("") do |source, file|
+    name = "#{version}/build/#{file}/#{file}"
+    name = "#{name}-beta" if File.file?("#{name}-beta.js")
+    name = File.file?("#{name}-min.js") ? "#{name}-min.js" : "#{name}.js"
+    if File.file?(name)
+      content = File.read(name)
+      source += "\n" + content
+      copyright ||= content.scan(/\/\*.*?\*\//m).first
+      puts " * #{name}"
+    end
+    source
+  end
+  code = copyright + "\n" + Packr.pack(code, :shrink_vars => true)
+  File.open("#{version}.js", 'wb') { |f| f.write(code) }
+end

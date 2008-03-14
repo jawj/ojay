@@ -4,8 +4,7 @@
   %head
     %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
     %title Ojay: Test suite
-    =javascripts *( %w(yahoo-dom-event selector-beta animation connection get history).map &script_map )
-    =javascripts 'ojay/all'
+    =javascripts 'yui/2.5.0', 'ojay/all'
     =stylesheets 'logger', 'testlogger'
     =javascripts *( %w(logger yuitest-beta).map &script_map )
   %body
