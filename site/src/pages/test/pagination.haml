@@ -1,0 +1,48 @@
+%h1 Paginator tests
+
+#items
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+  .item
+    %div Lorem ipsum
+
+:plain
+  <style type="text/css">
+    .item { display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
+    .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
+    
+    /* Should not apply */
+    .paginator { padding-top: 50px; }
+  </style>
+  
+  <script type="text/javascript">
+    var pager = new Ojay.Paginator('#items', {width: 520, height: 104});
+  </script>

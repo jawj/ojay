@@ -92,6 +92,12 @@ packages:
       - content_overlay
       - page_mask
       - end
+  pkg/paginator:
+    encode_private_vars: true
+    include_copyright: true
+    source_dir: packages/paginator
+    files:
+      - paginator
 all:
   - lib/class
   - core
@@ -101,3 +107,4 @@ all:
   - pkg/keyboard
   - pkg/mouse
   - pkg/overlay
+  - pkg/paginator
