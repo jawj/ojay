@@ -143,7 +143,6 @@ var FormDSL = JS.Class({
                 form._highlightActiveField();
                 return this;
             }
-            
         });
         
         this.extend({expects: this.requires});
@@ -274,7 +273,6 @@ var RequirementDSL = JS.Class({
                 });
                 return this;
             }
-            
         });
         
         FormDSLMethods.forEach(function(method) {
@@ -301,29 +299,29 @@ var WhenDSL = JS.Class({
      * @param {FormDescription} form
      */
     initialize: function(form) {
-    this.extend({
-        /**
-         * <p>Allows a hook to be registered to say what should be done with the list of error
-         * messages when a particular form is validated.</p>
-         * @param {Function} block
-         * @param {Object} context
-         */
-        isValidated: function(block, context) {
-            form.subscribe(function(form) {
-                block.call(context || null, form._errors._messages());
-            });
-        },
-        
-        /**
-         * @param {Function} block
-         * @param {Object} context
-         */
-        responseArrives: function(block, context) {
-            if (!form._ajax) return;
-            block = Function.from(block);
-            if (context) block = block.bind(context);
-            form._handleAjaxResponse = block;
-        }
-    });
+        this.extend({
+            /**
+             * <p>Allows a hook to be registered to say what should be done with the list of error
+             * messages when a particular form is validated.</p>
+             * @param {Function} block
+             * @param {Object} context
+             */
+            isValidated: function(block, context) {
+                form.subscribe(function(form) {
+                    block.call(context || null, form._errors._messages());
+                });
+            },
+            
+            /**
+             * @param {Function} block
+             * @param {Object} context
+             */
+            responseArrives: function(block, context) {
+                if (!form._ajax) return;
+                block = Function.from(block);
+                if (context) block = block.bind(context);
+                form._handleAjaxResponse = block;
+            }
+        });
     }
 });
