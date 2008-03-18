@@ -12,15 +12,25 @@ Ojay.Forms.Select = JS.Class({
         LIST_CLASS:         'select-list',
         
         Option: JS.Class({
+            extend: {
+                setHovered: function(option) {
+                    if (this._currentOption) this._currentOption.setHovered(false);
+                    this._currentOption = option;
+                }
+            },
+            
             /**
              * @param {Forms.Select} select
              * @param {HTMLElement} option
              */
             initialize: function(select, option) {
                 this._option = Ojay(option);
-                this._value = option.value || '';
+                this.value = option.value || '';
                 this._label = option.text.stripTags();
-                this.getHTML().on('click')._(select).setValue(this._value);
+                this.hovered = false;
+                
+                this.getHTML().on('click')._(select).setValue(this.value);
+                this.getHTML().on('mouseover')._(this).setHovered(true);
             },
             
             /**
@@ -29,6 +39,15 @@ Ojay.Forms.Select = JS.Class({
             getHTML: function() {
                 if (this._html) return this._html;
                 return this._html = Ojay( Ojay.HTML.li(this._label) );
+            },
+            
+            /**
+             * @param {Boolean} state
+             */
+            setHovered: function(state) {
+                this.hovered = (state !== false);
+                if (this.hovered) this.klass.setHovered(this);
+                this.getHTML()[state === false ? 'removeClass' : 'addClass']('hovered');
             }
         })
     },
@@ -58,8 +77,6 @@ Ojay.Forms.Select = JS.Class({
         }, this);
         
         elements._list.setStyle({position: 'absolute'});
-        elements._list.on('mouseover', Ojay.delegateEvent({ li: it().addClass('hover') }));
-        elements._list.on('mouseout', Ojay.delegateEvent({ li: it().removeClass('hover') }));
         
         // Wait a little bit because 'keydown' fires before the value changes
         [this._input.on('keydown'), this._input.on('change')]
@@ -104,6 +121,13 @@ Ojay.Forms.Select = JS.Class({
         var selected = this.getSelectedOption() || this._input.node.options[0];
         if (!selected) return;
         this._elements._display.setContent(selected.text.stripTags());
+    },
+    
+    /**
+     * @returns {Forms.Select.Option}
+     */
+    _getOption: function(value) {
+        return this._options.filter({value: value})[0] || null;
     },
     
     /**
@@ -163,6 +187,8 @@ Ojay.Forms.Select = JS.Class({
             toggleList: function() {
                 this.updateListPosition();
                 this._elements._list.show();
+                var selected = this.getSelectedOption();
+                if (selected) this._getOption(selected.value).setHovered(true);
                 this.setState('LIST_OPEN');
             }
         }
