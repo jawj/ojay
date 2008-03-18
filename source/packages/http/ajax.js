@@ -81,7 +81,7 @@ Ojay.HTTP = {
         var queryParams = String(url).split(/\?+/).slice(1).join('').split(/\&+/);
         var params = queryParams.reduce(function(memo, part) {
             var pair = part.split(/\=/);
-            if (pair[0]) memo[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+            if (pair[0]) memo[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
             return memo;
         }, {});
         for (var key in parameters) params[key] = parameters[key];
