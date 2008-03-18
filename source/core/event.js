@@ -44,7 +44,7 @@
             return function(element, evnt) {
                 var target = evnt.getTarget();
                 for (var selector in map) {
-                    if (target.matches(selector)) map[selector].call(this, target, evnt);
+                    if (target.matches(selector)) Function.from(map[selector]).call(this, target, evnt);
                 }
             };
         },

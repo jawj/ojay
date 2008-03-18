@@ -60,6 +60,7 @@ packages:
       - button_states
       - radio_buttons
       - checkbox
+      - select
       - end
     requires:
       - ojay/core-min

@@ -28,6 +28,7 @@ Ojay.Forms(function() { with(this) {
 
 radios = new Ojay.Forms.RadioButtons('#buttons input[name=foo-radio]');
 check = new Ojay.Forms.Checkbox('#buttons input[name=checky]');
+selector = new Ojay.Forms.Select('#drop-down');
 
 Ojay('#check-foo').on('click', function(el,ev) {
     ev.stopEvent();

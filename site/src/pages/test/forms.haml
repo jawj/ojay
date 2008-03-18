@@ -51,10 +51,24 @@
   %label{:for => 'foo-radio-3'} Value 3
   %input{:type => 'radio', :name => 'foo-radio', :value => 4, :id => 'foo-radio-4'}
   %label{:for => 'foo-radio-4'} Value 4
+  %br/
   %button{:id => 'check-foo'} Check value
+  %br/
+  %br/
   %br/
   %input{:type => 'checkbox', :name => 'checky', :id => 'checky', :value => 1}
   %label{:for => 'checky'} Checkbox test
+  %br/
+  %br/
+  %br/
+  %br/
+  %label{:for => 'drop-down'} Options:
+  %select#drop-down
+    %option Please choose
+    %option{:value => '1'} Number one
+    %option{:value => '2'} Number two
+    %option{:value => '3'} Number three
+    %option{:value => '4'} Number four
 
 =javascripts 'test/forms'
 
@@ -74,4 +88,6 @@
     
     input.focused { border: 2px solid #000; }
     label.focused { text-decoration: underline; }
+    
+    .select-list li.hover { background: #cef; }
   </style>
