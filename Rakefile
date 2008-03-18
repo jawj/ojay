@@ -58,7 +58,7 @@ task :build => [:destroy, :create_directory] do
   end
   
   FileUtils.mkdir_p('site/site/javascripts/ojay')
-  File.__send__(:copy, "#{config['build_dir']}/pack/all-min.js", 'site/site/javascripts/ojay/all.js')
+  File.__send__(:copy, "#{config['build_dir']}/min/all-min.js", 'site/site/javascripts/ojay/all.js')
   File.__send__(:copy, 'site/site/javascripts/yui/2.5.0.js', "#{config['build_dir']}/yui.js")
 end
 
