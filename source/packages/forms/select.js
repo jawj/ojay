@@ -40,16 +40,33 @@ Ojay.Forms.Select = JS.Class({
         this._input = Ojay(select);
         if (!this._input || this._input.node.tagName.toLowerCase() != 'select')
             throw new TypeError('Attempt to create a Select object with non-select element');
-        this._elements = {};
+        var elements = this._elements = {};
         this._input.insert(this.getHTML().node, 'after');
         this.updateOptions();
         
-        this._elements._list.on('mouseover', Ojay.delegateEvent({ li: it().addClass('hover') }));
-        this._elements._list.on('mouseout', Ojay.delegateEvent({ li: it().removeClass('hover') }));
+        elements._container.setStyle({position: 'relative', cursor: 'default'});
+        elements._container.on('click')._(this).toggleList();
+        
+        this._input.on('blur')._(this).hideList();
+        
+        Ojay(document).on('click', function(body, evnt) {
+            var target = evnt.getTarget();
+            for (var key in elements) {
+                if (target.node == elements[key].node) return;
+            }
+            this.hideList();
+        }, this);
+        
+        elements._list.setStyle({position: 'absolute'});
+        elements._list.on('mouseover', Ojay.delegateEvent({ li: it().addClass('hover') }));
+        elements._list.on('mouseout', Ojay.delegateEvent({ li: it().removeClass('hover') }));
         
         // Wait a little bit because 'keydown' fires before the value changes
         [this._input.on('keydown'), this._input.on('change')]
                 .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect());
+        
+        this.setState('LIST_OPEN');
+        this.toggleList();
     },
     
     /**
@@ -118,5 +135,36 @@ Ojay.Forms.Select = JS.Class({
         this._getOptions().forEach(function(option) { option.selected = false; });
         this.getOptionsByValue(value).forEach(function(option) { option.selected = true; });
         this._updateDisplayFromSelect();
+    },
+    
+    /**
+     *
+     */
+    updateListPosition: function() {
+        var region = this._elements._container.getRegion();
+        if (!region) return;
+        var list = this._elements._list;
+        list.setStyle({width: region.getWidth() + 'px'});
+    },
+    
+    states: {
+        LIST_OPEN: {
+            toggleList: function() {
+                this._elements._list.hide();
+                this.setState('LIST_CLOSED');
+            },
+            
+            hideList: function() {
+                this.toggleList();
+            }
+        },
+        
+        LIST_CLOSED: {
+            toggleList: function() {
+                this.updateListPosition();
+                this._elements._list.show();
+                this.setState('LIST_OPEN');
+            }
+        }
     }
 });
