@@ -28,7 +28,16 @@ with '-min'). Each uses a different compression strategy:
     Dean Edwards' Packer: http://dean.edwards.name/packer/ . Use these files if you
     cannot serve gzipped content for some reason.
 
-Ojay's build files are generated using PackR, a Ruby version of Packer.
+Ojay's build files are generated using PackR, a Ruby version of Packer. The download also
+contains a file named yui.js, which contains all the YUI build files used by Ojay in one
+concatenated file. It includes the following:
+
+  * yahoo-dom-event
+  * selector
+  * animation
+  * connection
+  * get
+  * history
 
 Further information and docs are available on the Ojay site: http://ojay.othermedia.org
 

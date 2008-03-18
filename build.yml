@@ -4,9 +4,9 @@
 source_dir: source
 build_dir: build
 packages:
-  lib/class:
+  js-class:
     encode_private_vars: false
-    include_copyright: false
+    copyright: source/external/COPYRIGHT
     source_dir: external
     files:
       - class
@@ -15,7 +15,7 @@ packages:
       - state
   core:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: .
     files:
       - core/core
@@ -33,16 +33,21 @@ packages:
       - core/region
       - core/sequence
       - core/method_chain
+    requires:
+      - yui
+      - ojay/js-class-min
   pkg/http:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/http
     files:
       - ajax
       - cross_domain
+    requires:
+      - ojay/core-min
   pkg/forms:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/forms
     files:
       - begin
@@ -56,15 +61,20 @@ packages:
       - radio_buttons
       - checkbox
       - end
+    requires:
+      - ojay/core-min
+      - ojay/pkg/http-min
   pkg/history:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/history
     files:
       - history
+    requires:
+      - ojay/core-min
   pkg/keyboard:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/keyboard
     files:
       - begin
@@ -75,15 +85,19 @@ packages:
       - disabler
       - events
       - end
+    requires:
+      - ojay/core-min
   pkg/mouse:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/mouse
     files:
       - mouse
+    requires:
+      - ojay/core-min
   pkg/overlay:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/overlay
     files:
       - begin
@@ -92,19 +106,25 @@ packages:
       - content_overlay
       - page_mask
       - end
+    requires:
+      - ojay/core-min
   pkg/paginator:
     encode_private_vars: true
-    include_copyright: true
+    copyright: COPYRIGHT
     source_dir: packages/paginator
     files:
       - paginator
+    requires:
+      - ojay/core-min
 all:
-  - lib/class
-  - core
-  - pkg/http
-  - pkg/forms
-  - pkg/history
-  - pkg/keyboard
-  - pkg/mouse
-  - pkg/overlay
-  - pkg/paginator
+  copyright: COPYRIGHT
+  files:
+    - js-class
+    - core
+    - pkg/http
+    - pkg/forms
+    - pkg/history
+    - pkg/keyboard
+    - pkg/mouse
+    - pkg/overlay
+    - pkg/paginator

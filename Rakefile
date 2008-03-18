@@ -14,7 +14,6 @@ task :default do
 end
 
 task :build => [:destroy, :create_directory] do
-  copyright = File.read('COPYRIGHT')
   builds = {:src => {}, :min => {}, :pack => {}}
   
   config['packages'].each do |name, package|
@@ -24,8 +23,8 @@ task :build => [:destroy, :create_directory] do
     builds[:pack][name] = Packr.pack(builds[:min][name], :base62 => true)
   end
   
-  builds[:src]['all'] = config['all'].map { |p| builds[:src][p] }.join("\n")
-  builds[:min]['all'] = config['all'].map { |p| builds[:min][p] }.join("\n")
+  builds[:src]['all'] = config['all']['files'].map { |p| builds[:src][p] }.join("\n")
+  builds[:min]['all'] = config['all']['files'].map { |p| builds[:min][p] }.join("\n")
   builds[:pack]['all'] = Packr.pack(builds[:min]['all'], :base62 => true)
   
   builds[:src].each do |name, code|
@@ -41,8 +40,15 @@ task :build => [:destroy, :create_directory] do
       
       full_path = "#{config['build_dir']}/#{path}.js"
       FileUtils.mkdir_p(File.dirname(full_path))
-      data = ((name == 'all' || config['packages'][name]['include_copyright']) ? copyright : '') + code
-      File.open(full_path, 'wb') { |f| f.write(data) }
+      
+      copyright = (name == 'all') ? config['all']['copyright'] : config['packages'][name]['copyright']
+      copyright = File.file?(copyright.to_s) ? File.read(copyright) : ''
+      
+      requires = (name != 'all' and require_list = config['packages'][name]['requires']) ?
+          require_list.map { |r| "// @require #{r}" }.join("\n") + "\n" :
+          ''
+      
+      File.open(full_path, 'wb') { |f| f.write("#{copyright}#{requires}#{code}") }
       puts " * Built #{path}, #{(File.size(full_path) / 1024).to_i} kb"
     end
   end
@@ -52,8 +58,8 @@ task :build => [:destroy, :create_directory] do
   end
   
   FileUtils.mkdir_p('site/site/javascripts/ojay')
-  # copy is private in some versions
   File.__send__(:copy, "#{config['build_dir']}/pack/all-min.js", 'site/site/javascripts/ojay/all.js')
+  File.__send__(:copy, 'site/site/javascripts/yui/2.5.0.js', "#{config['build_dir']}/yui.js")
 end
 
 task :create_directory do
@@ -61,10 +67,11 @@ task :create_directory do
 end
 
 task :destroy do
-  %w(min pack gzip).each do |build|
-    dir = "#{config['build_dir']}/#{build}"
-    puts " * Removing #{dir}"
-    FileUtils.rm_rf(dir) if File.directory?(dir)
+  build_dir = config['build_dir']
+  if File.directory?(build_dir)
+    Dir.entries(build_dir).each do |dir|
+      FileUtils.rm_rf("#{build_dir}/#{dir}") unless dir =~ /^\./
+    end
   end
 end
 
