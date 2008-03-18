@@ -84,13 +84,39 @@ Ojay.Forms.Select = JS.Class({
      *
      */
     _updateDisplayFromSelect: function() {
-        var selected = Array.from(this._input.node.options).filter('selected')[0] || this._input.node.options[0];
+        var selected = this.getSelectedOption() || this._input.node.options[0];
         if (!selected) return;
         this._elements._display.setContent(selected.text.stripTags());
     },
     
     /**
+     * @returns {Array}
+     */
+    _getOptions: function() {
+        return Array.from(this._input.node.options);
+    },
+    
+    /**
+     * @returns {HTMLElement}
+     */
+    getSelectedOption: function() {
+        return this._getOptions().filter('selected')[0] || null;
+    },
+    
+    /**
+     * @param {String|Number} value
+     * @returns {Array}
+     */
+    getOptionsByValue: function(value) {
+        return this._getOptions().filter({value: value});
+    },
+    
+    /**
      * @param {String|Number} value
      */
-    setValue: function() {}
+    setValue: function(value) {
+        this._getOptions().forEach(function(option) { option.selected = false; });
+        this.getOptionsByValue(value).forEach(function(option) { option.selected = true; });
+        this._updateDisplayFromSelect();
+    }
 });
