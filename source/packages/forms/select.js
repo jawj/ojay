@@ -12,24 +12,17 @@ Ojay.Forms.Select = JS.Class({
         LIST_CLASS:         'select-list',
         
         Option: JS.Class({
-            extend: {
-                setHovered: function(option) {
-                    if (this._currentOption) this._currentOption.setHovered(false);
-                    this._currentOption = option;
-                }
-            },
-            
             /**
              * @param {Forms.Select} select
              * @param {HTMLElement} option
              */
             initialize: function(select, option) {
+                this._select = select;
                 this._option = Ojay(option);
                 this.value = option.value || '';
                 this._label = option.text.stripTags();
                 this.hovered = false;
                 
-                this.getHTML().on('click')._(select).setValue(this.value);
                 this.getHTML().on('mouseover')._(this).setHovered(true);
             },
             
@@ -46,7 +39,7 @@ Ojay.Forms.Select = JS.Class({
              */
             setHovered: function(state) {
                 this.hovered = (state !== false);
-                if (this.hovered) this.klass.setHovered(this);
+                if (this.hovered) this._select._setHoveredOption(this);
                 this.getHTML()[state === false ? 'removeClass' : 'addClass']('hovered');
             }
         })
@@ -64,7 +57,10 @@ Ojay.Forms.Select = JS.Class({
         this.updateOptions();
         
         elements._container.setStyle({position: 'relative', cursor: 'default'});
-        elements._container.on('click')._(this).toggleList();
+        elements._container.on('click', function() {
+            this._input.node.focus();
+            this.toggleList();
+        }, this);
         
         this._input.on('blur')._(this).hideList();
         
@@ -118,9 +114,10 @@ Ojay.Forms.Select = JS.Class({
      *
      */
     _updateDisplayFromSelect: function() {
-        var selected = this.getSelectedOption() || this._input.node.options[0];
+        var selected = this.getSelectedOption();
         if (!selected) return;
         this._elements._display.setContent(selected.text.stripTags());
+        this._getOption(selected.value).setHovered(true);
     },
     
     /**
@@ -128,6 +125,14 @@ Ojay.Forms.Select = JS.Class({
      */
     _getOption: function(value) {
         return this._options.filter({value: value})[0] || null;
+    },
+    
+    /**
+     * @param {Forms.Select.Option}
+     */
+    _setHoveredOption: function(option) {
+        if (this._currentOption) this._currentOption.setHovered(false);
+        this._currentOption = option;
     },
     
     /**
@@ -141,7 +146,7 @@ Ojay.Forms.Select = JS.Class({
      * @returns {HTMLElement}
      */
     getSelectedOption: function() {
-        return this._getOptions().filter('selected')[0] || null;
+        return this._getOptions().filter('selected')[0] || this._input.node.options[0] || null;
     },
     
     /**
@@ -168,13 +173,15 @@ Ojay.Forms.Select = JS.Class({
         var region = this._elements._container.getRegion();
         if (!region) return;
         var list = this._elements._list;
-        list.setStyle({width: region.getWidth() + 'px'});
+        list.setStyle({width: region.getWidth() + 'px', left: 0, top: region.getHeight() + 'px'});
     },
     
     states: {
         LIST_OPEN: {
             toggleList: function() {
                 this._elements._list.hide();
+                this.setValue(this._currentOption.value);
+                this._input.node.focus();
                 this.setState('LIST_CLOSED');
             },
             
@@ -189,6 +196,7 @@ Ojay.Forms.Select = JS.Class({
                 this._elements._list.show();
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
+                this._input.node.focus();
                 this.setState('LIST_OPEN');
             }
         }
