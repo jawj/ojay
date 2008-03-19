@@ -64,13 +64,15 @@ Ojay.Forms.Select = JS.Class({
         
         this._input.on('blur')._(this).hideList();
         
-        Ojay(document).on('click', function(body, evnt) {
-            var target = evnt.getTarget();
-            for (var key in elements) {
-                if (target.node == elements[key].node) return;
-            }
-            this.hideList();
-        }, this);
+        var KeyListener = YAHOO.util.KeyListener;
+        new KeyListener(this._input.node, {keys: KeyListener.KEY.ESCAPE}, {
+            fn: function() { this._updateOnClose = false; this.hideList(); },
+            scope: this, correctScope: true
+        }).enable();
+        new KeyListener(this._input.node, {keys: KeyListener.KEY.ENTER}, {
+            fn: function() { this._updateOnClose = true; this.hideList(); },
+            scope: this, correctScope: true
+        }).enable();
         
         elements._list.setStyle({position: 'absolute'});
         
@@ -180,8 +182,11 @@ Ojay.Forms.Select = JS.Class({
         LIST_OPEN: {
             toggleList: function() {
                 this._elements._list.hide();
-                this.setValue(this._currentOption.value);
-                this._input.node.focus();
+                if (this._updateOnClose) {
+                    this.setValue(this._currentOption.value);
+                    this._input.node.focus();
+                }
+                this._updateOnClose = false;
                 this.setState('LIST_CLOSED');
             },
             
@@ -197,6 +202,7 @@ Ojay.Forms.Select = JS.Class({
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
                 this._input.node.focus();
+                this._updateOnClose = true;
                 this.setState('LIST_OPEN');
             }
         }
