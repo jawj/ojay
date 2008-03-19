@@ -34,6 +34,7 @@ concatenated file. It includes the following:
 
   * yahoo-dom-event
   * selector
+  * json
   * animation
   * connection
   * get
