@@ -1,5 +1,33 @@
 %h1 Forms tests
 
+%form#buttons
+  %input{:type => 'radio', :name => 'foo-radio', :value => 1, :id => 'foo-radio-1'}
+  %label{:for => 'foo-radio-1'} Value 1
+  %input{:type => 'radio', :name => 'foo-radio', :value => 2, :id => 'foo-radio-2'}
+  %label{:for => 'foo-radio-2'} Value 2
+  %input{:type => 'radio', :name => 'foo-radio', :value => 3, :id => 'foo-radio-3', :disabled => 'disabled'}
+  %label{:for => 'foo-radio-3'} Value 3
+  %input{:type => 'radio', :name => 'foo-radio', :value => 4, :id => 'foo-radio-4'}
+  %label{:for => 'foo-radio-4'} Value 4
+  %br/
+  %button{:id => 'check-foo'} Check value
+  %br/
+  %br/
+  %br/
+  %input{:type => 'checkbox', :name => 'checky', :id => 'checky', :value => 1}
+  %label{:for => 'checky'} Checkbox test
+  %br/
+  %br/
+  %br/
+  %br/
+  %label{:for => 'drop-down'} Options:
+  %select#drop-down
+    %option Please choose
+    %option{:value => '1'} Number one
+    %option{:value => '2'} Number two
+    %option{:value => '3'} Number three
+    %option{:value => '4'} Number four
+
 %button{:id => 'evil'} Be evil!
 
 #results
@@ -42,34 +70,6 @@
 
 #searches
 
-%form#buttons
-  %input{:type => 'radio', :name => 'foo-radio', :value => 1, :id => 'foo-radio-1'}
-  %label{:for => 'foo-radio-1'} Value 1
-  %input{:type => 'radio', :name => 'foo-radio', :value => 2, :id => 'foo-radio-2'}
-  %label{:for => 'foo-radio-2'} Value 2
-  %input{:type => 'radio', :name => 'foo-radio', :value => 3, :id => 'foo-radio-3', :disabled => 'disabled'}
-  %label{:for => 'foo-radio-3'} Value 3
-  %input{:type => 'radio', :name => 'foo-radio', :value => 4, :id => 'foo-radio-4'}
-  %label{:for => 'foo-radio-4'} Value 4
-  %br/
-  %button{:id => 'check-foo'} Check value
-  %br/
-  %br/
-  %br/
-  %input{:type => 'checkbox', :name => 'checky', :id => 'checky', :value => 1}
-  %label{:for => 'checky'} Checkbox test
-  %br/
-  %br/
-  %br/
-  %br/
-  %label{:for => 'drop-down'} Options:
-  %select#drop-down
-    %option Please choose
-    %option{:value => '1'} Number one
-    %option{:value => '2'} Number two
-    %option{:value => '3'} Number three
-    %option{:value => '4'} Number four
-
 =javascripts 'test/forms'
 
 :plain
@@ -91,7 +91,8 @@
     
     .select-container { width: 200px; }
     .select-display { border: 1px solid #000; }
+    .select-list ul { border: 1px solid #666; background: #fff; }
     .select-list ul, .select-list li { list-style: none; margin: 0; padding: 0; }
-    .select-list li { width: 184px; border-top: 1px solid #cce; padding: 4px 8px; }
+    .select-list li { width: 182px; border-top: 1px solid #cce; padding: 4px 8px; }
     .select-list li.hovered { background: #cef; }
   </style>

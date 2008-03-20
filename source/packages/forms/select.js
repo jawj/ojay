@@ -74,7 +74,7 @@ Ojay.Forms.Select = JS.Class({
             scope: this, correctScope: true
         }).enable();
         
-        elements._list.setStyle({position: 'absolute'});
+        elements._listContainer.setStyle({position: 'absolute'});
         
         // Wait a little bit because 'keydown' fires before the value changes
         [this._input.on('keydown'), this._input.on('change')]
@@ -174,14 +174,14 @@ Ojay.Forms.Select = JS.Class({
     updateListPosition: function() {
         var region = this._elements._container.getRegion();
         if (!region) return;
-        var list = this._elements._list;
+        var list = this._elements._listContainer;
         list.setStyle({width: region.getWidth() + 'px', left: 0, top: region.getHeight() + 'px'});
     },
     
     states: {
         LIST_OPEN: {
             toggleList: function() {
-                this._elements._list.hide();
+                this._elements._listContainer.hide();
                 if (this._updateOnClose) {
                     this.setValue(this._currentOption.value);
                     this._input.node.focus();
@@ -198,7 +198,7 @@ Ojay.Forms.Select = JS.Class({
         LIST_CLOSED: {
             toggleList: function() {
                 this.updateListPosition();
-                this._elements._list.show();
+                this._elements._listContainer.show();
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
                 this._input.node.focus();
