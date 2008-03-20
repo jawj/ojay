@@ -24,7 +24,6 @@ Ojay.Forms.Select = JS.Class({
                 this.hovered = false;
                 
                 this.getHTML().on('mouseover')._(this).setHovered(true);
-                this.getHTML().on('mousedown')._(select).hideList(true);
             },
             
             /**
@@ -60,7 +59,7 @@ Ojay.Forms.Select = JS.Class({
         this.setState('LIST_OPEN');
         this.hideList(false);
         
-        this._input.on('blur')._(this).hideList(false);
+        this._input.on('blur')._(this).hideList(true);
         
         // Wait a little bit because 'keydown' fires before the value changes
         [this._input.on('keydown'), this._input.on('change')]
@@ -93,6 +92,13 @@ Ojay.Forms.Select = JS.Class({
                 elements._list = Ojay( HTML.ul() );
             }) );
         }) );
+    },
+    
+    /**
+     *
+     */
+    _focusInput: function() {
+        this._input.node.focus();
     },
     
     /**
@@ -179,7 +185,7 @@ Ojay.Forms.Select = JS.Class({
             showList: function() {
                 this.updateListPosition();
                 this._elements._listContainer.show();
-                this._input.node.focus();
+                this._focusInput();
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
                 this.setState('LIST_OPEN');
@@ -195,7 +201,7 @@ Ojay.Forms.Select = JS.Class({
                 this._elements._listContainer.hide();
                 if (update !== false) {
                     this.setValue(this._currentOption.value);
-                    this._input.node.focus();
+                    this._focusInput();
                 }
                 this.setState('LIST_CLOSED');
             },
