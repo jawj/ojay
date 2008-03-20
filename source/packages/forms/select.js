@@ -24,6 +24,7 @@ Ojay.Forms.Select = JS.Class({
                 this.hovered = false;
                 
                 this.getHTML().on('mouseover')._(this).setHovered(true);
+                this.getHTML().on('mousedown')._(select).hideList(true);
             },
             
             /**
@@ -59,10 +60,14 @@ Ojay.Forms.Select = JS.Class({
         this.setState('LIST_OPEN');
         this.hideList(false);
         
+        this._input.on('blur')._(this).hideList(false);
+        
+        // Wait a little bit because 'keydown' fires before the value changes
+        [this._input.on('keydown'), this._input.on('change')]
+                .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect());
+        
         elements._container.setStyle({position: 'relative', cursor: 'default'});
         elements._container.on('click')._(this).showList();
-        
-        this._input.on('blur')._(this).hideList();
         
         var KeyListener = YAHOO.util.KeyListener;
         new KeyListener(this._input.node, {keys: KeyListener.KEY.ESCAPE}, {
@@ -73,10 +78,6 @@ Ojay.Forms.Select = JS.Class({
         }).enable();
         
         elements._listContainer.setStyle({position: 'absolute'});
-        
-        // Wait a little bit because 'keydown' fires before the value changes
-        [this._input.on('keydown'), this._input.on('change')]
-                .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect());
     },
     
     /**
