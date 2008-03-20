@@ -26,6 +26,7 @@ packages:
       - core/number
       - external/reiterate
       - core/event
+      - core/observable
       - core/dom_collection
       - core/dom_insertion
       - core/html_builder
