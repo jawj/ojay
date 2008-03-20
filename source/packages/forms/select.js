@@ -57,10 +57,7 @@ Ojay.Forms.Select = JS.Class({
         this.updateOptions();
         
         elements._container.setStyle({position: 'relative', cursor: 'default'});
-        elements._container.on('click', function() {
-            this._input.node.focus();
-            this.toggleList();
-        }, this);
+        elements._container.on('click')._(this).toggleList();
         
         this._input.on('blur')._(this).hideList();
         
@@ -179,6 +176,18 @@ Ojay.Forms.Select = JS.Class({
     },
     
     states: {
+        LIST_CLOSED: {
+            toggleList: function() {
+                this.updateListPosition();
+                this._elements._listContainer.show();
+                this._input.node.focus();
+                var selected = this.getSelectedOption();
+                if (selected) this._getOption(selected.value).setHovered(true);
+                this._updateOnClose = true;
+                this.setState('LIST_OPEN');
+            }
+        },
+        
         LIST_OPEN: {
             toggleList: function() {
                 this._elements._listContainer.hide();
@@ -192,18 +201,6 @@ Ojay.Forms.Select = JS.Class({
             
             hideList: function() {
                 this.toggleList();
-            }
-        },
-        
-        LIST_CLOSED: {
-            toggleList: function() {
-                this.updateListPosition();
-                this._elements._listContainer.show();
-                var selected = this.getSelectedOption();
-                if (selected) this._getOption(selected.value).setHovered(true);
-                this._input.node.focus();
-                this._updateOnClose = true;
-                this.setState('LIST_OPEN');
             }
         }
     }
