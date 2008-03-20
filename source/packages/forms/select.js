@@ -56,19 +56,20 @@ Ojay.Forms.Select = JS.Class({
         this._input.insert(this.getHTML().node, 'after');
         this.updateOptions();
         
+        this.setState('LIST_OPEN');
+        this.hideList(false);
+        
         elements._container.setStyle({position: 'relative', cursor: 'default'});
-        elements._container.on('click')._(this).toggleList();
+        elements._container.on('click')._(this).showList();
         
         this._input.on('blur')._(this).hideList();
         
         var KeyListener = YAHOO.util.KeyListener;
         new KeyListener(this._input.node, {keys: KeyListener.KEY.ESCAPE}, {
-            fn: function() { this._updateOnClose = false; this.hideList(); },
-            scope: this, correctScope: true
+            fn: this.method('hideList').partial(false)
         }).enable();
         new KeyListener(this._input.node, {keys: KeyListener.KEY.ENTER}, {
-            fn: function() { this._updateOnClose = true; this.hideList(); },
-            scope: this, correctScope: true
+            fn: this.method('hideList').partial(true)
         }).enable();
         
         elements._listContainer.setStyle({position: 'absolute'});
@@ -76,9 +77,6 @@ Ojay.Forms.Select = JS.Class({
         // Wait a little bit because 'keydown' fires before the value changes
         [this._input.on('keydown'), this._input.on('change')]
                 .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect());
-        
-        this.setState('LIST_OPEN');
-        this.toggleList();
     },
     
     /**
@@ -177,30 +175,32 @@ Ojay.Forms.Select = JS.Class({
     
     states: {
         LIST_CLOSED: {
-            toggleList: function() {
+            showList: function() {
                 this.updateListPosition();
                 this._elements._listContainer.show();
                 this._input.node.focus();
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
-                this._updateOnClose = true;
                 this.setState('LIST_OPEN');
+            },
+            
+            toggleList: function() {
+                this.showList();
             }
         },
         
         LIST_OPEN: {
-            toggleList: function() {
+            hideList: function(update) {
                 this._elements._listContainer.hide();
-                if (this._updateOnClose) {
+                if (update !== false) {
                     this.setValue(this._currentOption.value);
                     this._input.node.focus();
                 }
-                this._updateOnClose = false;
                 this.setState('LIST_CLOSED');
             },
             
-            hideList: function() {
-                this.toggleList();
+            toggleList: function(update) {
+                this.hideList(update);
             }
         }
     }
