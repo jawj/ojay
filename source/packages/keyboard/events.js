@@ -1,6 +1,6 @@
 /**
  * <p>On keydown events, add the new key to the <tt>Monitor</tt> and decide whether
- * to stop the event in non-IE browsers.</p>
+ * to stop the event in IE browsers.</p>
  */
 Event.on(doc, 'keydown', function(evnt) {
     Monitor._addKey(evnt.keyCode);
@@ -9,7 +9,7 @@ Event.on(doc, 'keydown', function(evnt) {
 });
 
 /**
- * <p>On keypress events, decide whether to stop the event in IE.</p>
+ * <p>On keypress events, decide whether to stop the event in non-IE browsers.</p>
  */
 if (!YAHOO.env.ua.ie) {
     Event.on(doc, 'keypress', function(evnt) {
