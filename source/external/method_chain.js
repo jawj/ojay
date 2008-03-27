@@ -6,26 +6,30 @@ JS.MethodChain = function(base) {
   };
   
   this.fire = function(base) {
-    var object = base || baseObject, method, property;
-    loop: for (var i = 0, n = queue.length; i < n; i++) {
-      method = queue[i];
-      if (object instanceof JS.MethodChain) {
-        object.____(method.func, method.args);
-        continue;
-      }
-      switch (typeof method.func) {
-        case 'string':    property = object[method.func];       break;
-        case 'function':  property = method.func;               break;
-        case 'object':    object = method.func; continue loop;  break;
-      }
-      object = (typeof property == 'function')
-          ? property.apply(object, method.args)
-          : property;
-    }
-    return object;
+    return JS.MethodChain.fire(queue, base || baseObject);
   };
 };
-  
+
+JS.MethodChain.fire = function(queue, object) {
+  var method, property, i, n;
+  loop: for (i = 0, n = queue.length; i < n; i++) {
+    method = queue[i];
+    if (object instanceof JS.MethodChain) {
+      object.____(method.func, method.args);
+      continue;
+    }
+    switch (typeof method.func) {
+      case 'string':    property = object[method.func];       break;
+      case 'function':  property = method.func;               break;
+      case 'object':    object = method.func; continue loop;  break;
+    }
+    object = (typeof property == 'function')
+        ? property.apply(object, method.args)
+        : property;
+  }
+  return object;
+};
+
 JS.MethodChain.prototype = {
   _: function() {
     var base = arguments[0], args, i, n;
@@ -43,16 +47,23 @@ JS.MethodChain.prototype = {
     return function(object) { return chain.fire(object); };
   }
 };
-  
+
 JS.MethodChain.reserved = (function() {
   var names = [], key;
   for (key in new JS.MethodChain) names.push(key);
   return new RegExp('^(?:' + names.join('|') + ')$');
 })();
-  
+
+JS.MethodChain.addMethod = function(name) {
+  if (this.reserved.test(name)) return;
+  this.prototype[name] = function() {
+    this.____(name, arguments);
+    return this;
+  };
+};
+
 JS.MethodChain.addMethods = function(object) {
-  var methods = [], property, i, n,
-      self = this.prototype;
+  var methods = [], property, i, n;
   
   for (property in object)
     Number(property) != property && methods.push(property);
@@ -62,17 +73,13 @@ JS.MethodChain.addMethods = function(object) {
       typeof object[i] == 'string' && methods.push(object[i]);
   }
   for (i = 0, n = methods.length; i < n; i++)
-    (function(name) {
-      if (JS.MethodChain.reserved.test(name)) return;
-      self[name] = function() {
-        this.____(name, arguments);
-        return this;
-      };
-    })(methods[i]);
+    this.addMethod(methods[i]);
   
   object.prototype &&
     this.addMethods(object.prototype);
 };
+
+it = its = function() { return new JS.MethodChain; };
 
 JS.Class.addMethod = (function(wrapped) {
   return function() {
@@ -80,9 +87,7 @@ JS.Class.addMethod = (function(wrapped) {
     return wrapped.apply(JS.Class, arguments);
   };
 })(JS.Class.addMethod);
-  
-it = its = function() { return new JS.MethodChain; };
-  
+
 (function(methods) {
   JS.extend(JS.Class.INSTANCE_METHODS, methods);
   JS.extend(JS.Class.CLASS_METHODS, methods);
