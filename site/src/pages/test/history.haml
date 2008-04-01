@@ -1,15 +1,17 @@
 %h1 History tests
 
-=javascripts 'test/fixtures/gallery'
+=javascripts 'test/fixtures/gallery', 'test/fixtures/browser'
 
 %script{:type => 'text/javascript'}
   :plain
     var foo = new Gallery('foo');
     var bar = new Gallery('bar');
     var baz = new Gallery('baz');
+    var urls = new URLBrowser('#browser');
     
     Ojay.History.manage(foo, 'foo');
     Ojay.History.manage(bar, 'bar');
+    Ojay.History.manage(urls, 'browse');
     Ojay.History.initialize({asset: './index.html'});
 
 %p This one is history managaed...
@@ -31,3 +33,12 @@
     baz.setup();
 
 =link 'Go to test index', './index.html'
+
+%ul#browser
+  %li
+    =link 'the OTHER media', 'http://othermedia.com'
+    =link 'Google', 'http://google.co.uk'
+    =link 'Amazon', 'http://amazon.co.uk'
+%script{:type => 'text/javascript'}
+  :plain
+    urls.setup();
