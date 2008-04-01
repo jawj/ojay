@@ -36,7 +36,7 @@
 
 :plain
   <style type="text/css">
-    .item { display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
+    .item { background: #333; display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
     .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
     
     /* Should not apply */
@@ -44,5 +44,16 @@
   </style>
   
   <script type="text/javascript">
-    var pager = new Ojay.Paginator('#items', {width: 520, height: 104});
+    var pager = new Ojay.Paginator('#items', {width: '520px', height: '104px'});
+    pager.setup();
+    
+    (function() {
+        var prev = Ojay( Ojay.HTML.button('Previous') );
+        var next = Ojay( Ojay.HTML.button('Next') );
+        
+        prev.on('click', Ojay.stopEvent)._(pager).decrementPage();
+        next.on('click', Ojay.stopEvent)._(pager).incrementPage();
+        
+        pager.getContainer().insert(prev.node, 'before').insert(next.node, 'before');
+    })();
   </script>
