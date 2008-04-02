@@ -4,7 +4,8 @@ Ojay.Paginator = JS.Class({
     extend: {
         CONTAINER_CLASS:    'paginator',
         ITEM_CLASS:         'item',
-        SCROLL_TIME:        0.5
+        SCROLL_TIME:        0.5,
+        DIRECTION:          'horizontal'
     },
     
     /**
@@ -17,6 +18,7 @@ Ojay.Paginator = JS.Class({
         
         options = this._options = options || {};
         options.scrollTime = options.scrollTime || this.klass.SCROLL_TIME;
+        options.direction = options.direction || this.klass.DIRECTION;
         
         this.setState('CREATED');
     },
@@ -46,7 +48,8 @@ Ojay.Paginator = JS.Class({
             width: options.width,
             height: options.height,
             overflow: 'hidden',
-            padding: '0 0 0 0'
+            padding: '0 0 0 0',
+            border: 'none'
         });
         return elements._container = container;
     },
@@ -62,13 +65,14 @@ Ojay.Paginator = JS.Class({
      * @returns {DomCollection}
      */
     getSubject: function() {
-        return this._elements._subject || null;
+        return this._elements._subject || undefined;
     },
     
     /**
      * @returns {Region}
      */
     getRegion: function() {
+        if (!this._elements._container) return undefined;
         return this._elements._container.getRegion();
     },
     
@@ -77,7 +81,10 @@ Ojay.Paginator = JS.Class({
      */
     getItems: function() {
         var elements = this._elements;
-        return elements._items || (elements._items = elements._subject.children(this._options.selector));
+        if (!elements._subject) return undefined;
+        elements._items = elements._subject.children(this._options.selector);
+        elements._items.setStyle({margin: '0 0 0 0'});
+        return elements._items;
     },
     
     /**
@@ -85,6 +92,7 @@ Ojay.Paginator = JS.Class({
      */
     getPages: function() {
         var items = this.getItems();
+        if (!items) return undefined;
         if (items.length === 0) return 0;
         var containerRegion = this.getRegion(), itemRegion = items.at(0).getRegion();
         this._itemsPerPage = (containerRegion.getWidth() / itemRegion.getWidth()).floor();
@@ -95,7 +103,7 @@ Ojay.Paginator = JS.Class({
      * @returns {Number}
      */
     getCurrentPage: function() {
-        return this._currentPage;
+        return this._currentPage || undefined;
     },
     
     states: {
@@ -103,12 +111,13 @@ Ojay.Paginator = JS.Class({
             /**
              */
             setup: function() {
-                if (this._elements._subject) return;
                 var subject = this._elements._subject = Ojay(this._selector).at(0);
                 if (!subject.node) return;
                 var container = this.getHTML();
                 subject.insert(container.node, 'after');
                 container.insert(subject.node);
+                
+                subject.setStyle({padding: '0 0 0 0', border: 'none'});
                 
                 this._numPages = this.getPages();
                 var region = this.getRegion();
@@ -131,7 +140,7 @@ Ojay.Paginator = JS.Class({
              */
             setPage: function(page, animate) {
                 page = Number(page);
-                if (page == this._currentPage || page < 1 || page > this._numPages) return;
+                if (page < 1 || page > this._numPages) return;
                 this.setScroll((page - 1) / (this._numPages - 1), {animate: animate !== false});
             },
             
@@ -150,11 +159,19 @@ Ojay.Paginator = JS.Class({
             },
             
             /**
+             * @param {Boolean} animate
+             */
+            snapToPage: function(animate) {
+                this.setScroll((this._currentPage - 1) / (this._numPages - 1),
+                        {animate: animate !== false, silent: true});
+            },
+            
+            /**
              * @param {Number} amount
              * @param {Object} options
              */
             setScroll: function(amount, options) {
-                var pages = this.getPages(), total = this.getRegion().getWidth() * (pages - 1);
+                var pages = this._numPages, total = this.getRegion().getWidth() * (pages - 1);
                 if (amount >= 0 && amount <= 1) amount = amount * total;
                 if (amount < 0 || amount > total) return;
                 options = options || {};

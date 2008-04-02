@@ -51,7 +51,9 @@
     .pages span.selected { background: #cef; cursor: default }
     
     /* Should not apply */
+    #items { border: 4px solid red; padding: 10px; }
     .paginator { padding-top: 50px; }
+    .paginator { border-bottom: 8px solid red; }
     
     #slider-bg {
         margin-top: 30px;
@@ -74,9 +76,13 @@
     pager.getContainer().insert(controls.getHTML(), 'after');
     
     var slider = YAHOO.widget.Slider.getHorizSlider('slider-bg', 'slider-thumb', 0, 200);
+    
     slider.subscribe('change', function(offset) {
         pager.setScroll(offset/200, {animate: false, silent: true});
     });
+    
+    slider.subscribe('slideEnd', pager.method('snapToPage'));
+    
     pager.on('scroll', function(paginator, amount, range) {
         slider.setValue(amount * 200, false, true, false);
     });
