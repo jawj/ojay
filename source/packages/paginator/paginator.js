@@ -98,9 +98,11 @@ Ojay.Paginator = JS.Class({
         if (!items) return undefined;
         if (items.length === 0) return 0;
         var containerRegion = this.getRegion(), itemRegion = items.at(0).getRegion();
-        this._itemsPerCol = (containerRegion.getWidth() / itemRegion.getWidth()).floor();
-        this._itemsPerRow = (containerRegion.getHeight() / itemRegion.getHeight()).floor();
-        this._itemsPerPage = this._itemsPerRow * this._itemsPerCol;
+        this._itemWidth     = itemRegion.getWidth();
+        this._itemHeight    = itemRegion.getHeight();
+        this._itemsPerCol   = (containerRegion.getWidth() / this._itemWidth).floor();
+        this._itemsPerRow   = (containerRegion.getHeight() / this._itemHeight).floor();
+        this._itemsPerPage  = this._itemsPerRow * this._itemsPerCol;
         return (items.length / this._itemsPerPage).ceil();
     },
     
@@ -109,6 +111,17 @@ Ojay.Paginator = JS.Class({
      */
     getCurrentPage: function() {
         return this._currentPage || undefined;
+    },
+    
+    /**
+     * @param {Number} id
+     * @returns {Number}
+     */
+    pageForItem: function(id) {
+        if (!this._numPages) return undefined;
+        var n = this._elements._items.length;
+        if (id < 1 || id > n) return undefined;
+        return ((id - 1) / this._itemsPerPage).floor() + 1;
     },
     
     /**
@@ -179,6 +192,17 @@ Ojay.Paginator = JS.Class({
             snapToPage: function(animate) {
                 this.setScroll((this._currentPage - 1) / (this._numPages - 1),
                         {animate: animate !== false, silent: true});
+            },
+            
+            /**
+             * @param {Number} id
+             * @param {Boolean} animate
+             */
+            focusItem: function(id, animate) {
+                var page = this.pageForItem(id);
+                if (!page) return;
+                this.notifyObservers('focusitem', id, this._elements._items.at(id - 1));
+                this.setPage(page, animate);
             },
             
             /**
