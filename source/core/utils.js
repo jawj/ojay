@@ -92,6 +92,19 @@
                 width: Dom.getViewportWidth(),
                 height: Dom.getViewportHeight()
             };
+        },
+        
+        /**
+         * <p>Returns a <tt>Region</tt> object representing the currently visible area of
+         * the document within the browser viewport.</p>
+         * @returns {Region}
+         */
+        getVisibleRegion: function() {
+            var viewport = this.getViewportSize(), scrolls = this.getScrollOffsets();
+            return new this.Region({
+                top:    scrolls.top,    bottom: scrolls.top + viewport.height,
+                left:   scrolls.left,   right:  scrolls.left + viewport.width
+            });
         }
     });
 })(YAHOO.util.Dom);
