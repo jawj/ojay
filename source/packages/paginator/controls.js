@@ -42,7 +42,7 @@ Ojay.Paginator.extend({
                     }
                 }));
                 
-                paginator.on('setpage', function(paginator, page) {
+                paginator.on('pagechange', function(paginator, page) {
                     self._highlightPage(page);
                 });
                 self._highlightPage(paginator.getCurrentPage());

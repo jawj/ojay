@@ -127,31 +127,56 @@ Ojay.Paginator = JS.Class({
         READY: {
             /**
              * @param {Number} page
+             * @param {Boolean} animate
              */
-            setPage: function(page) {
+            setPage: function(page, animate) {
                 page = Number(page);
                 if (page == this._currentPage || page < 1 || page > this._numPages) return;
-                var region = this.getRegion();
-                this.setState('SCROLLING');
-                this.notifyObservers('setpage', page);
-                this._elements._subject.animate({
-                    marginLeft: {to: -(page-1) * region.getWidth()}
-                }, this._options.scrollTime, {easing: 'easeBoth'})._(function(self) {
-                    self._currentPage = page;
-                    self.setState('READY');
-                }, this);
+                this.setScroll((page - 1) / (this._numPages - 1), {animate: animate !== false});
             },
             
             /**
+             * @param {Boolean} animate
              */
-            incrementPage: function() {
-                return this.setPage(this._currentPage + 1);
+            incrementPage: function(animate) {
+                return this.setPage(this._currentPage + 1, animate);
             },
             
             /**
+             * @param {Boolean} animate
              */
-            decrementPage: function() {
-                return this.setPage(this._currentPage - 1);
+            decrementPage: function(animate) {
+                return this.setPage(this._currentPage - 1, animate);
+            },
+            
+            /**
+             * @param {Number} amount
+             * @param {Object} options
+             */
+            setScroll: function(amount, options) {
+                var pages = this.getPages(), total = this.getRegion().getWidth() * (pages - 1);
+                if (amount >= 0 && amount <= 1) amount = amount * total;
+                if (amount < 0 || amount > total) return;
+                options = options || {};
+                
+                if (options.animate && YAHOO.util.Anim) {
+                    this.setState('SCROLLING');
+                    this._elements._subject.animate({
+                        marginLeft: {to: -amount}
+                    }, this._options.scrollTime, {easing: 'easeBoth'})._(function(self) {
+                        self.setState('READY');
+                    }, this);
+                } else {
+                    this._elements._subject.setStyle({marginLeft: (-amount) + 'px'});
+                }
+                
+                if (!options.silent) this.notifyObservers('scroll', amount/total, total);
+                
+                var page = (pages * (amount/total)).ceil() || 1;
+                if (page != this._currentPage) {
+                    this._currentPage = page;
+                    this.notifyObservers('pagechange', page);
+                }
             }
         },
         

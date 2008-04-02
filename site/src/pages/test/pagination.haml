@@ -34,7 +34,13 @@
   .item
     %div Lorem ipsum
 
+=javascripts *( %w(dragdrop slider).map { |s| "http://yui.yahooapis.com/2.5.1/build/#{s}/#{s}-min.js" } )
+
 :plain
+  <div id="slider-bg" tabindex="-1" title="Slider"> 
+    <div id="slider-thumb"><img src="/images/thumb-bar.gif"></div> 
+  </div> 
+  
   <style type="text/css">
     .item { background: #333; display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
     .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
@@ -46,6 +52,18 @@
     
     /* Should not apply */
     .paginator { padding-top: 50px; }
+    
+    #slider-bg {
+        margin-top: 30px;
+        position: relative;
+        background:url(/images/bg-h.gif);
+        height:26px;
+        width:248px; 
+    }
+
+    #slider-thumb {
+        position: absolute;
+    }
   </style>
   
   <script type="text/javascript">
@@ -54,4 +72,13 @@
     
     var controls = new Ojay.Paginator.Controls(pager);
     pager.getContainer().insert(controls.getHTML(), 'after');
+    
+    var slider = YAHOO.widget.Slider.getHorizSlider('slider-bg', 'slider-thumb', 0, 200);
+    slider.subscribe('change', function(offset) {
+        pager.setScroll(offset/200, {animate: false, silent: true});
+    });
+    pager.on('scroll', function(paginator, amount, range) {
+        slider.setValue(amount * 200, false, true, false);
+    });
   </script>
+ 
