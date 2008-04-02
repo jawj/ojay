@@ -116,6 +116,7 @@ packages:
     source_dir: packages/paginator
     files:
       - paginator
+      - controls
     requires:
       - ojay/core-min
 all:

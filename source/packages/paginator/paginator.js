@@ -91,6 +91,13 @@ Ojay.Paginator = JS.Class({
         return (items.length / this._itemsPerPage).ceil();
     },
     
+    /**
+     * @returns {Number}
+     */
+    getCurrentPage: function() {
+        return this._currentPage;
+    },
+    
     states: {
         CREATED: {
             /**
@@ -111,8 +118,9 @@ Ojay.Paginator = JS.Class({
                 });
                 
                 var state = this.getInitialState();
-                this._currentPage = state.page;
                 this.setState('READY');
+                this._currentPage = state.page;
+                this.setPage(state.page);
             }
         },
         
@@ -121,15 +129,16 @@ Ojay.Paginator = JS.Class({
              * @param {Number} page
              */
             setPage: function(page) {
+                page = Number(page);
                 if (page == this._currentPage || page < 1 || page > this._numPages) return;
                 var region = this.getRegion();
                 this.setState('SCROLLING');
+                this.notifyObservers('setpage', page);
                 this._elements._subject.animate({
                     marginLeft: {to: -(page-1) * region.getWidth()}
                 }, this._options.scrollTime, {easing: 'easeBoth'})._(function(self) {
                     self._currentPage = page;
                     self.setState('READY');
-                    self.notifyObservers('setpage', page);
                 }, this);
             },
             

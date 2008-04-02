@@ -38,6 +38,11 @@
   <style type="text/css">
     .item { background: #333; display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
     .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
+    .paginator { margin-bottom: 30px; }
+    .paginator-controls .previous, .paginator-controls .next { clear: left; width: 100px; padding: 2px 8px; border: 1px solid #000; cursor: pointer; }
+    .pages span { float: left; width: 20px; padding: 2px 4px; border: 1px solid #666; margin: 10px 6px; cursor: pointer; }
+    .paginator-controls .hovered { background: #ddd; }
+    .pages span.selected { background: #cef; cursor: default }
     
     /* Should not apply */
     .paginator { padding-top: 50px; }
@@ -47,13 +52,6 @@
     var pager = new Ojay.Paginator('#items', {width: '520px', height: '104px'});
     pager.setup();
     
-    (function() {
-        var prev = Ojay( Ojay.HTML.button('Previous') );
-        var next = Ojay( Ojay.HTML.button('Next') );
-        
-        prev.on('click', Ojay.stopEvent)._(pager).decrementPage();
-        next.on('click', Ojay.stopEvent)._(pager).incrementPage();
-        
-        pager.getContainer().insert(prev.node, 'before').insert(next.node, 'before');
-    })();
+    var controls = new Ojay.Paginator.Controls(pager);
+    pager.getContainer().insert(controls.getHTML(), 'after');
   </script>
