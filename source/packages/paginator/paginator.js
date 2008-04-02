@@ -108,6 +108,16 @@ Ojay.Paginator = JS.Class({
         return this._currentPage || undefined;
     },
     
+    /**
+     * @returns {Paginator.Controls}
+     */
+    addControls: function(position) {
+        if (this.inState('CREATED') || !/^(?:before|after)$/.test(position)) return undefined;
+        var controls = new this.klass.Controls(this);
+        this.getContainer().insert(controls.getHTML().node, position);
+        return controls;
+    },
+    
     states: {
         CREATED: {
             /**

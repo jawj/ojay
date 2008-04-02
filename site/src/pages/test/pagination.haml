@@ -1,5 +1,27 @@
 %h1 Paginator tests
 
+:plain
+  <style type="text/css">
+    .item { background: #333; display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
+    .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
+    .paginator { margin-bottom: 30px; }
+    .paginator-controls .previous, .paginator-controls .next { clear: left; width: 100px; padding: 2px 8px; border: 1px solid #000; cursor: pointer; }
+    .pages span { float: left; width: 20px; padding: 2px 4px; border: 1px solid #666; margin: 10px 6px; cursor: pointer; }
+    .paginator-controls .hovered { background: #ddd; }
+    .pages span.selected { background: #cef; cursor: default }
+    
+    #items2 { width: 312px; }
+    #items2box { position: absolute; left: 600px; top: 50px; }
+    
+    /* Should not apply */
+    #items { border: 4px solid red; padding: 10px; }
+    .paginator { padding-top: 50px; }
+    .paginator { border-bottom: 8px solid red; }
+    
+    #slider-bg { margin-top: 30px; position: relative; background:url(/images/bg-h.gif); height:26px; width:248px; }
+    #slider-thumb { position: absolute; }
+  </style>
+
 #items
   .item
     %div Lorem ipsum
@@ -76,33 +98,10 @@
       %div Lorem ipsum
 
 :plain
-  <style type="text/css">
-    .item { background: #333; display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
-    .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
-    .paginator { margin-bottom: 30px; }
-    .paginator-controls .previous, .paginator-controls .next { clear: left; width: 100px; padding: 2px 8px; border: 1px solid #000; cursor: pointer; }
-    .pages span { float: left; width: 20px; padding: 2px 4px; border: 1px solid #666; margin: 10px 6px; cursor: pointer; }
-    .paginator-controls .hovered { background: #ddd; }
-    .pages span.selected { background: #cef; cursor: default }
-    
-    #items2 { width: 312px; }
-    #items2box { position: absolute; left: 600px; top: 50px; }
-    
-    /* Should not apply */
-    #items { border: 4px solid red; padding: 10px; }
-    .paginator { padding-top: 50px; }
-    .paginator { border-bottom: 8px solid red; }
-    
-    #slider-bg { margin-top: 30px; position: relative; background:url(/images/bg-h.gif); height:26px; width:248px; }
-    #slider-thumb { position: absolute; }
-  </style>
-  
   <script type="text/javascript">
     var pager = new Ojay.Paginator('#items', {width: '520px', height: '104px'});
     pager.setup();
-    
-    var controls = new Ojay.Paginator.Controls(pager);
-    pager.getContainer().insert(controls.getHTML(), 'after');
+    pager.addControls('after');
     
     var slider = YAHOO.widget.Slider.getHorizSlider('slider-bg', 'slider-thumb', 0, 200);
     
@@ -118,6 +117,6 @@
     
     var pager2 = new Ojay.Paginator('#items2', {width: '312px', height: '208px', direction: 'vertical'});
     pager2.setup();
-    pager2.getContainer().insert(new Ojay.Paginator.Controls(pager2).getHTML(), 'before');
+    pager2.addControls('before');
   </script>
  
