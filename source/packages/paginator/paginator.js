@@ -201,8 +201,10 @@ Ojay.Paginator = JS.Class({
             focusItem: function(id, animate) {
                 var page = this.pageForItem(id);
                 if (!page) return;
-                this.notifyObservers('focusitem', id, this._elements._items.at(id - 1));
+                var element = this._elements._items.at(id - 1);
+                this.notifyObservers('focusitem', id, element);
                 this.setPage(page, animate);
+                element.addClass('focused');
             },
             
             /**
@@ -217,6 +219,7 @@ Ojay.Paginator = JS.Class({
                 if (amount >= 0 && amount <= 1) amount = amount * total;
                 if (amount < 0 || amount > total) return;
                 
+                this._elements._items.removeClass('focused');
                 options = options || {};
                 
                 if (options.animate && YAHOO.util.Anim) {
