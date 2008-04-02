@@ -36,11 +36,46 @@
 
 =javascripts *( %w(dragdrop slider).map { |s| "http://yui.yahooapis.com/2.5.1/build/#{s}/#{s}-min.js" } )
 
+#slider-bg{:tabindex => "-1", :title => "Slider"}
+  #slider-thumb
+    =img 'thumb-bar.gif'
+
+#items2box
+  #items2
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+    .item
+      %div Lorem ipsum
+
 :plain
-  <div id="slider-bg" tabindex="-1" title="Slider"> 
-    <div id="slider-thumb"><img src="/images/thumb-bar.gif"></div> 
-  </div> 
-  
   <style type="text/css">
     .item { background: #333; display: inline; float: left; width: 80px; height: 80px; overflow: hidden; padding: 12px; margin: 0; }
     .item div { background: #eee; padding: 6px; height: 68px; font: bold 11px Arial sans-serif; }
@@ -50,22 +85,16 @@
     .paginator-controls .hovered { background: #ddd; }
     .pages span.selected { background: #cef; cursor: default }
     
+    #items2 { width: 312px; }
+    #items2box { position: absolute; left: 600px; top: 50px; }
+    
     /* Should not apply */
     #items { border: 4px solid red; padding: 10px; }
     .paginator { padding-top: 50px; }
     .paginator { border-bottom: 8px solid red; }
     
-    #slider-bg {
-        margin-top: 30px;
-        position: relative;
-        background:url(/images/bg-h.gif);
-        height:26px;
-        width:248px; 
-    }
-
-    #slider-thumb {
-        position: absolute;
-    }
+    #slider-bg { margin-top: 30px; position: relative; background:url(/images/bg-h.gif); height:26px; width:248px; }
+    #slider-thumb { position: absolute; }
   </style>
   
   <script type="text/javascript">
@@ -86,5 +115,9 @@
     pager.on('scroll', function(paginator, amount, range) {
         slider.setValue(amount * 200, false, true, false);
     });
+    
+    var pager2 = new Ojay.Paginator('#items2', {width: '312px', height: '208px', direction: 'vertical'});
+    pager2.setup();
+    pager2.getContainer().insert(new Ojay.Paginator.Controls(pager2).getHTML(), 'before');
   </script>
  

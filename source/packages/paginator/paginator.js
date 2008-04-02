@@ -95,7 +95,9 @@ Ojay.Paginator = JS.Class({
         if (!items) return undefined;
         if (items.length === 0) return 0;
         var containerRegion = this.getRegion(), itemRegion = items.at(0).getRegion();
-        this._itemsPerPage = (containerRegion.getWidth() / itemRegion.getWidth()).floor();
+        this._itemsPerCol = (containerRegion.getWidth() / itemRegion.getWidth()).floor();
+        this._itemsPerRow = (containerRegion.getHeight() / itemRegion.getHeight()).floor();
+        this._itemsPerPage = this._itemsPerRow * this._itemsPerCol;
         return (items.length / this._itemsPerPage).ceil();
     },
     
@@ -116,15 +118,15 @@ Ojay.Paginator = JS.Class({
                 var container = this.getHTML();
                 subject.insert(container.node, 'after');
                 container.insert(subject.node);
-                
                 subject.setStyle({padding: '0 0 0 0', border: 'none'});
                 
-                this._numPages = this.getPages();
-                var region = this.getRegion();
-                subject.setStyle({
-                    width: (this._numPages * region.getWidth()) + 'px',
-                    height: region.getHeight() + 'px'
-                });
+                var pages = this._numPages = this.getPages(), region = this.getRegion();
+                
+                var style = (this._options.direction == 'vertical')
+                        ? { width: region.getWidth() + 'px', height: (pages * region.getHeight() + 1000) + 'px' }
+                        : { width: (pages * region.getWidth() + 1000) + 'px', height: region.getHeight() + 'px' };
+                
+                subject.setStyle(style);
                 
                 var state = this.getInitialState();
                 this.setState('READY');
@@ -171,20 +173,29 @@ Ojay.Paginator = JS.Class({
              * @param {Object} options
              */
             setScroll: function(amount, options) {
-                var pages = this._numPages, total = this.getRegion().getWidth() * (pages - 1);
+                var orientation = this._options.direction, settings;
+                var method = (orientation == 'vertical') ? 'getHeight' : 'getWidth';
+                var pages = this._numPages, total = this.getRegion()[method]() * (pages - 1);
+                
                 if (amount >= 0 && amount <= 1) amount = amount * total;
                 if (amount < 0 || amount > total) return;
+                
                 options = options || {};
                 
                 if (options.animate && YAHOO.util.Anim) {
                     this.setState('SCROLLING');
-                    this._elements._subject.animate({
-                        marginLeft: {to: -amount}
-                    }, this._options.scrollTime, {easing: 'easeBoth'})._(function(self) {
+                    settings = (orientation == 'vertical')
+                            ? { marginTop: {to: -amount} }
+                            : { marginLeft: {to: -amount} };
+                    this._elements._subject.animate(settings,
+                        this._options.scrollTime, {easing: 'easeBoth'})._(function(self) {
                         self.setState('READY');
                     }, this);
                 } else {
-                    this._elements._subject.setStyle({marginLeft: (-amount) + 'px'});
+                    settings = (orientation == 'vertical')
+                            ? { marginTop: (-amount) + 'px' }
+                            : { marginLeft: (-amount) + 'px' };
+                    this._elements._subject.setStyle(settings);
                 }
                 
                 if (!options.silent) this.notifyObservers('scroll', amount/total, total);
