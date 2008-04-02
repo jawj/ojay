@@ -335,6 +335,7 @@
          */
         setContent: function(html) {
             if (!this.node) return this;
+            if (html instanceof this.klass) html = html.node;
             if (html && html.nodeType === Ojay.HTML.ELEMENT_NODE) {
                 this.node.innerHTML = '';
                 this.node.appendChild(html);
@@ -368,6 +369,7 @@
          */
         insert: function(html, position) {
             if (position == 'replace') return this.setContent(html);
+            if (html instanceof this.klass) html = html.node;
             new Ojay.DomInsertion(this.toArray(), html, position);
             return this;
         },

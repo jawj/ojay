@@ -108,7 +108,7 @@ Ojay.HtmlBuilder = JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
                             case 'function': arg(new Ojay.HtmlBuilder(node));
                                 break;
                                 
-                            case 'string': node.appendChild(document.createTextNode(arg));
+                            case 'string': case 'number': node.appendChild(document.createTextNode(arg));
                                 break;
                         }
                     }
