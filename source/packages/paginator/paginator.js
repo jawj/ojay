@@ -5,7 +5,8 @@ Ojay.Paginator = JS.Class({
         CONTAINER_CLASS:    'paginator',
         ITEM_CLASS:         'item',
         SCROLL_TIME:        0.5,
-        DIRECTION:          'horizontal'
+        DIRECTION:          'horizontal',
+        EASING:             'easeBoth'
     },
     
     /**
@@ -19,6 +20,7 @@ Ojay.Paginator = JS.Class({
         options = this._options = options || {};
         options.scrollTime = options.scrollTime || this.klass.SCROLL_TIME;
         options.direction = options.direction || this.klass.DIRECTION;
+        options.easing = options.easing || this.klass.EASING;
         
         this.setState('CREATED');
     },
@@ -198,7 +200,7 @@ Ojay.Paginator = JS.Class({
                             ? { marginTop: {to: -amount} }
                             : { marginLeft: {to: -amount} };
                     this._elements._subject.animate(settings,
-                        this._options.scrollTime, {easing: 'easeBoth'})._(function(self) {
+                        this._options.scrollTime, {easing: this._options.easing})._(function(self) {
                         self.setState('READY');
                     }, this);
                 } else {

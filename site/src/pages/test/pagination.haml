@@ -115,7 +115,8 @@
         slider.setValue(amount * 200, false, true, false);
     });
     
-    var pager2 = new Ojay.Paginator('#items2', {width: '312px', height: '208px', direction: 'vertical'});
+    var pager2 = new Ojay.Paginator('#items2', {width: '312px', height: '208px',
+            direction: 'vertical', scrollTime: 1.2, easing: 'elasticOut'});
     pager2.setup();
     pager2.addControls('before');
   </script>
