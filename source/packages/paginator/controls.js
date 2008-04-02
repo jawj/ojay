@@ -46,12 +46,6 @@ Ojay.Paginator.extend({
                     }
                 }));
                 
-                // Monitor page changes to highlight page links
-                paginator.on('pagechange', function(paginator, page) {
-                    self._highlightPage(page);
-                });
-                self._highlightPage(paginator.getCurrentPage());
-                
                 // Next button - increments page
                 elements._next = Ojay( HTML.div({className: klass.NEXT_CLASS}, 'Next') );
                 elements._next.on('click')._(paginator).incrementPage();
@@ -60,6 +54,20 @@ Ojay.Paginator.extend({
                 var buttons = [elements._previous, elements._next];
                 buttons.forEach(it().on('mouseover').addClass('hovered'));
                 buttons.forEach(it().on('mouseout').removeClass('hovered'));
+                
+                // Monitor page changes to highlight page links
+                paginator.on('pagechange', function(paginator, page) {
+                    self._highlightPage(page);
+                    buttons.forEach(it().removeClass('disabled'));
+                });
+                var page = paginator.getCurrentPage();
+                self._highlightPage(page);
+                
+                // Disable previous and next buttons at the ends of the run
+                paginator.on('firstpage')._(elements._previous).addClass('disabled');
+                paginator.on('lastpage')._(elements._next).addClass('disabled');
+                if (page == 1) elements._previous.addClass('disabled');
+                if (page == paginator.getPages()) elements._next.addClass('disabled');
             }) );
             
             return elements._container;

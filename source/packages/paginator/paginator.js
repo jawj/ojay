@@ -93,6 +93,7 @@ Ojay.Paginator = JS.Class({
      * @returns {Number}
      */
     getPages: function() {
+        if (this._numPages) return this._numPages;
         var items = this.getItems();
         if (!items) return undefined;
         if (items.length === 0) return 0;
@@ -216,6 +217,9 @@ Ojay.Paginator = JS.Class({
                 if (page != this._currentPage) {
                     this._currentPage = page;
                     this.notifyObservers('pagechange', page);
+                    
+                    if (page == 1) this.notifyObservers('firstpage');
+                    if (page == this._numPages) this.notifyObservers('lastpage');
                 }
             }
         },
