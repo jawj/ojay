@@ -9,3 +9,14 @@
         forEach(function(method) {
             Number.prototype[method] = Math[method].methodize();
         });
+
+/**
+ * <p>Calls the given <tt>block</tt> in the scope of <tt>context</tt> a given number of
+ * times. The block receives the iteration index each time it is called.</p>
+ * @param {Function} block
+ * @param {Object} context
+ */
+Number.prototype.times = function(block, context) {
+    if (this < 0) return;
+    for (var i = 0; i < this; i++) block.call(context || null, i);
+};
