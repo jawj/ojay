@@ -509,6 +509,21 @@
         },
         
         /**
+         * <p>Resizes every member of the collection so as to fit inside the given region exactly.</p>
+         * @param {Region} region
+         * @returns {DomCollection}
+         */
+        fitToRegion: function(region) {
+            var width = region.getWidth(), height = region.getHeight();
+            this.forEach(function(element) {
+                element.setStyle({width: width + 'px', height: height + 'px'});
+                var reg = element.getRegion(), w = reg.getWidth(), h = reg.getHeight();
+                element.setStyle({width: (2 * width - w) + 'px', height: (2 * height - h) + 'px'});
+            });
+            return this;
+        },
+        
+        /**
          * <p>Returns the total width of the region occupied by the element, including padding
          * and borders. Values returned are in pixels.</p>
          * @returns {Number}

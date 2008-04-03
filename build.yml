@@ -116,9 +116,11 @@ packages:
     source_dir: packages/paginator
     files:
       - paginator
+      - ajax_paginator
       - controls
     requires:
       - ojay/core-min
+      - ojay/pkg/http-min
 all:
   copyright: COPYRIGHT
   files:

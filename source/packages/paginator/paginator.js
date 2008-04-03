@@ -100,8 +100,8 @@ Ojay.Paginator = JS.Class({
         var containerRegion = this.getRegion(), itemRegion = items.at(0).getRegion();
         this._itemWidth     = itemRegion.getWidth();
         this._itemHeight    = itemRegion.getHeight();
-        this._itemsPerCol   = (containerRegion.getWidth() / this._itemWidth).floor();
-        this._itemsPerRow   = (containerRegion.getHeight() / this._itemHeight).floor();
+        this._itemsPerCol   = (containerRegion.getWidth() / this._itemWidth).floor() || 1;
+        this._itemsPerRow   = (containerRegion.getHeight() / this._itemHeight).floor() || 1;
         this._itemsPerPage  = this._itemsPerRow * this._itemsPerCol;
         return (items.length / this._itemsPerPage).ceil();
     },
