@@ -123,7 +123,7 @@
     });
     
     Ojay.History.manage(ajaxer, 'pager');
-    Ojay.History.initialize();
+    Ojay.History.initialize({asset: './index.html'});
     
     Ojay.onDOMReady(function() {
         pager.setup();
