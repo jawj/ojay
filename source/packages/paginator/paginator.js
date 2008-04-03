@@ -167,7 +167,7 @@ Ojay.Paginator = JS.Class({
              */
             setPage: function(page) {
                 page = Number(page);
-                if (page < 1 || page > this._numPages) return;
+                if (page == this._currentPage || page < 1 || page > this._numPages) return;
                 this.changeState({page: page});
             },
             

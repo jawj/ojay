@@ -42,8 +42,6 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
              * @param {Number} page
              */
             _handleSetPage: function(page) {
-                page = Number(page);
-                if (page < 1 || page > this._numPages) return;
                 if (this._pageLoaded(page)) return this.callSuper();
                 var url = this._options.urls[page - 1], _super = this.method('callSuper');
                 this.notifyObservers('pagerequest', url._url);
