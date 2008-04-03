@@ -36,7 +36,7 @@ Ojay.Paginator = JS.Class({
      * @param {Object} state
      */
     changeState: function(state) {
-        if (state.page !== undefined) this.setPage(state.page);
+        if (state.page !== undefined) this._handleSetPage(state.page);
     },
     
     /**
@@ -157,33 +157,37 @@ Ojay.Paginator = JS.Class({
                 var state = this.getInitialState();
                 this.setState('READY');
                 this._currentPage = state.page;
-                this.setPage(state.page);
+                this._handleSetPage(state.page);
             }
         },
         
         READY: {
             /**
              * @param {Number} page
-             * @param {Boolean} animate
              */
-            setPage: function(page, animate) {
+            setPage: function(page) {
                 page = Number(page);
                 if (page < 1 || page > this._numPages) return;
-                this.setScroll((page - 1) / (this._numPages - 1), {animate: animate !== false});
+                this.changeState({page: page});
             },
             
             /**
-             * @param {Boolean} animate
+             * @param {Number} page
              */
-            incrementPage: function(animate) {
-                return this.setPage(this._currentPage + 1, animate);
+            _handleSetPage: function(page) {
+                this.setScroll((page - 1) / (this._numPages - 1), {animate: true});
             },
             
             /**
-             * @param {Boolean} animate
              */
-            decrementPage: function(animate) {
-                return this.setPage(this._currentPage - 1, animate);
+            incrementPage: function() {
+                return this.setPage(this._currentPage + 1);
+            },
+            
+            /**
+             */
+            decrementPage: function() {
+                return this.setPage(this._currentPage - 1);
             },
             
             /**

@@ -33,6 +33,7 @@ var Gallery = JS.Class({
         this.state = this.getInitialState();
         this.pages = 'Some pages'.split('');
         this.setPage(this.state.page);
+        this.setBoxState(this.state.popupVisible);
     },
     
     registerEventListeners: function() {

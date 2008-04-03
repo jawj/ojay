@@ -40,9 +40,8 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
         READY: {
             /**
              * @param {Number} page
-             * @param {Boolean} animate
              */
-            setPage: function(page, animate) {
+            _handleSetPage: function(page) {
                 page = Number(page);
                 if (page < 1 || page > this._numPages) return;
                 if (this._pageLoaded(page)) return this.callSuper();
