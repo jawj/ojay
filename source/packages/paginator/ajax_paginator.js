@@ -43,17 +43,22 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
              */
             _handleSetPage: function(page) {
                 if (this._pageLoaded(page)) return this.callSuper();
-                var url = this._options.urls[page - 1], _super = this.method('callSuper');
+                var url = this._options.urls[page - 1], _super = this.method('callSuper'), self = this;
+                this.setState('REQUESTING');
                 this.notifyObservers('pagerequest', url._url);
                 Ojay.HTTP.GET(url._url, {}, {
                     onSuccess: function(response) {
-                        response.insertInto(this._elements._items.at(page - 1));
+                        response.insertInto(self._elements._items.at(page - 1));
                         url._loaded = true;
-                        this.notifyObservers('pageload', url._url, response);
+                        self.setState('READY');
+                        self.notifyObservers('pageload', url._url, response);
                         _super();
-                    }.bind(this)
+                    },
+                    onFailure: this.method('setState').partial('READY')
                 });
             }
-        }
+        },
+        
+        REQUESTING: {}
     }
 });
