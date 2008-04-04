@@ -11,11 +11,35 @@
       #header
         .sub
           %h1 Ojay examples
+          #versions
       #main
         .sub
           #content
             = yield
+            :plain
+              <h4 style="margin-top: 40px;">JavaScript source code</h4>
+              <textarea id="script-display"></textarea>
+              <h4>Stylesheet</h4>
+              <textarea id="style-display"></textarea>
+              
+              <script type="text/javascript">
+                Ojay('#versions').setContent('YUI: ' + YAHOO.VERSION + ', Ojay: ' + (Ojay.VERSION || 'edge'));
+                
+                unindent = function(string) {
+                    var lines = string.replace(/^(\s*\n)*/, '').replace(/(\n\s*)*$/, '').split(/\n/);
+                    var indent = lines.reduce(function(memo, line) {
+                        if (/^\s*$/.test(line)) return memo;
+                        var spaces = line.match(/^ +/);
+                        if (!spaces) return memo;
+                        return Math.min(memo, spaces[0].length);
+                    }, Infinity);
+                    return lines.map({slice: indent}).join("\n");
+                };
+                
+                var style = unindent(Ojay('#display-style').node.innerHTML);
+                var script = unindent(Ojay('#display-script').node.innerHTML);
+                Ojay('#style-display').setAttributes({value: style, rows: style.split(/\n/).length + 1});
+                Ojay('#script-display').setAttributes({value: script, rows: script.split(/\n/).length + 1});
+              </script>
       #footer
         .sub
-          Copyright &copy; 2007&ndash;2008
-          =link 'the OTHER media', 'http://othermedia.com'

@@ -1,6 +1,7 @@
 !white          = #fff
 !black          = #000
 !light_grey     = #eee
+!mid_grey       = #999
 !dark_grey      = #444
 !brown          = #807065
 !teal           = #61A098
@@ -28,7 +29,7 @@ body, #container
   :position       relative
 
 #header
-  :margin           = 0 0 (!leading*!font_size)
+  :margin           = 0 0 (2*!leading*!font_size)
   :padding          = 0 0 !font_size
   :border-bottom    = 1px solid !black
   
@@ -39,6 +40,14 @@ body, #container
     :margin         30px 0 0
     :padding        57px 0 0
     :background     url(examples.gif) left top no-repeat
+  
+  #versions
+    :font
+      :size         80%
+      :family       Monaco, Consolas, Lucida Console, Courier New, monospace
+    :position       absolute
+    :right          0
+    :bottom         8px
 
 #footer
   :color          = !black
@@ -58,3 +67,18 @@ body, #container
   :clear          both
   :height         0
   :overflow       hidden
+
+#style-display, #script-display
+  :border       0
+  :width        100%
+
+h4
+  :margin       = !leading*!font_size 0
+  :padding      6px 0 0
+  :border-top   = 1px solid !mid_grey
+
+textarea
+  :font
+    :size       80%
+    :family     Monaco, Consolas, Lucida Console, Courier New, monospace
+  :line-height  1.4em
