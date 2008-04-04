@@ -2,74 +2,79 @@
 
 :plain
     <style id="display-style" type="text/css">
+        label.js {
+            display:        block;
+            font-size:      18px;
+        }
         label.js.focused { color: #3EA9B0; }
         
         .radios { height: 60px; margin-bottom: 18px; }
         
         label.js.radio {
-            background:   url(/images/dot-sprite.gif) left top no-repeat;
-            display:      block;
-            float:        left;
-            margin-right: 12px;
-            font-size:    18px;
-            height:       30px;
-            padding:      4px 0 5px 50px;
-            width:        100px;
+            background:     url(/images/dot-sprite.gif) left top no-repeat;
+            float:          left;
+            margin-right:   12px;
+            height:         30px;
+            padding:        4px 0 5px 50px;
+            width:          100px;
         }
         label.js.radio.hovered { background-position: 0 -39px; }
         label.js.radio.checked { background-position: 0 -78px;  }
         label.js.radio.hovered.checked { background-position: 0 -117px; }
         
         label.js.checkbox {
-            background:   url(/images/tick-sprite.gif) left top no-repeat;
-            display:      block;
-            float:        left;
-            font-size:    18px;
-            height:       30px;
-            padding:      4px 0 5px 50px;
-            width:        240px;
-            margin-right: 80px;
+            background:     url(/images/tick-sprite.gif) left top no-repeat;
+            display:        block;
+            float:          left;
+            font-size:      18px;
+            height:         30px;
+            padding:        4px 0 5px 50px;
+            width:          240px;
+            margin-right:   80px;
         }
         label.js.checkbox.hovered { background-position: 0 -39px; }
         label.js.checkbox.checked { background-position: 0 -78px;  }
         label.js.checkbox.hovered.checked { background-position: 0 -117px; }
         
         .select-container {
-            float:        left;
-            width:        200px;
-            height:       22px;
+            float:          left;
+            width:          200px;
+            height:         22px;
+        }
+        div.select-container.hovered, div.select-container.focused {
+            background:     #ffc;
         }
         .select-display {
-            border:       1px solid #999;
-            font-size:    12px;
-            padding:      2px 6px;
-            height:       16px;
-            overflow:     hidden;
+            border:         1px solid #999;
+            font-size:      12px;
+            padding:        2px 6px;
+            height:         16px;
+            overflow:       hidden;
         }
         .select-button {
-            background:   url(/images/select.gif) left top no-repeat;
-            position:     absolute;
-            right:        1px;
-            top:          1px;
-            width:        20px;
-            height:       20px;
+            background:     url(/images/select.gif) left top no-repeat;
+            position:       absolute;
+            right:          1px;
+            top:            1px;
+            width:          20px;
+            height:         20px;
         }
         .select-list ul {
-            background:   #fff;
-            border:       1px solid #ccc;
-            border-top:   0;
-            list-style:   none;
-            margin:       0;
-            padding:      0;
+            background:     #fff;
+            border:         1px solid #ccc;
+            border-top:     0;
+            list-style:     none;
+            margin:         0;
+            padding:        0;
         }
         .select-list li {
-            border-top:   1px solid #9ab;
-            display:      block;
-            list-style:   none;
-            padding:      4px 8px;
+            border-top:     1px solid #9ab;
+            display:        block;
+            list-style:     none;
+            padding:        4px 8px;
         }
         .select-list li.hovered {
-            background:   #cef;
+            background:     #cef;
         }
         
         #form-result { margin: 30px 0; }

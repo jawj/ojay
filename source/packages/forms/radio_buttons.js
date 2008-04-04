@@ -72,7 +72,7 @@ Ojay.Forms.RadioButtons = JS.Class({
                     throw new TypeError('Attempt to create a RadioButtons object with non-radio element');
                 this._group = group;
                 this._input = input;
-                this.setupButton();
+                this._setupButton();
             }
         })
     }

@@ -22,6 +22,6 @@ Ojay.Forms.Checkbox = JS.Class({
         this._input = Ojay(input);
         if (!this._input || !this._input.node || this._input.node.type != 'checkbox')
             throw new TypeError('Attempt to create a Checkbox object with non-checkbox element');
-        this.setupButton();
+        this._setupButton();
     }
 });

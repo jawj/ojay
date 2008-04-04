@@ -3,7 +3,7 @@
  * @class Forms.Select
  */
 Ojay.Forms.Select = JS.Class({
-    include: [Ojay.Observable, JS.State],
+    include: [Ojay.Observable, JS.State, InputStates],
     
     extend: {
         CONTAINER_CLASS:    'select-container',
@@ -54,7 +54,7 @@ Ojay.Forms.Select = JS.Class({
             throw new TypeError('Attempt to create a Select object with non-select element');
         var elements = this._elements = {};
         this._input.insert(this.getHTML().node, 'after');
-        this._input.setStyle({opacity: 0, position: 'absolute', left: '-5000px', top: '-5000px'});
+        this._setupInput();
         this.updateOptions();
         
         this.setState('LIST_OPEN');
