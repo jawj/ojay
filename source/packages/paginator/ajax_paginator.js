@@ -11,14 +11,6 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
     },
     
     /**
-     * @param {Number} page
-     * @returns {Boolean}
-     */
-    pageLoaded: function(page) {
-        return !!(this._options.urls[page - 1]||{})._loaded;
-    },
-    
-    /**
      * @returns {DomCollection}
      */
     getItems: function() {
@@ -36,6 +28,33 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
         return items;
     },
     
+    /**
+     * @param {Number} page
+     * @returns {Boolean}
+     */
+    pageLoaded: function(page) {
+        return !!(this._options.urls[page - 1]||{})._loaded;
+    },
+    
+    /**
+     * @param {Number} page
+     * @param {Function} callback
+     * @param {Object} scope
+     */
+    loadPage: function(page, callback, scope) {
+        if (this.pageLoaded(page) || this.inState('CREATED')) return;
+        var url = this._options.urls[page - 1], self = this;
+        this.notifyObservers('pagerequest', url._url);
+        Ojay.HTTP.GET(url._url, {}, {
+            onSuccess: function(response) {
+                response.insertInto(self._elements._items.at(page - 1));
+                url._loaded = true;
+                self.notifyObservers('pageload', url._url, response);
+                if (typeof callback == 'function') callback.call(scope || null);
+            }
+        });
+    },
+    
     states: {
         READY: {
             /**
@@ -43,29 +62,12 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
              */
             _handleSetPage: function(page) {
                 if (this.pageLoaded(page)) return this.callSuper();
-                this.loadPage(page, this.callSuper, this);
-            },
-            
-            /**
-             * @param {Number} page
-             * @param {Function} callback
-             * @param {Object} scope
-             */
-            loadPage: function(page, callback, scope) {
-                if (this.pageLoaded(page)) return;
-                var url = this._options.urls[page - 1], self = this;
+                var _super = this.method('callSuper');
                 this.setState('REQUESTING');
-                this.notifyObservers('pagerequest', url._url);
-                Ojay.HTTP.GET(url._url, {}, {
-                    onSuccess: function(response) {
-                        response.insertInto(self._elements._items.at(page - 1));
-                        url._loaded = true;
-                        self.setState('READY');
-                        self.notifyObservers('pageload', url._url, response);
-                        if (typeof callback == 'function') callback.call(scope || null);
-                    },
-                    onFailure: this.method('setState').partial('READY')
-                });
+                this.loadPage(page, function() {
+                    this.setState('READY');
+                    _super();
+                }, this);
             }
         },
         
