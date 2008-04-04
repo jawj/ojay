@@ -23,14 +23,54 @@
         label.js.checkbox {
             background:   url(/images/tick-sprite.gif) left top no-repeat;
             display:      block;
+            float:        left;
             font-size:    18px;
             height:       30px;
             padding:      4px 0 5px 50px;
             width:        240px;
+            margin-right: 80px;
         }
         label.js.checkbox.hovered { background-position: 0 -39px; }
         label.js.checkbox.checked { background-position: 0 -78px;  }
         label.js.checkbox.hovered.checked { background-position: 0 -117px; }
+        
+        .select-container {
+            float:        left;
+            width:        200px;
+            height:       22px;
+        }
+        .select-display {
+            border:       1px solid #999;
+            font-size:    12px;
+            padding:      2px 6px;
+            height:       16px;
+            overflow:     hidden;
+        }
+        .select-button {
+            background:   url(/images/select.gif) left top no-repeat;
+            position:     absolute;
+            right:        1px;
+            top:          1px;
+            width:        20px;
+            height:       20px;
+        }
+        .select-list ul {
+            background:   #fff;
+            border:       1px solid #ccc;
+            border-top:   0;
+            list-style:   none;
+            margin:       0;
+            padding:      0;
+        }
+        .select-list li {
+            border-top:   1px solid #9ab;
+            display:      block;
+            list-style:   none;
+            padding:      4px 8px;
+        }
+        .select-list li.hovered {
+            background:   #cef;
+        }
         
         #form-result { margin: 30px 0; }
     </style>
@@ -52,6 +92,14 @@
             </div>
             <input type="checkbox" name="accept" id="accept" value="1" /> 
             <label for="accept" class="checkbox">Accept terms and conditions?</label>
+            
+            <label for="delivery">Delivery method</label>
+            <select name="delivery" id="delivery">
+                <option value="null">Choose...</option>
+                <option value="first-class">First class post</option>
+                <option value="recorded-delivery">Recorded delivery</option>
+                <option value="air-mail">Air mail</option>
+            </select>
         </form>
         
         <div id="form-result"></div>
@@ -60,6 +108,7 @@
     <script id="display-script" type="text/javascript">
         new Ojay.Forms.RadioButtons('.radios input');
         new Ojay.Forms.Checkbox('#accept');
+        var select = new Ojay.Forms.Select('#delivery');
         
         var serializeForm = function() {
             Ojay('#form-result').setContent(YAHOO.util.Connect.setForm('the-form'));
@@ -67,4 +116,5 @@
         
         Ojay('.radios input').on('click', serializeForm);
         Ojay('#accept').on('click', serializeForm);
+        select.on('change', serializeForm);
     </script>
