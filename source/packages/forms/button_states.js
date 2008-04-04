@@ -9,8 +9,7 @@ var ButtonStates = JS.Module({
      * <p>Called inside class constructors to set up the behaviour of a form input and its label.</p>
      */
     setupButton: function() {
-        // TODO: Taken out for testing - put back in before release
-        // this._input.setStyle({opacity: 0, position: 'absolute', left: '-5000px', top: '-5000px'});
+        this._input.setStyle({opacity: 0, position: 'absolute', left: '-5000px', top: '-5000px'});
         this._input.on('click')._(this).setChecked();
         this._input.on('focus')._(this).setFocused(true);
         this._input.on('blur')._(this).setFocused(false);

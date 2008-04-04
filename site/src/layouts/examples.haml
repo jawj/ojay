@@ -1,0 +1,21 @@
+!!!
+%html
+  %head
+    %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
+    %title
+      = 'Ojay: ' + (@title || 'YUI development made easy')
+    =javascripts 'yui/2.5.1', 'ojay/all-min'
+    =stylesheets 'examples'
+  %body
+    #container
+      #header
+        .sub
+          %h1 Ojay examples
+      #main
+        .sub
+          #content
+            = yield
+      #footer
+        .sub
+          Copyright &copy; 2007&ndash;2008
+          =link 'the OTHER media', 'http://othermedia.com'

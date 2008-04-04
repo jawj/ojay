@@ -1,0 +1,27 @@
+- @title = 'Form styling'
+
+:plain
+  <style type="text/css">
+    label.focused { color: #3EA9B0; }
+    
+    label.checkbox {
+      background:   url(/images/tick-sprite.gif) left top no-repeat;
+      display:      block;
+      font-size:    18px;
+      height:       30px;
+      padding:      4px 0 5px 50px;
+      width:        240px;
+    }
+    label.checkbox.hovered { background-position: 0 -39px; }
+    label.checkbox.checked { background-position: 0 -78px;  }
+    label.checkbox.hovered.checked { background-position: 0 -117px; }
+  </style>
+  
+  <form action="/" method="post">
+    <input type="checkbox" name="accept" id="accept" value="1" /> 
+    <label for="accept" class="checkbox">Accept terms and conditions?</label>
+  </form>
+  
+  <script type="text/javascript">
+    new Ojay.Forms.Checkbox('#accept');
+  </script>

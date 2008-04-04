@@ -1,0 +1,60 @@
+!white          = #fff
+!black          = #000
+!light_grey     = #eee
+!dark_grey      = #444
+!brown          = #807065
+!teal           = #61A098
+!light_blue     = #C2ECE7
+!green          = #bbdd92
+!columns        = 6
+!column_width   = 130px
+!gutter_width   = 16px
+!font_size      = 14px
+!leading        = 1.5
+
+body, #container
+  :background     = !white
+  :color          = !black
+  :margin         0
+  :padding        0
+  :font
+    :size         = !font_size
+    :family       Arial, Helvetica, sans-serif
+  :line-height    = !leading
+
+.sub
+  :width          = (!columns * !column_width) + ((!columns - 1) * !gutter_width)
+  :margin         0 auto
+  :position       relative
+
+#header
+  :margin           = 0 0 (!leading*!font_size)
+  :padding          = 0 0 !font_size
+  :border-bottom    = 1px solid !black
+  
+  h1
+    :width          344px
+    :height         0
+    :overflow       hidden
+    :margin         30px 0 0
+    :padding        57px 0 0
+    :background     url(examples.gif) left top no-repeat
+
+#footer
+  :color          = !black
+  :border-top     = 1px solid !black
+  :padding        = !leading*!font_size 0
+  :margin         = !leading*!font_size 0 0
+  
+  a
+    :color        = !brown
+    :text-decoration none
+  
+  a:hover
+    :color        = !white
+    :background   = !brown
+
+.clear
+  :clear          both
+  :height         0
+  :overflow       hidden
