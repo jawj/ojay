@@ -1,27 +1,70 @@
 - @title = 'Form styling'
 
 :plain
-  <style id="display-style" type="text/css">
-    label.focused { color: #3EA9B0; }
-    
-    label.checkbox {
-      background:   url(/images/tick-sprite.gif) left top no-repeat;
-      display:      block;
-      font-size:    18px;
-      height:       30px;
-      padding:      4px 0 5px 50px;
-      width:        240px;
-    }
-    label.checkbox.hovered { background-position: 0 -39px; }
-    label.checkbox.checked { background-position: 0 -78px;  }
-    label.checkbox.hovered.checked { background-position: 0 -117px; }
-  </style>
+    <style id="display-style" type="text/css">
+        label.focused { color: #3EA9B0; }
+        
+        .radios { height: 60px; margin-bottom: 18px; }
+        
+        label.radio {
+            background:   url(/images/dot-sprite.gif) left top no-repeat;
+            display:      block;
+            float:        left;
+            margin-right: 12px;
+            font-size:    18px;
+            height:       30px;
+            padding:      4px 0 5px 50px;
+            width:        100px;
+        }
+        label.radio.hovered { background-position: 0 -39px; }
+        label.radio.checked { background-position: 0 -78px;  }
+        label.radio.hovered.checked { background-position: 0 -117px; }
+        
+        label.checkbox {
+            background:   url(/images/tick-sprite.gif) left top no-repeat;
+            display:      block;
+            font-size:    18px;
+            height:       30px;
+            padding:      4px 0 5px 50px;
+            width:        240px;
+        }
+        label.checkbox.hovered { background-position: 0 -39px; }
+        label.checkbox.checked { background-position: 0 -78px;  }
+        label.checkbox.hovered.checked { background-position: 0 -117px; }
+        
+        #form-result { margin: 30px 0; }
+    </style>
   
-  <form action="/" method="post">
-    <input type="checkbox" name="accept" id="accept" value="1" /> 
-    <label for="accept" class="checkbox">Accept terms and conditions?</label>
-  </form>
+    <div id="display-markup">
+        <form action="/" method="post" id="the-form">
+            <div class="radios">
+                <input type="radio" name="cc" value="visa" id="cc_visa" />
+                <label for="cc_visa" class="radio">Visa</label>
+                
+                <input type="radio" name="cc" value="mastercard" id="cc_mastercard" />
+                <label for="cc_mastercard" class="radio">Mastercard</label>
+                
+                <input type="radio" name="cc" value="amex" id="cc_amex" />
+                <label for="cc_amex" class="radio">AmEx</label>
+                
+                <input type="radio" name="cc" value="switch" id="cc_switch" />
+                <label for="cc_switch" class="radio">Switch</label>
+            </div>
+            <input type="checkbox" name="accept" id="accept" value="1" /> 
+            <label for="accept" class="checkbox">Accept terms and conditions?</label>
+        </form>
+        
+        <div id="form-result"></div>
+    </div>
   
-  <script id="display-script" type="text/javascript">
-    new Ojay.Forms.Checkbox('#accept');
-  </script>
+    <script id="display-script" type="text/javascript">
+        new Ojay.Forms.RadioButtons('.radios input');
+        new Ojay.Forms.Checkbox('#accept');
+        
+        var serializeForm = function() {
+            Ojay('#form-result').setContent(YAHOO.util.Connect.setForm('the-form'));
+        };
+        
+        Ojay('.radios input').on('click', serializeForm);
+        Ojay('#accept').on('click', serializeForm);
+    </script>

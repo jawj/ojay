@@ -16,6 +16,7 @@
         .sub
           #content
             = yield
+            
             :plain
               <h4 style="margin-top: 40px;">JavaScript source code</h4>
               <textarea id="script-display"></textarea>
@@ -36,10 +37,13 @@
                     return lines.map({slice: indent}).join("\n");
                 };
                 
-                var style = unindent(Ojay('#display-style').node.innerHTML);
-                var script = unindent(Ojay('#display-script').node.innerHTML);
-                Ojay('#style-display').setAttributes({value: style, rows: style.split(/\n/).length + 1});
-                Ojay('#script-display').setAttributes({value: script, rows: script.split(/\n/).length + 1});
+                showSource = function(name) {
+                    var code = unindent(Ojay('#display-' + name).node.innerHTML);
+                    Ojay('#' + name + '-display').setAttributes({value: code, rows: code.split(/\n/).length + 1});
+                };
+                
+                showSource('script');
+                showSource('style');
               </script>
       #footer
         .sub
