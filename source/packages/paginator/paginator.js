@@ -208,6 +208,7 @@ Ojay.Paginator = JS.Class({
                 var element = this._elements._items.at(id - 1);
                 this.notifyObservers('focusitem', id, element);
                 this.setPage(page, animate);
+                this._elements._items.removeClass('focused');
                 element.addClass('focused');
             },
             
