@@ -14,7 +14,7 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
      * @param {Number} page
      * @returns {Boolean}
      */
-    _pageLoaded: function(page) {
+    pageLoaded: function(page) {
         return !!(this._options.urls[page - 1]||{})._loaded;
     },
     
@@ -42,8 +42,18 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
              * @param {Number} page
              */
             _handleSetPage: function(page) {
-                if (this._pageLoaded(page)) return this.callSuper();
-                var url = this._options.urls[page - 1], _super = this.method('callSuper'), self = this;
+                if (this.pageLoaded(page)) return this.callSuper();
+                this.loadPage(page, this.callSuper, this);
+            },
+            
+            /**
+             * @param {Number} page
+             * @param {Function} callback
+             * @param {Object} scope
+             */
+            loadPage: function(page, callback, scope) {
+                if (this.pageLoaded(page)) return;
+                var url = this._options.urls[page - 1], self = this;
                 this.setState('REQUESTING');
                 this.notifyObservers('pagerequest', url._url);
                 Ojay.HTTP.GET(url._url, {}, {
@@ -52,7 +62,7 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
                         url._loaded = true;
                         self.setState('READY');
                         self.notifyObservers('pageload', url._url, response);
-                        _super();
+                        if (typeof callback == 'function') callback.call(scope || null);
                     },
                     onFailure: this.method('setState').partial('READY')
                 });
