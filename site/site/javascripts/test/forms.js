@@ -35,6 +35,15 @@ Ojay('#check-foo').on('click', function(el,ev) {
     alert(YAHOO.util.Connect.setForm('buttons'));
 });
 
+disabled = false;
+Ojay('#disabler').on('click', function(el,ev) {
+    ev.stopEvent();
+    disabled = !disabled;
+    radios.getInput(1).setDisabled(disabled);
+    check.setDisabled(disabled);
+    selector.setDisabled(disabled);
+});
+
 // Attemp to exploit security hole by removing errors after validation
 Ojay('#evil').on('click', function(el,ev) {
     ev.stopEvent();

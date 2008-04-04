@@ -67,7 +67,7 @@ Ojay.Forms.Select = JS.Class({
                 .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect());
         
         elements._container.setStyle({position: 'relative', cursor: 'default'});
-        elements._container.on('click')._(this).showList();
+        [elements._display, elements._button].forEach(it().on('click')._(this).toggleList());
         
         var KeyListener = YAHOO.util.KeyListener;
         new KeyListener(this._input.node, {keys: KeyListener.KEY.ESCAPE}, {
@@ -185,6 +185,7 @@ Ojay.Forms.Select = JS.Class({
     states: {
         LIST_CLOSED: {
             showList: function() {
+                if (this.disabled) return;
                 this.updateListPosition();
                 this._elements._listContainer.show();
                 this._focusInput();
