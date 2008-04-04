@@ -3,7 +3,8 @@ var InputStates = JS.Module({
      *
      */
     _setupInput: function() {
-        this._input.setStyle({position: 'absolute', left: '-5000px', top: '-5000px'});
+        var region = this._input.getRegion(), top = region ? region.top : 0;
+        this._input.setStyle({position: 'absolute', left: '-5000px', top: top + 'px'});
         this._input.on('focus')._(this).setFocused(true);
         this._input.on('blur')._(this).setFocused(false);
         
