@@ -103,51 +103,51 @@ var FormDSL = JS.Class({
      * @param {FormDescription} form
      */
     initialize: function(form) {
-        this.extend({
-            /**
-             * <p>Returns a <tt>RequirementDSL</tt> object used to specify the requirement.</p>
-             * @param {String} name
-             * @param {String} displayed
-             * @returns {RequirementDSL}
-             */
-            requires: function(name, displayed) {
-                var requirement = form._getRequirement(name);
-                if (displayed) form._names[name] = displayed;
-                return requirement._dsl;
-            },
-            
-            /**
-             * <p>Adds a validator function to the form that allows the user to inspect the data
-             * and add new errors.</p>
-             * @param {Function} block
-             * @returns {FormDSL}
-             */
-            validates: function(block) {
-                form._validators.push(block);
-                return this;
-            },
-            
-            /**
-             * @param {Object} options
-             * @returns {FormDSL}
-             */
-            submitsUsingAjax: function(options) {
-                form._ajax = true;
-                return this;
-            },
-            
-            /**
-             * @returns {FormDSL}
-             */
-            highlightsActiveField: function() {
-                form._highlightActiveField();
-                return this;
-            }
-        });
-        
-        this.extend({expects: this.requires});
+        this._form = form;
+    },
+    
+    /**
+     * <p>Returns a <tt>RequirementDSL</tt> object used to specify the requirement.</p>
+     * @param {String} name
+     * @param {String} displayed
+     * @returns {RequirementDSL}
+     */
+    requires: function(name, displayed) {
+        var requirement = this._form._getRequirement(name);
+        if (displayed) this._form._names[name] = displayed;
+        return requirement._dsl;
+    },
+    
+    /**
+     * <p>Adds a validator function to the form that allows the user to inspect the data
+     * and add new errors.</p>
+     * @param {Function} block
+     * @returns {FormDSL}
+     */
+    validates: function(block) {
+        this._form._validators.push(block);
+        return this;
+    },
+    
+    /**
+     * @param {Object} options
+     * @returns {FormDSL}
+     */
+    submitsUsingAjax: function(options) {
+        this._form._ajax = true;
+        return this;
+    },
+    
+    /**
+     * @returns {FormDSL}
+     */
+    highlightsActiveField: function() {
+        this._form._highlightActiveField();
+        return this;
     }
 });
+
+FormDSL.include({expects: FormDSL.prototype.requires});
 
 var FormDSLMethods = ['requires', 'expects', 'validates', 'submitsUsingAjax', 'highlightsActiveField'];
 
@@ -163,128 +163,126 @@ var RequirementDSL = JS.Class({
      * @param {FormRequirement} requirement
      */
     initialize: function(requirement) {
-        this.extend({
-            /**
-             * <p>Specifies that the given checkbox field must be checked.</p>
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toBeChecked: function(message) {
-                var element = requirement._elements.node;
-                if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + requirement._field + '" is not a checkbox');
-                requirement._add(function(value) {
-                    return value == element.value || [message || 'must be checked'];
-                });
-                return this;
-            },
-            
-            /**
-             * <p>Specifies that the required field must be a number in order to be considered valid.</p>
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toBeNumeric: function(message) {
-                requirement._add(function(value) {
-                    return Ojay.isNumeric(value) || [message || 'must be a number'];
-                });
-                return this;
-            },
-            
-            /**
-             * <p>Specifies that the required field must have one of the values in the given list in
-             * order to be considered valid.</p>
-             * @param {Array} list
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toBeOneOf: function(list, message) {
-                requirement._add(function(value) {
-                    return list.indexOf(value) != -1 || [message || 'is not valid'];
-                });
-                return this;
-            },
-            
-            /**
-             * <p>Specifies that the required field must confirm the value in another field.</p>
-             * @param {String} field
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toConfirm: function(field, message) {
-                requirement._add(function(value, data) {
-                    return value == data.get(field) || [message || 'must be confirmed', field];
-                });
-                return this;
-            },
-            
-            /**
-             * <p>Specifies that the required field must have a certain length in order to be considered
-             * valid. Valid inputs are a number (to specifiy an exact length), or an object with
-             * <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
-             * @param {Number|Object} options
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toHaveLength: function(options, message) {
-                var min = options.minimum, max = options.maximum;
-                requirement._add(function(value) {
-                    return  (typeof options == 'number' && value.length != options &&
-                                [message || 'must contain exactly ' + options + ' characters']) ||
-                            (min !== undefined && value.length < min &&
-                                [message || 'must contain at least ' + min + ' characters']) ||
-                            (max !== undefined && value.length > max &&
-                                [message || 'must contain at most ' + max + ' characters']) ||
-                            true;
-                });
-                return this;
-            },
-            
-            /**
-             * <p>Specifies that the required field must have a certain value in order to be considered
-             * valid. Input should be an object with <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
-             * @param {Object} options
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toHaveValue: function(options, message) {
-                var min = options.minimum, max = options.maximum;
-                requirement._add(function(value) {
-                    if (!Ojay.isNumeric(value)) return message || 'must be a number';
-                    value = Number(value);
-                    return  (min !== undefined && value < min &&
-                                [message || 'must be at least ' + min]) ||
-                            (max !== undefined && value > max &&
-                                [message || 'must be at most ' + max]) ||
-                            true;
-                });
-                return this;
-            },
-            
-            /**
-             * <p>Specifies that the required field must match a given regex in order to be considered
-             * valid.</p>
-             * @param {Regexp} format
-             * @param {String} message
-             * @returns {RequirementDSL}
-             */
-            toMatch: function(format, message) {
-                requirement._add(function(value) {
-                    return format.test(value) || [message || 'is not valid'];
-                });
-                return this;
-            }
+        this._requirement = requirement;
+    },
+    
+    /**
+     * <p>Specifies that the given checkbox field must be checked.</p>
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toBeChecked: function(message) {
+        var element = this._requirement._elements.node;
+        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this._requirement._field + '" is not a checkbox');
+        this._requirement._add(function(value) {
+            return value == element.value || [message || 'must be checked'];
         });
-        
-        FormDSLMethods.forEach(function(method) {
-            this[method] = function() {
-                var base = requirement._form._dsl;
-                return base[method].apply(base, arguments);
-            };
-        }, this);
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must be a number in order to be considered valid.</p>
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toBeNumeric: function(message) {
+        this._requirement._add(function(value) {
+            return Ojay.isNumeric(value) || [message || 'must be a number'];
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must have one of the values in the given list in
+     * order to be considered valid.</p>
+     * @param {Array} list
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toBeOneOf: function(list, message) {
+        this._requirement._add(function(value) {
+            return list.indexOf(value) != -1 || [message || 'is not valid'];
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must confirm the value in another field.</p>
+     * @param {String} field
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toConfirm: function(field, message) {
+        this._requirement._add(function(value, data) {
+            return value == data.get(field) || [message || 'must be confirmed', field];
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must have a certain length in order to be considered
+     * valid. Valid inputs are a number (to specifiy an exact length), or an object with
+     * <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
+     * @param {Number|Object} options
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toHaveLength: function(options, message) {
+        var min = options.minimum, max = options.maximum;
+        this._requirement._add(function(value) {
+            return  (typeof options == 'number' && value.length != options &&
+                        [message || 'must contain exactly ' + options + ' characters']) ||
+                    (min !== undefined && value.length < min &&
+                        [message || 'must contain at least ' + min + ' characters']) ||
+                    (max !== undefined && value.length > max &&
+                        [message || 'must contain at most ' + max + ' characters']) ||
+                    true;
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must have a certain value in order to be considered
+     * valid. Input should be an object with <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
+     * @param {Object} options
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toHaveValue: function(options, message) {
+        var min = options.minimum, max = options.maximum;
+        this._requirement._add(function(value) {
+            if (!Ojay.isNumeric(value)) return message || 'must be a number';
+            value = Number(value);
+            return  (min !== undefined && value < min &&
+                        [message || 'must be at least ' + min]) ||
+                    (max !== undefined && value > max &&
+                        [message || 'must be at most ' + max]) ||
+                    true;
+        });
+        return this;
+    },
+    
+    /**
+     * <p>Specifies that the required field must match a given regex in order to be considered
+     * valid.</p>
+     * @param {Regexp} format
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toMatch: function(format, message) {
+        this._requirement._add(function(value) {
+            return format.test(value) || [message || 'is not valid'];
+        });
+        return this;
     }
 });
 
-
+FormDSLMethods.forEach(function(method) {
+    RequirementDSL.instanceMethod(method, function() {
+        var base = this._requirement._form._dsl;
+        return base[method].apply(base, arguments);
+    });
+}, this);
 
 /**
  * <p>The <tt>WhenDSL</tt> class creates DSL objects used to describe form requirements. All
@@ -299,29 +297,29 @@ var WhenDSL = JS.Class({
      * @param {FormDescription} form
      */
     initialize: function(form) {
-        this.extend({
-            /**
-             * <p>Allows a hook to be registered to say what should be done with the list of error
-             * messages when a particular form is validated.</p>
-             * @param {Function} block
-             * @param {Object} context
-             */
-            isValidated: function(block, context) {
-                form.subscribe(function(form) {
-                    block.call(context || null, form._errors._messages());
-                });
-            },
-            
-            /**
-             * @param {Function} block
-             * @param {Object} context
-             */
-            responseArrives: function(block, context) {
-                if (!form._ajax) return;
-                block = Function.from(block);
-                if (context) block = block.bind(context);
-                form._handleAjaxResponse = block;
-            }
+        this._form = form;
+    },
+    
+    /**
+     * <p>Allows a hook to be registered to say what should be done with the list of error
+     * messages when a particular form is validated.</p>
+     * @param {Function} block
+     * @param {Object} context
+     */
+    isValidated: function(block, context) {
+        this._form.subscribe(function(form) {
+            block.call(context || null, form._errors._messages());
         });
+    },
+    
+    /**
+     * @param {Function} block
+     * @param {Object} context
+     */
+    responseArrives: function(block, context) {
+        if (!this._form._ajax) return;
+        block = Function.from(block);
+        if (context) block = block.bind(context);
+        this._form._handleAjaxResponse = block;
     }
 });
