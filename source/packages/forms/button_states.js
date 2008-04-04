@@ -10,7 +10,7 @@ var ButtonStates = JS.Module({
      */
     setupButton: function() {
         this._input.setStyle({opacity: 0, position: 'absolute', left: '-5000px', top: '-5000px'});
-        this._input.on('click')._(this).setChecked();
+        this._input.on('click')._(this).setChecked()._(this._input.node).focus();
         this._input.on('focus')._(this).setFocused(true);
         this._input.on('blur')._(this).setFocused(false);
         
@@ -68,3 +68,5 @@ var ButtonStates = JS.Module({
         [this._input, this._label].forEach(it()[!!state ? 'addClass' : 'removeClass'](name));
     }
 });
+
+JS.MethodChain.addMethods(['focus']);
