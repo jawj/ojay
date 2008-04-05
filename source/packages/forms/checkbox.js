@@ -25,3 +25,8 @@ Ojay.Forms.Checkbox = JS.Class(/* @scope Forms.Checkbox.prototype */{
         this._setupButton();
     }
 });
+
+Ojay.Forms.Checkbox.include({
+    getValue:   Ojay.Forms.Checkbox.prototype.isChecked,
+    setValue:   Ojay.Forms.Checkbox.prototype.setChecked
+});
