@@ -194,6 +194,13 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     },
     
     /**
+     * <p>Returns the current value of the <tt>select</tt> element.</p>
+     */
+    getValue: function() {
+        return this.getSelectedOption().value;
+    },
+    
+    /**
      * <p>Sets the value of the <tt>select</tt> element to the given <tt>value</tt>, triggering
      * a <tt>change</tt> event unless you pass <tt>true</tt> as the second parameter.</p>
      * @param {String|Number} value

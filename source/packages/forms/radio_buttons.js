@@ -55,6 +55,19 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
         return item ? item._input.node.value : null;
     },
     
+    /**
+     * <p>Sets the value of the radio button group to the given <tt>value</tt>, if a button
+     * with that value exists.</p>
+     * @param {String} value
+     * @param {Boolean} silent
+     * @returns {Forms.RadioButtons}
+     */
+    setValue: function(value, silent) {
+        var input = this.getInput(value);
+        if (input) input.setChecked(true);
+        return this;
+    },
+    
     extend: {
         /**
          * @constructor
