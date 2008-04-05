@@ -13,6 +13,8 @@
  * @class Forms.RadioButtons
  */
 Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
+    include: Ojay.Observable,
+    
     /**
      * @param {String|HTMLElement|DomCollection} inputs
      */
@@ -28,10 +30,12 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
      * must notify their group when they become checked so the group can uncheck the previously
      * checked item.</p>
      * @param {Forms.RadioButtons.Item} item
+     * @param {Boolean} notify
      */
-    _check: function(item) {
+    _check: function(item, notify) {
         var current = this._checkedItem;
         if (current && current != item) current.setChecked(false);
+        if (notify !== false && current != item) this.notifyObservers('change');
         this._checkedItem = item;
     },
     
@@ -59,12 +63,12 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
      * <p>Sets the value of the radio button group to the given <tt>value</tt>, if a button
      * with that value exists.</p>
      * @param {String} value
-     * @param {Boolean} silent
+     * @param {Boolean} notify
      * @returns {Forms.RadioButtons}
      */
-    setValue: function(value, silent) {
+    setValue: function(value, notify) {
         var input = this.getInput(value);
-        if (input) input.setChecked(true);
+        if (input) input.setChecked(true, notify);
         return this;
     },
     

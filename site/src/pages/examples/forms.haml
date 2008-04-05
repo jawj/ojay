@@ -124,15 +124,13 @@
     </div>
   
     <script id="display-script" type="text/javascript">
-        new Ojay.Forms.RadioButtons('.radios input');
-        new Ojay.Forms.Checkbox('#accept');
+        var radios = new Ojay.Forms.RadioButtons('.radios input');
+        var checkbox = new Ojay.Forms.Checkbox('#accept');
         var select = new Ojay.Forms.Select('#delivery');
         
         var serializeForm = function() {
             Ojay('#form-result').setContent(Ojay.Forms.getQueryString('#the-form'));
         };
         
-        Ojay('.radios input').on('click', serializeForm);
-        Ojay('#accept').on('click', serializeForm);
-        select.on('change', serializeForm);
+        [radios, checkbox, select].forEach(it().on('change', serializeForm));
     </script>

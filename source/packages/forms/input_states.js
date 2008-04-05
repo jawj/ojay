@@ -7,6 +7,7 @@
  * @private
  */
 var InputStates = JS.Module(/** @scope InputStates */{
+    include: Ojay.Observable,
     
     /**
      * <p>Called inside class constructors to set up the behaviour of the form input and

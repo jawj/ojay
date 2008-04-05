@@ -13,7 +13,7 @@
  * @class Forms.Select
  */
 Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
-    include: [Ojay.Observable, JS.State, InputStates],
+    include: [JS.State, InputStates],
     
     extend: {
         CONTAINER_CLASS:    'select-container',
@@ -33,7 +33,9 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
                 this._label = option.text.stripTags();
                 this.hovered = false;
                 
-                this.getHTML().on('mouseover')._(this).setHovered(true);
+                var element = this.getHTML();
+                [element.on('mouseover'), element.on('mousemove')]
+                        .forEach(it()._(this).setHovered(true));
             },
             
             /**
@@ -137,14 +139,17 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     /**
      * <p>Updates the UI of the instance in response to the current state of the
      * underlying <tt>select</tt> input.</p>
-     * @param {Boolean} silent
+     * @param {Boolean} notify
      */
-    _updateDisplayFromSelect: function(silent) {
+    _updateDisplayFromSelect: function(notify) {
+        var oldValue = this._currentValue;
         var selected = this.getSelectedOption();
         if (!selected) return;
+        this._currentValue = selected.value;
         this._elements._display.setContent(selected.text.stripTags());
         this._getOption(selected.value).setHovered(true);
-        if (silent !== false) this.notifyObservers('change');
+        if (notify !== false && oldValue !== undefined && oldValue != this._currentValue)
+            this.notifyObservers('change');
     },
     
     /**
@@ -202,15 +207,15 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     
     /**
      * <p>Sets the value of the <tt>select</tt> element to the given <tt>value</tt>, triggering
-     * a <tt>change</tt> event unless you pass <tt>true</tt> as the second parameter.</p>
+     * a <tt>change</tt> event unless you pass <tt>false</tt> as the second parameter.</p>
      * @param {String|Number} value
-     * @param {Boolean} silent
+     * @param {Boolean} notify
      * @returns {Forms.Select}
      */
-    setValue: function(value, silent) {
+    setValue: function(value, notify) {
         this._getOptions().forEach(function(option) { option.selected = false; });
         this.getOptionsByValue(value).forEach(function(option) { option.selected = true; });
-        this._updateDisplayFromSelect(silent);
+        this._updateDisplayFromSelect(notify);
         return this;
     },
     

@@ -25,13 +25,22 @@ var ButtonStates = JS.Module(/** @scope ButtonStates */{
      * input is checked. If the input is part of a <tt>RadioButtons</tt> group, notifies the group in
      * order to change the state of the currently checked input.</p>
      * @param {Boolean} state
-     * @param {Boolean} silent
+     * @param {Boolean} notify
      * @returns {ButtonStates}
      */
-    setChecked: function(state, silent) {
+    setChecked: function(state, notify) {
+        var oldChecked = !!this.checked;
         this.checked = (state === undefined) ? this._input.node.checked : !!state;
-        if (this._group) this.checked && (this._input.node.checked = true) && this._group._check(this);
-        else this._input.node.checked = this.checked;
+        if (this._group) {
+            if (this.checked) {
+                this._input.node.checked = true;
+                this._group._check(this, notify);
+            }
+        } else {
+            this._input.node.checked = this.checked;
+            if (notify !== false && oldChecked != this.checked)
+                this.notifyObservers('change');
+        }
         this._setClass(this.checked, 'checked');
         return this;
     },

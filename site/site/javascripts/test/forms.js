@@ -30,6 +30,10 @@ radios = new Ojay.Forms.RadioButtons('#buttons input[name=foo-radio]');
 check = new Ojay.Forms.Checkbox('#buttons input[name=checky]');
 selector = new Ojay.Forms.Select('#drop-down');
 
+[radios, check, selector].forEach(it().on('change', function(input) {
+    window.console && console.log(input.getValue());
+}));
+
 Ojay('#check-foo').on('click', function(el,ev) {
     ev.stopEvent();
     alert(YAHOO.util.Connect.setForm('buttons'));
