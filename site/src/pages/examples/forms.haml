@@ -129,7 +129,7 @@
         var select = new Ojay.Forms.Select('#delivery');
         
         var serializeForm = function() {
-            Ojay('#form-result').setContent(YAHOO.util.Connect.setForm('the-form'));
+            Ojay('#form-result').setContent(Ojay.Forms.getQueryString('#the-form'));
         };
         
         Ojay('.radios input').on('click', serializeForm);

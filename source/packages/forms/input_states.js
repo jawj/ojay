@@ -14,8 +14,11 @@ var InputStates = JS.Module(/** @scope InputStates */{
      * enable class names to be changed.</p>
      */
     _setupInput: function() {
-        var region = this._input.getRegion(), top = region ? region.top : 0;
-        this._input.setStyle({position: 'absolute', left: '-5000px', top: top + 'px'});
+        var wrapper = Ojay( Ojay.HTML.span() ).setStyle({position: 'relative'});
+        this._input.insert(wrapper.node, 'before');
+        wrapper.insert(this._input.node, 'bottom');
+        this._input.setStyle({position: 'absolute', left: '-5000px', top: 0});
+        
         this._input.on('focus')._(this).setFocused(true);
         this._input.on('blur')._(this).setFocused(false);
         
