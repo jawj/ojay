@@ -80,7 +80,13 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
         
         // Wait a little bit because 'keydown' fires before the value changes
         [this._input.on('keydown'), this._input.on('change')]
-                .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect());
+                .forEach(it().wait(0.001)._(this)._updateDisplayFromSelect(false));
+        
+        this._input.on('keydown', function(element, evnt) {
+            var code = evnt.keyCode || 0;
+            if (code.between(48,57) || code.between(65,90) || code.between(37,40))
+                this.wait(0.001).showList();
+        }, this);
         
         elements._container.setStyle({position: 'relative', cursor: 'default'});
         [elements._display, elements._button].forEach(it().on('click')._(this).toggleList());
@@ -145,10 +151,11 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
         var oldValue = this._currentValue;
         var selected = this.getSelectedOption();
         if (!selected) return;
-        this._currentValue = selected.value;
         this._elements._display.setContent(selected.text.stripTags());
         this._getOption(selected.value).setHovered(true);
-        if (notify !== false && oldValue !== undefined && oldValue != this._currentValue)
+        if (this.inState('LIST_OPEN') || notify === false) return;
+        this._currentValue = selected.value;
+        if (oldValue !== undefined && oldValue != this._currentValue)
             this.notifyObservers('change');
     },
     
@@ -241,10 +248,10 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
                 if (this.disabled) return;
                 this.updateListPosition();
                 this._elements._listContainer.show();
+                this.setState('LIST_OPEN');
                 this._focusInput();
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
-                this.setState('LIST_OPEN');
                 return this;
             },
             
@@ -265,11 +272,11 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
              */
             hideList: function(update) {
                 this._elements._listContainer.hide();
+                this.setState('LIST_CLOSED');
                 if (update !== false) {
                     this.setValue(this._currentOption.value);
                     this._focusInput();
                 }
-                this.setState('LIST_CLOSED');
                 return this;
             },
             

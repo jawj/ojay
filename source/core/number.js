@@ -20,3 +20,17 @@ Number.prototype.times = function(block, context) {
     if (this < 0) return;
     for (var i = 0; i < this; i++) block.call(context || null, i);
 };
+
+/**
+ * <p>Returns <tt>true</tt> iff the number is between <tt>a</tt> and <tt>b</tt> inclusive.
+ * To test the range without including the end points, pass <tt>false</tt> as the third
+ * argument.</p>
+ * @param {Number} a
+ * @param {Number} b
+ * @param {Boolean} inclusive
+ * @returns {Boolean}
+ */
+Number.prototype.between = function(a, b, inclusive) {
+    if (this > a && this < b) return true;
+    return (this == a || this == b) ? (inclusive !== false) : false;
+};
