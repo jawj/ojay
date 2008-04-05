@@ -1,5 +1,6 @@
 JS.extend(Ojay, /** @scope Ojay */ {
     /**
+     * <p>Returns <tt>true</tt> iff the given value is truthy and is not just whitespace.</p>
      * @param {String} value
      * @returns {Boolean}
      */
@@ -8,6 +9,7 @@ JS.extend(Ojay, /** @scope Ojay */ {
     },
     
     /**
+     * <p>Returns <tt>true</tt> iff the given <tt>value</tt> is a number.</p>
      * @param {String} value
      * @returns {Boolean}
      */
@@ -16,6 +18,7 @@ JS.extend(Ojay, /** @scope Ojay */ {
     },
     
     /**
+     * <p>Returns <tt>true</tt> iff the given <tt>value</tt> is an email address.</p>
      * @param {String} value
      * @returns {Boolean}
      */
@@ -38,6 +41,11 @@ Ojay.Forms = function(description) {
     description.call(DSL);
 };
 
+/**
+ * <p>Returns an Ojay collection wrapping the label for the given input.</p>
+ * @param {String|HTMLElement|DomCollection} input
+ * @returns {DomCollection}
+ */
 Ojay.Forms.getLabel = function(input) {
     input = Ojay(input);
     if (!input.node) return Ojay();
@@ -46,4 +54,28 @@ Ojay.Forms.getLabel = function(input) {
     var id = input.node.id;
     label = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
     return Ojay(label.slice(0,1));
+};
+
+/**
+ * <p>Returns the serialization of the given <tt>form</tt> as a string.</p>
+ * @param {String|HTMLElement|DomCollection} form
+ * @returns {String}
+ */
+Ojay.Forms.getQueryString = function(form) {
+    var data = YAHOO.util.Connect.setForm(Ojay(form).node);
+    YAHOO.util.Connect.resetFormState();
+    return data;
+};
+
+/**
+ * <p>Returns the serialization of the given <tt>form</tt> as an object.</p>
+ * @param {String|HTMLElement|DomCollection} form
+ * @returns {Object}
+ */
+Ojay.Forms.getData = function(form) {
+    return this.getQueryString(form).split('&').reduce(function(memo, pair) {
+        var data = pair.split('=').map(decodeURIComponent);
+        memo[data[0].trim()] = data[1].trim();
+        return memo;
+    }, {});
 };

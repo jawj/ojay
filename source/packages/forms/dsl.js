@@ -1,22 +1,105 @@
 /**
- * A DSL for describing form requirements. EXPERIMENTAL. Expected usage:
+ * @overview
  *
- *     Ojay.Forms(function() { with(this) {
- *  
- *         form('loginForm')
- *             .requires('username')
- *             .requires('password');
+ * <p><tt>Ojay.Forms</tt> provides a DSL-style API for writing specs for validating form input,
+ * handling errors when they occur, and allowing forms to be submitted using Ajax. Its most basic
+ * building block is the <tt>requires</tt> statement, which expresses the fact that a given field
+ * must contain some data in order to be valid. You write all your form specs within a block like
+ * the following:</p>
+ *
+ * <pre><code>    Ojay.Forms(function() { with(this) {
  *         
- *         form('addressForm')
- *             .requires('name')
- *             .requires('line1')
- *             .requires('city').toHaveLength({minimum: 3})
- *             .requires('email').toMatch(EMAIL_FORMAT);
+ *         // The form with id 'foo' requires field named 'bar'
+ *         form('foo').requires('bar');
+ *     }});</code></pre>
+ *
+ * <p>Note that, although all these examples have their own <tt>Ojay.Forms()</tt> block, you could
+ * put them all in one block together.</p>
+ *
+ * <p>You can also use the word <tt>expects</tt> in place of <tt>requires</tt> -- the two perform
+ * exactly the same function. As well as simply requiring a field, you can say what form the input
+ * should take using a variety of pre-built validator functions. Here's an example:</p>
+ *
+ * <pre><code>    Ojay.Forms(function() { with(this) {
  *         
- *         when('addressForm').isValidated(function(errors) {
- *             // Put errors somewhere
+ *         form('theForm')
+ *             .requires('username').toHaveLength({minimum: 6})
+ *             .requires('email').toMatch(EMAIL_FORMAT)
+ *             .expects('tickets').toBeNumeric();
+ *     }});</code></pre>
+ *
+ * <p>The full list of validator methods can be found in the <tt>RequirementDSL</tt> class. All
+ * requirments take as their last argument an optional string specifying the text that should
+ * be displayed in the error message if the field is invalid. Additionally, the <tt>requires</tt>
+ * and <tt>expects</tt> methods takes an optional argument to specify how the name of the field
+ * should be presented. If no custom name is given for the field, a name is inferred from the field's
+ * label or its <tt>name</tt> attribute.</p>
+ *
+ * <pre><code>    Ojay.Forms(function() { with(this) {
+ *         
+ *         // Gives message "User email is not valid"
+ *         form('signup').requires('userEmail').toMatch(EMAIL_FORMAT);
+ *         
+ *         // Gives message "Your email address is not valid"
+ *         form('signup').requires('userEmail', 'Your email address').toMatch(EMAIL_FORMAT);
+ *         
+ *         // Gives message "User email is not a valid email address"
+ *         form('signup').requires('userEmail').toMatch(EMAIL_FORMAT, 'is not a valid email address');
+ *     }});</code></pre>
+ *
+ * <p>You can add your own custom validation routines using the <tt>validates</tt> method. In
+ * your validation callback, you have access to the form's data and its error list. You can
+ * read from the data and add errors as follows:</p>
+ *
+ * <pre><code>    Ojay.Forms(function() { with(this) {
+ *         
+ *         form('purchase').validates(function(data, errors) {
+ *             
+ *             // Check a field and add error to that field
+ *             if (data.get('ccNumber').length != 16)
+ *                 errors.add('ccNumber', 'is not a valid credit card number');
+ *             
+ *             // Check two fields and add error to the form
+ *             // rather than to a specific field
+ *             if (data.get('start') > data.get('end'))
+ *                 errors.addToBase('Start date must be before end date');
  *         });
- *     }});
+ *     }});</code></pre>
+ *
+ * <p>Once you've set up all your rules you'll want to do something with the errors. This
+ * is where the helper function <tt>when</tt> comes in. <tt>when</tt> is used to set up
+ * responses to events, and can handle validation events. In the example below, the callback
+ * is passed an array of errors, each of which has a <tt>field</tt> property that says which
+ * input name it belongs to (null if it was added using <tt>addToBase</tt>) and a
+ * <tt>message</tt> field that contains the full text of the error message.</p>
+ *
+ * <pre><code>    Ojay.Forms(function() { with(this) {
+ *         
+ *         when('purchase').isValidated(function(errors) {
+ *             errors.forEach(function(error) {
+ *                 Ojay('#someElement').insert(error.message, 'top');
+ *             });
+ *         });
+ *         
+ *         // Ojay provides a pre-build error handler that lists the
+ *         // errors in the element you specify:
+ *         when('purchase').isValidated(displayErrorsIn('#error-list'));
+ *     }});</code></pre>
+ *
+ * <p>Finally, the DSL allows you specify that a form submits using Ajax. To use this
+ * feature, you just need to tell Ojay what to do with the server response. For example:</p>
+ *
+ * <pre><code>    Ojay.Forms(function() { with(this) {
+ *         
+ *         form('login').submitsUsingAjax();
+ *         
+ *         when('login').responseArrives(function(response) {
+ *             Ojay('#response').setContent(response.responseText);
+ *         });
+ *         
+ *         // Or use Ojay's pre-build display method:
+ *         when('login').responseArrives(displayResponseIn('#response'));
+ *     }});</code></pre>
  */
 
 // Store to hold sets of form rules, entry per page form.
@@ -72,7 +155,9 @@ var DSL = {
             var were = (n == 1) ? 'was' : 'were', s = (n == 1) ? '' : 's';
             element.setContent(Ojay.HTML.div({className: 'error-explanation'}, function(HTML) {
                 HTML.p('There ' + were + ' ' + n + ' error' + s + ' with the form:');
-                HTML.ul(function(HTML) { errors.forEach(HTML.method('li')); });
+                HTML.ul(function(HTML) {
+                    errors.forEach(function(error) { HTML.li(error.message); });
+                });
             }));
         };
     },
@@ -98,7 +183,7 @@ var DSL = {
  * @class FormDSL
  * @private
  */
-var FormDSL = JS.Class({
+var FormDSL = JS.Class(/** @scope FormDSL.prototype */{
     /**
      * @param {FormDescription} form
      */
@@ -158,7 +243,7 @@ var FormDSLMethods = ['requires', 'expects', 'validates', 'submitsUsingAjax', 'h
  * @class RequirementDSL
  * @private
  */
-var RequirementDSL = JS.Class({
+var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
     /**
      * @param {FormRequirement} requirement
      */
@@ -292,7 +377,7 @@ FormDSLMethods.forEach(function(method) {
  * @class WhenDSL
  * @private
  */
-var WhenDSL = JS.Class({
+var WhenDSL = JS.Class(/** @scope WhenDSL.prototype */{
     /**
      * @param {FormDescription} form
      */

@@ -12,7 +12,7 @@
  * @constructor
  * @class Forms.RadioButtons
  */
-Ojay.Forms.RadioButtons = JS.Class({
+Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
     /**
      * @param {String|HTMLElement|DomCollection} inputs
      */
@@ -29,7 +29,7 @@ Ojay.Forms.RadioButtons = JS.Class({
      * checked item.</p>
      * @param {Forms.RadioButtons.Item} item
      */
-    check: function(item) {
+    _check: function(item) {
         var current = this._checkedItem;
         if (current && current != item) current.setChecked(false);
         this._checkedItem = item;
@@ -60,7 +60,7 @@ Ojay.Forms.RadioButtons = JS.Class({
          * @constructor
          * @class Forms.RadioButtons.Item
          */
-        Item: JS.Class({
+        Item: JS.Class(/** @scope Forms.RadioButtons.Item.prototype */{
             include: ButtonStates,
             
             /**

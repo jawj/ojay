@@ -1,8 +1,18 @@
 /**
+ * <p>The <tt>Forms.Select</tt> class can be used to 'hijack' drop-down menu inputs in HTML forms to
+ * make them easier to style using CSS. The select inputs themselves become hidden (they are positioned
+ * off-screen rather than hidden using <tt>display</tt> or <tt>visibility</tt>) and their labels
+ * have their class names changed to mirror changes to the inputs as the user interacts with the form.</p>
+ *
+ * <p>This class is designed as a light-weight and unobtrusive replacement for <tt>YAHOO.util.Menu</tt>
+ * for the simple case where you want to style your form inputs and retain programmatic access to them.
+ * It encourages accessible markup through use of <tt>label</tt> elements, and does not alter the HTML
+ * structure of your form in any way.</p>
+ *
  * @constructor
  * @class Forms.Select
  */
-Ojay.Forms.Select = JS.Class({
+Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     include: [Ojay.Observable, JS.State, InputStates],
     
     extend: {
@@ -27,6 +37,7 @@ Ojay.Forms.Select = JS.Class({
             },
             
             /**
+             * <p>Returns an Ojay collection wrapping the list item used to display the option.</p>
              * @returns {DomCollection}
              */
             getHTML: function() {
@@ -35,12 +46,15 @@ Ojay.Forms.Select = JS.Class({
             },
             
             /**
+             * <p>Sets the option to be hovered, and notified its parent <tt>Select</tt> instance
+             * so it can un-hover the currently hovered option.</p>
              * @param {Boolean} state
              */
             setHovered: function(state) {
                 this.hovered = (state !== false);
                 if (this.hovered) this._select._setHoveredOption(this);
                 this.getHTML()[state === false ? 'removeClass' : 'addClass']('hovered');
+                return this;
             }
         })
     },
@@ -81,6 +95,8 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
+     * <p>Returns an Ojay collection wrapping the HTML used as a stand-in for the
+     * <tt>select</tt> input.</p>
      * @returns {DomCollection}
      */
     getHTML: function() {
@@ -96,14 +112,16 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
-     *
+     * <p>Focuses the <tt>select</tt> element.</p>
+     * @returns {Forms.Select}
      */
     _focusInput: function() {
         this._input.node.focus();
     },
     
     /**
-     *
+     * <p>Refreshes the list of displayed options. Use this method if you change the
+     * contents of the <tt>select</tt> element.</p>
      */
     updateOptions: function() {
         this._elements._list.setContent('');
@@ -113,20 +131,25 @@ Ojay.Forms.Select = JS.Class({
             return option;
         }, this);
         this._updateDisplayFromSelect();
+        return this;
     },
     
     /**
-     *
+     * <p>Updates the UI of the instance in response to the current state of the
+     * underlying <tt>select</tt> input.</p>
+     * @param {Boolean} silent
      */
-    _updateDisplayFromSelect: function() {
+    _updateDisplayFromSelect: function(silent) {
         var selected = this.getSelectedOption();
         if (!selected) return;
         this._elements._display.setContent(selected.text.stripTags());
         this._getOption(selected.value).setHovered(true);
-        this.notifyObservers('change');
+        if (silent !== false) this.notifyObservers('change');
     },
     
     /**
+     * <p>Returns the <tt>Select.Option</tt> instance with the given value.</p>
+     * @param {String} value
      * @returns {Forms.Select.Option}
      */
     _getOption: function(value) {
@@ -134,6 +157,8 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
+     * <p>Sets the given <tt>Select.Option</tt> to be hovered, and removes hover state from
+     * all other options.</p>
      * @param {Forms.Select.Option}
      */
     _setHoveredOption: function(option) {
@@ -142,6 +167,7 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
+     * <p>Returns an array of references to <tt>option</tt> elements.</p>
      * @returns {Array}
      */
     _getOptions: function() {
@@ -149,6 +175,8 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
+     * <p>Returns a reference to the currently selected <tt>option</tt> element, or a
+     * reference to the first element if none is selected.</p>
      * @returns {HTMLElement}
      */
     getSelectedOption: function() {
@@ -156,6 +184,8 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
+     * <p>Returns all the <tt>option</tt> elements in the <tt>select</tt> whose value equals
+     * the supplied <tt>value</tt>.</p>
      * @param {String|Number} value
      * @returns {Array}
      */
@@ -164,26 +194,37 @@ Ojay.Forms.Select = JS.Class({
     },
     
     /**
+     * <p>Sets the value of the <tt>select</tt> element to the given <tt>value</tt>, triggering
+     * a <tt>change</tt> event unless you pass <tt>true</tt> as the second parameter.</p>
      * @param {String|Number} value
+     * @param {Boolean} silent
+     * @returns {Forms.Select}
      */
-    setValue: function(value) {
+    setValue: function(value, silent) {
         this._getOptions().forEach(function(option) { option.selected = false; });
         this.getOptionsByValue(value).forEach(function(option) { option.selected = true; });
-        this._updateDisplayFromSelect();
+        this._updateDisplayFromSelect(silent);
+        return this;
     },
     
     /**
-     *
+     * <p>Sets the position of the list relative to the container so the two are properly aligned.</p>
+     * @returns {Forms.Select}
      */
     updateListPosition: function() {
         var region = this._elements._container.getRegion();
         if (!region) return;
         var list = this._elements._listContainer;
         list.setStyle({width: region.getWidth() + 'px', left: 0, top: region.getHeight() + 'px'});
+        return this;
     },
     
     states: {
-        LIST_CLOSED: {
+        LIST_CLOSED: /** @scope Forms.Select.prototype */{
+            /**
+             * <p>Displays the drop-down list.</p>
+             * @returns {Forms.Select}
+             */
             showList: function() {
                 if (this.disabled) return;
                 this.updateListPosition();
@@ -192,14 +233,24 @@ Ojay.Forms.Select = JS.Class({
                 var selected = this.getSelectedOption();
                 if (selected) this._getOption(selected.value).setHovered(true);
                 this.setState('LIST_OPEN');
+                return this;
             },
             
+            /**
+             * <p>Displays the drop-down list.</p>
+             * @returns {Forms.Select}
+             */
             toggleList: function() {
-                this.showList();
+                return this.showList();
             }
         },
         
-        LIST_OPEN: {
+        LIST_OPEN: /** @scope Forms.Select.prototype */{
+            /**
+             * <p>Hides the drop-down list.</p>
+             * @param {Boolean} update
+             * @returns {Forms.Select}
+             */
             hideList: function(update) {
                 this._elements._listContainer.hide();
                 if (update !== false) {
@@ -207,10 +258,16 @@ Ojay.Forms.Select = JS.Class({
                     this._focusInput();
                 }
                 this.setState('LIST_CLOSED');
+                return this;
             },
             
+            /**
+             * <p>Hides the drop-down list.</p>
+             * @param {Boolean} update
+             * @returns {Forms.Select}
+             */
             toggleList: function(update) {
-                this.hideList(update);
+                return this.hideList(update);
             }
         }
     }

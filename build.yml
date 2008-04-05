@@ -52,7 +52,7 @@ packages:
     source_dir: packages/forms
     files:
       - begin
-      - validators
+      - utils
       - description
       - requirement
       - data
