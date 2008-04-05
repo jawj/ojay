@@ -1,0 +1,132 @@
+- @title = 'Form manipulation'
+:textile
+  h3. Form manipulation
+  
+  As of version 0.2, Ojay includes a package called @Ojay.Forms@. This package provides a
+  number of useful classes and APIs for dealing with forms: it allows for easy serialization
+  and submission using Ajax; it allows radio buttons, checkboxes and drop-down menus to
+  be styled using CSS, and it provides a validation mini-language for checking data before
+  it is sent to the server.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.5.1/build/selector/selector-beta-min.js@
+  * @http://yui.yahooapis.com/2.5.1/build/connection/connection-min.js@
+  * @http://yoursite.com/ojay/js-class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/http.js@
+  * @http://yoursite.com/ojay/pkg/forms.js@
+  
+  h3. Utility functions
+  
+  First off, the small stuff. @Ojay.Forms@ has a few utility methods that help when dealing
+  with forms. They are as follows:
+  
+  * @Ojay.Forms.getLabel(input)@ - this returns an Ojay collection wrapping the @label@
+    tag associated with the given form @input@, which can be a CSS selector string or an
+    element reference. It knows about labels as parent elements and about the @for@ attribute
+    and makes dealing with labels really simple.
+  
+  * @Ojay.Forms.getQueryString(form)@ - returns the form's current data as a query string.
+    @form@ can be a CSS selector string or an element reference.
+  
+  * @Ojay.Forms.getData(form)@ - the same as @getQueryString()@, except that it returns
+    the data as an object where the property names mirror the form's input names.
+  
+  h3. Visual styling
+  
+  @Ojay.Forms@ includes a set of classes that can be used to replace unstylable form elements
+  with HTML you can style with CSS. These classes are designed to be lightweight, unobtrusive
+  replacements for the @YAHOO.widget.Button@ family of classes for the basic case where you
+  just want to style form inputs. @Ojay@'s input replacements do not rely on extra button
+  elements and hidden fields - they simply hide the original inputs and use class names on
+  @label@ tags to allow styling using CSS. As the fundamental HTML structure of the form is
+  left untouched, you can still read data out of the form much more easily than you can
+  using the @YAHOO@ classes.
+  
+  Setting up checkboxes and radio buttons is straightforward. Just set up a form that works
+  without JavaScript, and associate a @label@ with each form element. Then make a couple
+  of JavaScript calls and have your inputs transformed. See the "example implementation":/examples/forms.html
+  for more details on CSS class names and the like.
+  
+  <pre>
+  <form action="/" method="post" id="the-form">
+    <div class="radios">
+      <input type="radio" name="cc" value="visa"
+          id="cc_visa" />
+      <label for="cc_visa" class="radio">Visa</label>
+      
+      <input type="radio" name="cc" value="mastercard"
+          id="cc_mastercard" />
+      <label for="cc_mastercard" class="radio">Mastercard</label>
+      
+      <input type="radio" name="cc" value="amex"
+          id="cc_amex" />
+      <label for="cc_amex" class="radio">AmEx</label>
+      
+      <input type="radio" name="cc" value="switch"
+          id="cc_switch" />
+      <label for="cc_switch" class="radio">Switch</label>
+    </div>
+    <input type="checkbox" name="accept" id="accept" value="1" /> 
+    <label for="accept" class="checkbox">Accept terms
+        and conditions?</label>
+  </form></pre>
+  
+  And the script:
+  
+  <pre>
+  new Ojay.Forms.RadioButtons('.radios input');
+  new Ojay.Forms.Checkbox('#accept');</pre>
+  
+  @select@ elements are similarly easy to style. Just add a @select@ with a @label@ to
+  your form and make a quick JavaScript call as follows:
+  
+  <pre>
+  <label for="my-select">Delivery method</label>
+  <select id="my-select">
+    <option value="null">Choose...</option>
+    <option value="first-class">First class post</option>
+    <option value="recorded-delivery">Recorded delivery</option>
+    <option value="air-mail">Air mail</option>
+  </select></pre>
+  
+  with this script:
+  
+  <pre>
+  var selector = new Ojay.Forms.Select('#my-select');</pre>
+  
+  This will insert the following markup after the @select@ tag in your document:
+  
+  <pre>
+  <div class="select-container">
+    <div class="select-display">Choose...</div>
+    <div class="select-button"></div>
+    <div class="select-list">
+      <ul>
+        <li class="hovered">Choose...</li>
+        <li>First class post</li>
+        <li>Recorded delivery</li>
+        <li>Air mail</li>
+      </ul>
+    </div>
+  </div></pre>
+  
+  The list positioning is handled for you by @Ojay@, and you can take care of all the
+  presentation using CSS. We recommend that you do not add borders or padding to the
+  @select-container@ or @select-list@ elements, but apply such styling to @select-display@
+  and the @ul@ element instead. This will make sure the positioning is handled correctly
+  and still gives you room to style the menu. The @hovered@ class on the @li@ element
+  will move between elements as the user interacts with the control. Again, see the
+  "example implementation":/examples/forms.html for more ideas.
+  
+  All @label@ elements and @select-container@ elements receive a selection of CSS
+  classes as the user interacts with the form and these classes can be used in your
+  stylesheet to change appearance. The classes are:
+  
+  * @hovered@ - applied when the mouse is over the element
+  * @focused@ - applied when the (hidden) original form element has focus
+  * @disabled@ - applied when an element is disabled
+  * @checked@ - for radios and checkboxes, applied when the element is checked
+  
