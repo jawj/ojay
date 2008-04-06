@@ -37,6 +37,7 @@ var InputStates = JS.Module(/** @scope InputStates */{
     /**
      * <p>Adds or removes the class name 'focused' from the input and its label depending on <tt>state</tt>.</p>
      * @param {Boolean} state
+     * @returns {InputStates}
      */
     setFocused: function(state) {
         if (this._input.node.checked) this.setChecked();

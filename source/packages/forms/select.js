@@ -51,6 +51,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
              * <p>Sets the option to be hovered, and notified its parent <tt>Select</tt> instance
              * so it can un-hover the currently hovered option.</p>
              * @param {Boolean} state
+             * @returns {Forms.Select.Option}
              */
             setHovered: function(state) {
                 this.hovered = (state !== false);
@@ -130,6 +131,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     /**
      * <p>Refreshes the list of displayed options. Use this method if you change the
      * contents of the <tt>select</tt> element.</p>
+     * @returns {Forms.Select}
      */
     updateOptions: function() {
         this._elements._list.setContent('');
@@ -207,6 +209,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     
     /**
      * <p>Returns the current value of the <tt>select</tt> element.</p>
+     * @returns {String}
      */
     getValue: function() {
         return this.getSelectedOption().value;
@@ -232,7 +235,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
      */
     updateListPosition: function() {
         var region = this._elements._container.getRegion();
-        if (!region) return;
+        if (!region) return this;
         var list = this._elements._listContainer;
         list.setStyle({width: region.getWidth() + 'px', left: 0, top: region.getHeight() + 'px'});
         return this;
@@ -245,7 +248,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
              * @returns {Forms.Select}
              */
             showList: function() {
-                if (this.disabled) return;
+                if (this.disabled) return this;
                 this.updateListPosition();
                 this._elements._listContainer.show();
                 this.setState('LIST_OPEN');
