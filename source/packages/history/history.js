@@ -14,7 +14,7 @@
  *         &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8"/&gt;
  *         &lt;title&gt;Ojay History&lt;/title&gt;
  *         &lt;script src="/yui/build/yahoo-dom-event/yahoo-dom-event.js" type="text/javascript"&gt;&lt;/script&gt;
- *         &lt;script src="/yui/build/history/history-beta-min.js" type="text/javascript"&gt;&lt;/script&gt;
+ *         &lt;script src="/yui/build/history/history-min.js" type="text/javascript"&gt;&lt;/script&gt;
  *         &lt;script src="/ojay/ojay.js" type="text/javascript"&gt;&lt;/script&gt;
  *         &lt;script src="/gallery.js" type="text/javascript"&gt;&lt;/script&gt;
  *     &lt;/head&gt;
