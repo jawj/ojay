@@ -156,7 +156,7 @@ var DSL = {
             element.setContent(Ojay.HTML.div({className: 'error-explanation'}, function(HTML) {
                 HTML.p('There ' + were + ' ' + n + ' error' + s + ' with the form:');
                 HTML.ul(function(HTML) {
-                    errors.forEach(function(error) { HTML.li(error.message); });
+                    errors.map('message').forEach(HTML.method('li'));
                 });
             }));
         };

@@ -33,7 +33,7 @@ Ojay.Paginator.extend({
                 var div = Ojay( HTML.div({className: klass.PAGE_LINKS_CLASS}, function(HTML) {
                     elements._pages = [];
                     paginator.getPages().times(function(page) {
-                        var span = elements._pages[page] = Ojay( HTML.span(page + 1) );
+                        var span = elements._pages[page] = Ojay( HTML.span(String(page + 1)) );
                         span.on('mouseover').addClass('hovered');
                         span.on('mouseout').removeClass('hovered');
                     });
