@@ -32,7 +32,7 @@
             width:          100px;
         }
         label.js.radio.hovered { background-position: 0 -39px; }
-        label.js.radio.checked { background-position: 0 -78px;  }
+        label.js.radio.checked { background-position: 0 -78px; }
         label.js.radio.hovered.checked { background-position: 0 -117px; }
         
         label.js.checkbox {
@@ -46,7 +46,7 @@
             margin-right:   80px;
         }
         label.js.checkbox.hovered { background-position: 0 -39px; }
-        label.js.checkbox.checked { background-position: 0 -78px;  }
+        label.js.checkbox.checked { background-position: 0 -78px; }
         label.js.checkbox.hovered.checked { background-position: 0 -117px; }
         
         .select-container {
@@ -124,13 +124,11 @@
     </div>
   
     <script id="display-script" type="text/javascript">
-        var radios = new Ojay.Forms.RadioButtons('.radios input');
+        var radios   = new Ojay.Forms.RadioButtons('.radios input');
         var checkbox = new Ojay.Forms.Checkbox('#accept');
-        var select = new Ojay.Forms.Select('#delivery');
+        var select   = new Ojay.Forms.Select('#delivery');
         
-        var serializeForm = function() {
-            Ojay('#form-result').setContent(Ojay.Forms.getQueryString('#the-form'));
-        };
-        
-        [radios, checkbox, select].forEach(it().on('change', serializeForm));
+        [radios, checkbox, select].forEach(it().on('change', function(input) {
+            Ojay('#form-result').setContent('You selected: ' + input.getValue());
+        }));
     </script>
