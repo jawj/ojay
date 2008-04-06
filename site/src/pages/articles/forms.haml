@@ -130,3 +130,38 @@
   * @disabled@ - applied when an element is disabled
   * @checked@ - for radios and checkboxes, applied when the element is checked
   
+  h3. Changing values and handling events
+  
+  The @Ojay.Forms.Checkbox@, @Ojay.Forms.RadioButtons@ and @Ojay.Forms.Select@ classes
+  all support a common API for getting and setting form values and handling events.
+  All types of input publish a @change@ event when their value is changed, and you
+  can listen to such events and respond to them:
+  
+  <pre>
+  // formInput is a Checkbox, RadioButtons or Select instance
+  formInput.on('change', function(input) {
+    var currentValue = input.getValue();
+    // do something with value
+  });</pre>
+  
+  The callback will always be passed a reference to the @Forms.*@ object that triggered
+  the event. The @Forms@ classes all have a @getValue()@ method, which returns the
+  value of the currently selected option (or @true@ or @false@ for checkboxes). They
+  also have a @setValue()@ method. This will select the option with the given value
+  if such an option exists. For checkboxes, pass @true@ or @false@ to set the state
+  of the box.
+  
+  <pre>
+  // for radio button groups and select boxes...
+  group.setValue('some-value');
+  
+  // for checkboxes...
+  checkbox.setValue(true);</pre>
+  
+  By default, @setValue()@ will trigger a @change@ event as described above if it
+  changes the value of the input. To suppress the event from firing, pass @false@
+  as the second argument to @setValue()@.
+  
+  <pre>
+  // don't alert listeners to the change in value
+  radioButtons.setValue('the-value', false);</pre>
