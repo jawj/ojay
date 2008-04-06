@@ -210,7 +210,7 @@ Ojay.Overlay = JS.Class({
             show: function(transition) {
                 this.setState('SHOWING');
                 transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()._(this).setState('VISIBLE');
+                var chain = new JS.MethodChain()._(this).setState('VISIBLE')._(this);
                 return transition.show(this, chain);
             },
             
@@ -237,7 +237,7 @@ Ojay.Overlay = JS.Class({
             hide: function(transition) {
                 this.setState('HIDING');
                 transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()._(this).setState('INVISIBLE');
+                var chain = new JS.MethodChain()._(this).setState('INVISIBLE')._(this);
                 return transition.hide(this, chain);
             },
             
