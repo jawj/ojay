@@ -72,10 +72,17 @@
             width:          20px;
             height:         20px;
         }
+        .select-list {
+            border-bottom:  2px solid #ccc;
+            height:         140px;
+            overflow-x:     hidden;
+            overflow-y:     scroll;
+        }
         .select-list ul {
             background:     #fff;
             border:         1px solid #ccc;
             border-top:     0;
+            border-bottom:  0;
             list-style:     none;
             margin:         0;
             padding:        0;
@@ -113,9 +120,12 @@
         <label for="delivery">Delivery method</label>
         <select name="delivery" id="delivery">
             <option value="null">Choose...</option>
+            <option value="saver">Super-saver (5 days)</option>
             <option value="first-class">First class post</option>
             <option value="recorded-delivery">Recorded delivery</option>
             <option value="air-mail">Air mail</option>
+            <option value="by-sea">Delivery by sea</option>
+            <option value="electronic">e-ticket</option>
         </select>
     </form>
     

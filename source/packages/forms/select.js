@@ -55,9 +55,24 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
              */
             setHovered: function(state) {
                 this.hovered = (state !== false);
-                if (this.hovered) this._select._setHoveredOption(this);
+                if (this.hovered) {
+                    this._select._setHoveredOption(this);
+                    this._nudgeIntoView();
+                }
                 this.getHTML()[state === false ? 'removeClass' : 'addClass']('hovered');
                 return this;
+            },
+            
+            /**
+             * <p>Makes sure the option is in view if the list container has a fixed height
+             * and is using <tt>overflow: scroll</tt>.</p>
+             */
+            _nudgeIntoView: function() {
+                var list = this._select._elements._listContainer;
+                var listRegion = list.getRegion(), myRegion = this.getHTML().getRegion();
+                if (listRegion.contains(myRegion)) return;
+                var scroll = list.node.scrollTop || 0, edge = (myRegion.top > listRegion.top) ? 'bottom' : 'top';
+                list.node.scrollTop = scroll + myRegion[edge] - listRegion[edge];
             }
         })
     },
