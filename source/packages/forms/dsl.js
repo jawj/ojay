@@ -260,7 +260,7 @@ var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
         var element = this._requirement._elements.node;
         if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this._requirement._field + '" is not a checkbox');
         this._requirement._add(function(value) {
-            return value == element.value || [message || 'must be checked'];
+            return (value == element.value && element.checked) || [message || 'must be checked'];
         });
         return this;
     },
@@ -320,7 +320,7 @@ var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
                     (min !== undefined && value.length < min &&
                         [message || 'must contain at least ' + min + ' characters']) ||
                     (max !== undefined && value.length > max &&
-                        [message || 'must contain at most ' + max + ' characters']) ||
+                        [message || 'must contain no more than ' + max + ' characters']) ||
                     true;
         });
         return this;
@@ -336,12 +336,12 @@ var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
     toHaveValue: function(options, message) {
         var min = options.minimum, max = options.maximum;
         this._requirement._add(function(value) {
-            if (!Ojay.isNumeric(value)) return message || 'must be a number';
+            if (!Ojay.isNumeric(value)) return [message || 'must be a number'];
             value = Number(value);
             return  (min !== undefined && value < min &&
                         [message || 'must be at least ' + min]) ||
                     (max !== undefined && value > max &&
-                        [message || 'must be at most ' + max]) ||
+                        [message || 'must not be greater than ' + max]) ||
                     true;
         });
         return this;

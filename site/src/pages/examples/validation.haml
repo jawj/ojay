@@ -1,0 +1,123 @@
+- @title = 'Form validation'
+
+#summary
+  :textile
+    h2. Data validation using @Ojay.Forms@
+    
+    This example demonstrates the use of @Ojay.Forms@ to produce validation rules for forms.
+    Ojay takes care of intercepting @submit@ events, extracting data and validating it,
+    making Ajax calls and delivering the response back to your code, and marking inputs and
+    labels as @invalid@ where appropriate. All you need to do is define what valid data looks
+    like and say how you want to display the errors.
+
+:plain
+    <style id="display-style" type="text/css">
+        form .field {
+            border-bottom:  1px solid #eee;
+            clear:          left;
+            margin-bottom:  4px;
+            padding-bottom: 8px;
+        }
+        
+        label {
+            float:          left;
+            font-weight:    bold;
+            margin-right:   20px;
+            width:          120px;
+        }
+        
+        label.invalid { color: #f60; }
+        .error-message {
+            color:          #999;
+            font-size:      11px;
+            font-style:     italic;
+            font-weight:    normal;
+            margin:         4px 0 0 140px;
+        }
+        
+        input.text { width: 240px; }
+        input.submit { margin-left: 140px; }
+        input.invalid { background: #fec; }
+    </style>
+    
+    <form id="signup" action="/service/validation.html" method="post">
+        <div class="field">
+            <label for="username">Username</label>
+            <input type="text" class="text" name="username" id="username" />
+        </div>
+        <div class="field">
+            <label for="email">Email</label>
+            <input type="text" class="text" name="email" id="email" />
+        </div>
+        <div class="field">
+            <label for="email_conf">Confirm email</label>
+            <input type="text" class="text" name="email_conf" id="email_conf" />
+        </div>
+        <div class="field">
+            <label for="title">Title</label>
+            <input type="text" class="text" name="title" id="title" />
+        </div>
+        <div class="field">
+            <label for="dob">Date of birth</label>
+            <input type="text" class="text" name="dob" id="dob" />
+        </div>
+        <div class="field">
+            <label for="tickets">No. tickets</label>
+            <input type="text" class="text" name="tickets" id="tickets" />
+        </div>
+        <div class="field">
+            <label for="phone">Telephone</label>
+            <input type="text" class="text" name="phone" id="phone" />
+        </div>
+        <div class="field">
+            <label for="accept">Accept Ts+Cs?</label>
+            <input type="checkbox" class="checkbox" name="accept" id="accept" />
+        </div>
+        <input type="submit" class="submit" value="Sign up!" />
+    </form>
+    
+    <script id="display-script" type="text/javascript">
+        // Insert a new element after the form for JavaScript-enabled
+        // users. This will be used to display the Ajax response
+        var result = Ojay.HTML.div();
+        Ojay('#signup').insert(result, 'after');
+        
+        Ojay.Forms(function() { with(this) {
+            
+            // First, define some validation rules
+            
+            form('signup')
+                .requires('username')   .toHaveLength({minimum: 6})
+                .requires('email')      .toMatch(EMAIL_FORMAT, 'must be a valid email address')
+                .expects('email_conf')  .toConfirm('email')
+                .expects('title')       .toBeOneOf(['Mr', 'Mrs', 'Miss'])
+                .requires('dob', 'Birth date').toMatch(/^\d{4}\D*\d{2}\D*\d{2}$/)
+                .requires('tickets')    .toHaveValue({maximum: 12})
+                .requires('phone')
+                .requires('accept', 'Terms and conditions').toBeChecked('must be accepted');
+            
+            // You might need some custom rules as well
+            
+            form('signup').validates(function(data, errors) {
+                if (/admin/i.test(data.get('username')))
+                    errors.add('username', 'cannot contain the phrase "admin"');
+            });
+            
+            // How are you going to display the errors?
+            
+            when('signup').isValidated(function(errors) {
+                Ojay('#signup .error-message').remove();
+                errors.forEach(function(error) {
+                    var field = Ojay('#signup input[name=' + error.field + ']');
+                    field.insert(Ojay.HTML.div({
+                        className: 'error-message'
+                    }, error.message), 'after');
+                });
+            });
+            
+            // Let's Ajax-ify the form
+            
+            form('signup').submitsUsingAjax();
+            when('signup').responseArrives(displayResponseIn(result));
+        }});
+    </script>

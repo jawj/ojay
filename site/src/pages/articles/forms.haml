@@ -16,6 +16,11 @@
   * @http://yoursite.com/ojay/core.js@
   * @http://yoursite.com/ojay/pkg/forms.js@
   
+  h3. Examples
+  
+  * "Visual styling using and event handling":/examples/forms.html
+  * "Data validation using the @Ojay.Forms@ DSL":/examples/validation.html
+  
   h3. Utility functions
   
   First off, the small stuff. @Ojay.Forms@ has a few utility methods that help when dealing
@@ -25,10 +30,8 @@
     tag associated with the given form @input@, which can be a CSS selector string or an
     element reference. It knows about labels as parent elements and about the @for@ attribute
     and makes dealing with labels really simple.
-  
   * @Ojay.Forms.getQueryString(form)@ - returns the form's current data as a query string.
     @form@ can be a CSS selector string or an element reference.
-  
   * @Ojay.Forms.getData(form)@ - the same as @getQueryString()@, except that it returns
     the data as an object where the property names mirror the form's input names.
   
@@ -163,3 +166,180 @@
   <pre>
   // don't alert listeners to the change in value
   radioButtons.setValue('the-value', false);</pre>
+  
+  h3. Validation API
+  
+  The final aspect of the @Forms@ package is the validation framework. This provides
+  developers with a very high-level API for expression form validation rules, error
+  handling routines and Ajax submission processes. To inspect form data, this part of
+  the package uses @YAHOO.util.Connect.setForm()@ so you will need to include that
+  module in your page before using @Ojay.Forms@ for validation. Also, if you want to
+  use Ajax submission you'll need the @Ojay.HTTP@ package.
+  
+  * @http://yui.yahooapis.com/2.5.1/build/connection/connection.js@
+  * @http://yoursite.com/ojay/pkg/http.js@
+  
+  The best way to get a handle on how this API works is to read the "example
+  implementation":/examples/validation.html. This takes you through defining a set
+  of validation rules, handling errors and submitting the form with Ajax. Here we
+  will cover the API and explain what each bit does.
+  
+  First off, note that all validation rules live inside an @Ojay.Forms()@ function
+  call and a @with@ block. This block is a special environment that provides a few
+  top-level helper functions that do not exist in the global namespace.
+  
+  The basic building block of a validation rule is the @requires()@ statement, aliased
+  as @expects()@. This statement says that a field with the given @name@, in a form with
+  the @id@ passed to @form()@, must be filled in before the form is allowed to submit.
+  
+  <pre>
+  Ojay.Forms(function() { with(this) {
+      form('login')
+          .requires('username')
+          .requires('password');
+  }});</pre>
+  
+  That's all the code you need to write. Ojay will take care of intercepting @submit@
+  events, extracting form data and validating it. If any errors are found, the form
+  will not be allowed to submit and the list of error messages will be passed back
+  to your code - we'll get on to how to handle them in due course.
+  
+  As well as the basic @requires()@ statement, @Ojay.Forms@ provides a few helper functions
+  that implement some common validation requirements. To use them, you just call
+  them after the appropriate @requires()@ or @expects()@ statement.
+  
+  <pre>
+  Ojay.Forms(function() { with(this) {
+      form('signup')
+          .requires('username')   .toHaveLength({minimum: 6})
+          .requires('email')      .toMatch(EMAIL_FORMAT)
+          .requires('email_conf') .toConfirm('email');
+  }});</pre>
+  
+  Note that @EMAIL_FORMAT@ is a constant defined for you, since it tends to come up
+  pretty often in web forms. The full list of validation functions is as follows:
+  
+  * @toBeChecked()@ - useful for making sure checkboxes are checked.
+  * @toBeNumeric()@ - makes sure the content of a field is a number.
+  * @toBeOneOf(list)@ - makes sure the data matches one of the values in the array
+    @list@. Comparison is performed using @==@.
+  * @toConfirm(field)@ - checks that the required field's value matches that in
+    in the input with name @field@.
+  * @toHaveLength(options)@ - makes sure the input has a certain length. @options@
+    can be a number, or an object with @minimum@ and/or @maximum@ fields.
+  * @toHaveValue(options)@ - checks that the value falls within a certain range.
+    @options@ is an object with @minimum@ and/or @maximum@ fields.
+  * @toMatch(regexp)@ - uses a regular expression to test the input.
+  
+  *Cusom error messages.* All these helper methods will generate default error messages for you. The displayed
+  name for a field is inferred from its @label@, or failing that, its @name@ attribute.
+  Error messages are particular to the type of validation check. Both the display names
+  and error messages can be overridden with your own custom messages as follows:
+  
+  * To show a custom name, pass a second string argument to @requires()@/@expects()@.
+  * To show a custom message, pass an additional argument to any of the validation
+    methods.
+  
+  Some examples to illustrate:
+  
+  <pre>
+  Ojay.Forms(function() { with(this) {
+      
+      // Gives message "User email is not valid"
+      form('signup')
+          .requires('userEmail').toMatch(EMAIL_FORMAT);
+      
+      // Gives message "Your email address is not valid"
+      form('signup')
+          .requires('userEmail', 'Your email address')
+          .toMatch(EMAIL_FORMAT);
+      
+      // Gives message "User email is not a valid email address"
+      form('signup')
+          .requires('userEmail')
+          .toMatch(EMAIL_FORMAT, 'is not a valid email address');
+  }});</pre>
+  
+  *Custom validation routines.* If you have more specific validation rules that the above
+  methods cannot handle, you can write your own custom validation methods using the
+  @validates()@ statement. Within your callback, you can @get()@ data from the form and
+  @add()@ errors by field name as in the "example":/examples/validation.html:
+  
+  <pre>
+  form('signup').validates(function(data, errors) {
+      if (/admin/i.test(data.get('username')))
+          errors.add('username', 'cannot contain the phrase "admin"');
+  });</pre>
+  
+  If you want to add an error to the form as a whole rather than a specific field, call
+  @errors.addToBase(message)@ instead of @errors.add(field, message)@.
+  
+  *Error handling.* So now that our rules are set up, we need to do something to display
+  the errors to the user. The "example":/examples/validation.html provides this snippet
+  (remember, this should all go inside an @Ojay.Forms( ... )@ block):
+  
+  <pre>
+  when('signup').isValidated(function(errors) {
+      Ojay('#signup .error-message').remove();
+      errors.forEach(function(error) {
+          var field = Ojay('#signup input[name=' + error.field + ']');
+          field.insert(Ojay.HTML.div({
+              className: 'error-message'
+          }, error.message), 'after');
+      });
+  });</pre>
+  
+  You use @when(id).isValidated()@ to respond to failed submission attempts. @Ojay.Forms@
+  hands you a list of error objects, each with a @field@ property (@null@ if the error
+  comes from an @addToBase()@ call) and a @message@ property. You can loop through these
+  errors and add them to your document - the above example displays each error after
+  its respective field, as we know we're not using any @addToBase()@ errors here.
+  
+  If you just want to list the errors all in one block, we've got a helper method for
+  that too: just specify a CSS selector or element reference for where you want the
+  errors to be listed:
+  
+  <pre>
+  when('signup').isValidated(displayErrorsIn('#errors'));</pre>
+  
+  This will produce markup similar to the following:
+  
+  <pre>
+  <div class="error-explanation">
+      <p>There were 3 errors with the form:</p>
+      <ul>
+          <li>Username must contain at least 6 characters</li>
+          <li>Your email is not valid</li>
+          <li>Password is required</li>
+      </ul>
+  </div></pre>
+  
+  h3. Ajax form submissions
+  
+  The other functionality provided by the @Ojay.Forms@ DSL is submission of forms
+  using Ajax. Ajax-ified forms will still not submit until all their validation rules
+  pass, though you don't have to validate them on the client-side if you don't want
+  to. To handle the server response, use @when(id).responseArrives()@, which passes
+  you an @HTTP.Response@ object just like all our @HTTP@ methods.
+  
+  <pre>
+  Ojay.Forms(function() { with(this) {
+      
+      form('signup').submitsUsingAjax();
+      when('signup').responseArrives(function(response) {
+          response.insertInto('#results');
+          // further response logic
+      });
+  }});</pre>
+  
+  If all you want to do is insert the response into the page, use the @displayResponseIn()@
+  helper:
+  
+  <pre>
+  when('signup').responseArrives(displayResponseIn('#results'));</pre>
+  
+  If you want to style your form inputs, we reccommend using the styling classes detailed
+  above rather than the @YAHOO.widget.Button@ family of classes. The latter require
+  you to make calls to insert some hidden fields when the form is submitted and make
+  repeated serialization of the form unreliable (see YUI's "known issues":http://developer.yahoo.com/yui/button/#knownissues
+  for more information).
