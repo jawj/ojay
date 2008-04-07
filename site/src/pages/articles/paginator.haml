@@ -1,0 +1,182 @@
+- @title = 'The Paginator class'
+:textile
+  h3. The @Paginator@ class
+  
+  @Ojay.Paginator@ is a class designed to handle splitting content up into several pages
+  and allowing the user to scroll between them. It allows you to break large galleries
+  up into scrollable areas, and it allows you to lazy-load pages of content into the
+  current page using Ajax.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.5.1/build/selector/selector-beta.js@
+  * @http://yui.yahooapis.com/2.5.1/build/animation/animation.js@
+  * @http://yoursite.com/ojay/js-class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/paginator.js@
+  
+  To use @Ojay.AjaxPaginator@:
+  
+  * @http://yui.yahooapis.com/2.5.1/build/connection/connection.js@
+  * @http://yoursite.com/ojay/pkg/http.js@
+  
+  To manage history and allow pages to be bookmarked:
+  
+  * @http://yui.yahooapis.com/2.5.1/build/history/history.js@
+  * @http://yoursite.com/ojay/pkg/history.js@
+  
+  To use the YUI @Slider@ control:
+  
+  * @http://yui.yahooapis.com/2.5.1/build/dragdrop/dragdrop.js@
+  * @http://yui.yahooapis.com/2.5.1/build/slider/slider.js@
+  
+  h3. Examples
+  
+  * "A paginated photo gallery with bookmarkable pages":/examples/paged_gallery.html
+  * "Vertically scrolling gallery with a slider control":/examples/scrolled_gallery.html
+  
+  h3. Setting up your document
+  
+  As with all other Ojay components, @Paginator@ is designed to work unobtrusively. The starting
+  point for your paginator should be a set of content accessible without the need for JavaScript.
+  @Paginator@ assumes you have several items of content, each of which has the same dimensions.
+  For example:
+  
+  <pre>
+  <div id="the-content">
+    <div class="item"><!-- content here --></div>
+    <div class="item"><!-- content here --></div>
+    <div class="item"><!-- content here --></div>
+    <div class="item"><!-- content here --></div>
+    <!-- more items ... -->
+  </div></pre>
+  
+  The class @item@ used here is not required - @Paginator@ will just look for the child elements
+  of @the-content@ when we set it up. You can style your content using CSS, but keep the following
+  in mind:
+  
+  * Do not apply margins, borders or padding to @the-content@ as they will be removed. If you
+    need to use these, wrap @the-content@ in a container @div@ and use that for CSS instead.
+  * Do not apply margins to the child elements, they too will be removed. You should use borders
+    and padding to arrange the presentation of the @item@ elements _internally_.
+  
+  @Paginator@ also assumes your @item@ elements will be floated to form a grid of items. You
+  should apply such floating rules yourself. See "the example":/examples/paged_gallery.html for
+  some suggested CSS rules.
+  
+  h3. Adding a @Paginator@
+  
+  With your content in place, you can enhance the UI for JavaScript-enabled browsers. To set up
+  a @Paginator@, you must specify the @width@ and @height@ of the visible area (in whatever units
+  you like) and the scrolling direction (@horizontal@ or @vertical@). You may also specify the
+  @scrollTime@ in seconds and the name of an @easing@ function - see the examples.
+  
+  <pre>
+  var pager = new Ojay.Paginator('#the-content', {
+    width:      '680px',
+    height:     '120px',
+    direction:  'horizontal'
+  });
+  pager.setup();</pre>
+  
+  The reason for the extra @setup()@ call will explained when we get to history management.
+  This script will wrap your @#the-content@ element in a @div@ with a class of @paginator@,
+  and the @#the-content@ will be setup up to scroll within its new wrapper. The @paginator@
+  element will have the width and height that you specify when setting up the new
+  @Ojay.Paginator@.
+  
+  You'll probably want an interface for the user to navigate from page to page. You can set
+  up your own using the API as described below, but Ojay provides a default UI for you, with
+  'previous' and 'next' buttons and numbered links to all the pages. To use one of these,
+  just call:
+  
+  <pre>
+  // You can specify 'before' or 'after'
+  pager.addControls('after');</pre>
+  
+  This will insert the HTML for the UI after the HTML for the paginated content. The links
+  are setup to monitor the @pager@ object for page changes so you can use class names to
+  style them. See "the example":/examples/scrolled_gallery.html for some ideas - notice how
+  dragging the slider automatically changes the highlighted page number so your code does
+  not need to handle this event.  If you want to roll your own UI, read on for the API details
+  and check out "the source code":http://ojay.googlecode.com/svn/trunk/source/packages/paginator/controls.js
+  for the  @Paginator.Controls@ class.
+  
+  h3. API methods
+  
+  The @pager@ object we created above has an API that allows you to script its behaviour
+  and respond to events it generates. The following methods are available for getting bits
+  of information out of the paginator:
+  
+  * @pager.getContainer()@ - returns an Ojay collection wrapping the @paginator@ element
+    used to wrap @#the-content@.
+  * @pager.getSubject()@ - returns an Ojay collection wrapping @#the-content@ itself.
+  * @pager.getRegion()@ - returns a @Region@ instance representing the area occupied
+    by the paginator.
+  * @pager.getItems()@ - returns an Ojay collection wrapping all the @item@ elements.
+    Remember, the @item@ class is not required - @Paginator@ simply searches for child
+    elements.
+  * @pager.getPages()@ - returns the number of pages the paginator has.
+  * @pager.getCurrentPage()@ - returns the number of the current page. Pages are numbered from 1.
+  * @pager.pageForItem(n)@ - returns the page number containing the nth item. Pages and
+    items are numbered from 1, not from 0.
+  
+  The following methods can be used to control the paginator:
+  
+  * @pager.setPage(n)@ - scrolls the @pager@  to page @n@ (numbered from 1), firing a
+    @pagechange@ event if the page changes (see the Events section below).
+  * @pager.incrementPage()@ - scrolls to the next page, firing a @pagechange@ event.
+  * @pager.decrementPage()@ - scrolls to the previous page, firing a @pagechange@ event.
+  * @pager.snapToPage()@ - if @pager.setScroll@ is used to position the scroll part-way
+    between pages, this method snaps the scroll amount to the closest page.
+  * @pager.focusItem(n)@ - scrolls the @pager@ to the page containing the nth item
+    and adds a @focused@ class name to the focused item's containing element.
+  * @pager.setScroll(amount, options)@ - sets the scroll amount. If @amount@ is between
+    0 and 1 inclusive, it is treated as a fraction of the total scroll distance. If it
+    is greater than 1, it is treated as an absolute offset in pixels. @options@
+    should be an object with two optional properties: @animate@ says whether the scroll
+    should be animated or not, and @silent@ tells it whether to fire a @scroll@ event.
+  
+  <pre>
+  // Scrolls halfway along
+  pager.setScroll(0.5);
+  
+  // Scrolls all the way along
+  pager.setScroll(1);
+  
+  // Scrolls to 2px without animation
+  pager.setScroll(2, {animate: false});
+  
+  // Scrolls to 50px with no 'scroll' event
+  pager.setScroll(50, {silent: true});</pre>
+
+  h3. Events
+  
+  @Paginator@ instances publish a number of events that you can listen to in order to
+  respond to their actions. To listen to an event, use a similar syntax to that for DOM
+  events:
+  
+  <pre>
+  pager.on(eventName, callback, scope);</pre>
+  
+  @eventName@ is the name of the event, @callback@ is a function, and @scope@ is an optional
+  argument that specifies @callback@'s execution context. All event callbacks receive the
+  @Paginator@ instance that fired the event as their first argument, and some events pass
+  additional arguments as detailed below. Here's an example of handling a @pagechange@:
+  
+  <pre>
+  pager.on('pagechange', function(paginator, page) {
+      console.log(page);
+  });</pre>
+  
+  * @pagechange@ - fires whenever the paginator's current page changes. This even fires
+    if you set the scroll offset manually using @setScroll()@. Passes the new current
+    page as the second argument to your callback.
+  * @firstpage@ - fires when the first pages becomes focused.
+  * @lastpage@ - fires when the list page receives focus.
+  * @scroll@ - fires whenever any scrolling takes place. Passes the scroll offset
+    (between 0 and 1) as the second callback argument, and the total scroll range in
+    pixels as the third.
+  * @focusitem@ - fires when @focusItem()@ is used. Passes the item's id (numbered from 1)
+    as the second argument, and a reference to the item's DOM element as the third.

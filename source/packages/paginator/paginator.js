@@ -200,14 +200,13 @@ Ojay.Paginator = JS.Class({
             
             /**
              * @param {Number} id
-             * @param {Boolean} animate
              */
-            focusItem: function(id, animate) {
+            focusItem: function(id) {
                 var page = this.pageForItem(id);
                 if (!page) return;
                 var element = this._elements._items.at(id - 1);
                 this.notifyObservers('focusitem', id, element);
-                this.setPage(page, animate);
+                this.setPage(page);
                 this._elements._items.removeClass('focused');
                 element.addClass('focused');
             },
