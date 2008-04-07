@@ -1,0 +1,87 @@
+- @title = 'Scrolling between Ajax pages'
+
+#summary
+  :textile
+    h2. Lazy-loading pages of content with @Ojay.AjaxPaginator@
+    
+    Here we show how to turn a set of links to other pages into a scrollable interface that
+    displays the linked content in the current document. With JavaScript disabled, users can
+    follow the links to the content, but with JavaScript enabled they get an enhanced experience.
+    Content is not loaded into the page until the user has clicked the appropriate link.
+
+:plain
+    <style id="display-style" type="text/css">
+        #navigation {
+            height:           24px;
+            margin:           24px 0 6px 24px;
+            padding:          0;
+        }
+        
+        #navigation li {
+            display:          inline;
+            float:            left;
+            margin:           0 12px 0 0;
+            padding:          0;
+        }
+        
+        #navigation li a {
+            display:          block;
+            border:           1px solid #ccc;
+            color:            #000;
+            text-decoration:  none;
+            font:             bold 14px Arial, sans-serif;
+            padding:          4px 8px;
+        }
+        
+        #navigation li a.current {
+            background:       #c30;
+            border-color:     #000;
+            color:            #fff;
+        }
+        
+        .paginator .item {
+            background:       #cef;
+            border:           24px solid #fff;
+            float:            left;
+            padding:          24px;
+        }
+    </style>
+    
+    <ul id="navigation">
+        <li><a href="/service/paginator/01.html">About us</a></li>
+        <li><a href="/service/paginator/02.html">Store locations</a></li>
+        <li><a href="/service/paginator/03.html">Products</a></li>
+        <li><a href="/service/paginator/04.html">Careers</a></li>
+    </ul>
+    
+    <script id="display-script" type="text/javascript">
+        var list = Ojay('#navigation'), links = list.descendants('a');
+        var holder = Ojay.HTML.div();
+        list.insert(holder, 'after');
+        
+        // Set up the paginator
+        
+        var pager = new Ojay.AjaxPaginator(holder, {
+            width:    '680px',
+            height:   '360px',
+            urls:     links.map('node.href')
+        });
+        pager.setup();
+        
+        // Hijack links to control the paginator
+        
+        links.forEach(function(link, i) {
+            link.on('click', Ojay.stopDefault)._(pager).setPage(i + 1);
+        });
+        
+        // Listen to pagechange events to highlight links. By putting this logic
+        // here rather than in the above click handler, we are notified whenever
+        // the paginator is changed by other code running on the page.
+        
+        pager.on('pagechange', function(paginator, page) {
+            links.removeClass('current');
+            links.at(page - 1).addClass('current');
+        });
+        
+        links.at(pager.getCurrentPage() - 1).addClass('current');
+    </script>

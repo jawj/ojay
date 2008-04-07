@@ -35,6 +35,7 @@
   
   * "A paginated photo gallery with bookmarkable pages":/examples/paged_gallery.html
   * "Vertically scrolling gallery with a slider control":/examples/scrolled_gallery.html
+  * "Lazy-loading pages of content with Ajax":/examples/ajax_paginator.html
   
   h3. Setting up your document
   
@@ -180,3 +181,65 @@
     pixels as the third.
   * @focusitem@ - fires when @focusItem()@ is used. Passes the item's id (numbered from 1)
     as the second argument, and a reference to the item's DOM element as the third.
+  
+  h3. Browser history management
+  
+  @Ojay.Paginator@ is designed so that it can be used with @Ojay.History@ to keep track of
+  the current page. This means that people can use the browser back/forward buttons to
+  navigate the gallery, and can bookmark individual pages. To add history management
+  to a paginator, you need to tell @Ojay.History@ to manage it _before_ calling its
+  @setup()@ method:
+  
+  <pre>
+  var pager = new Ojay.Paginator('#my-id', options);
+  Ojay.History.manage(pager, 'gallery');
+  pager.setup();</pre>
+  
+  Remember to call @Ojay.History.initialize()@ once all your objects are registered.
+  See the "history documentation":/articles/history.html for more info.
+  
+  h3. Ajax pagination
+  
+  Ojay allows you to lazy-load pages of scrollable content using the @Ojay.AjaxPaginator@
+  class. This is useful for improving page load times as the only content that gets
+  loaded from the server is content that the user has specifically asked for (by clicking
+  a link that scrolls to that page, say). @AjaxPaginator@ is a subclass of @Paginator@
+  and thus has all its features plus a few more. See "the example":/examples/ajax_paginator.html
+  for some implementation ideas.
+  
+  When an Ajax paginator calls its @setPage()@ method, it first checks to see if the
+  content for the given page is loaded. If not, it fetches it from the server using Ajax
+  and inserts it into the document.
+  
+  First, creating an @AjaxPaginator@ is just like creating a @Paginator@, except you
+  need to pass in a list of URLs from which content should be requested. For example:
+  
+  <pre>
+  var pager = new Ojay.AjaxPaginator('#container', {
+    width:    '680px',
+    height:   '360px',
+    urls:     ['/info.html', '/features.html', ...]
+  });
+  pager.setup();</pre>
+  
+  Ajax paginators have the following API methods in addition to all the @Paginator@ ones
+  listed above:
+  
+  * @pager.pageLoaded(n)@ - returns @true@ iff the content from page number @n@ has been
+    loaded from the server.
+  * @pager.loadPage(n)@ - causes the content for page @n@ to be loaded from the server,
+    if it has not already been loaded.
+  
+  In addition to all the events listed above, Ajax paginators publish the following
+  events:
+  
+  * @pagerequest@ - fired when a request for content is made to the server. Passes the
+    requested URL as the second callback argument.
+  * @pageload@ - fires when an Ajax request completes successfully. Passes the requested
+    URL and the @HTTP.Response@ object in case, say, you have script in the response that
+    you want to execute:
+  
+  <pre>
+  pager.on('pageload', function(paginator, url, response) {
+      response.evalScripts();
+  });</pre>
