@@ -14,10 +14,9 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
      * @param {String} id
      */
     initialize: function(id) {
-        this._form = Ojay.byId(id);
+        this._formID = id;
+        this._attach();
         if (!this._hasForm()) return;
-        
-        this._form.on('submit', this.method('_handleSubmission'));
         
         this._requirements = {};
         this._validators = [];
@@ -27,6 +26,16 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
         this._inputs = {};
         this._labels = {};
         this._names = {};
+    },
+    
+    /**
+     * <p>Finds the form element in the document and hijacks its submit event.</p>
+     */
+    _attach: function() {
+        if (this._form && this._form.matches('body *')) return;
+        this._form = Ojay.byId(this._formID);
+        if (!this._hasForm()) return;
+        this._form.on('submit', this.method('_handleSubmission'));
     },
     
     /**
