@@ -1,5 +1,7 @@
 %h1 Forms tests
 
+=javascripts 'test/validation'
+
 %form#buttons
   %button{:id => 'disabler'} Disable things
   %input{:type => 'radio', :name => 'foo-radio', :value => 1, :id => 'foo-radio-1'}
@@ -30,32 +32,34 @@
     %option{:value => '4'} Number four
 
 %button{:id => 'evil'} Be evil!
+%button{:id => 'replace'} Replace form!
 
 #results
 
-%form#login
-  %div
-    %label
-      Username
-      %input{:name => 'username'}
-  %div
-    %label
-      Confirm username
-      %input{:name => 'username_confirmation'}
-  %div
-    %label{:for => 'email'} Your email
-    %input{:name => 'email', :id => 'email'}
-  %div
-    %span Your age
-    %input{:name => 'age', :type => 'text'}
-  %div
-    %span The password
-    %input{:name => 'password', :type => 'password'}
-  %div
-    %label{:for => 'tc'} Accept Ts+Cs?
-    %input{:name => 'ts-and-cs', :type => 'checkbox', :value => '1', :id => 'tc'}
-  %div
-    %input{:type => 'submit', :value => 'Sign in'}
+#form-wrapper
+  %form#login
+    %div
+      %label
+        Username
+        %input{:name => 'username'}
+    %div
+      %label
+        Confirm username
+        %input{:name => 'username_confirmation'}
+    %div
+      %label{:for => 'email'} Your email
+      %input{:name => 'email', :id => 'email'}
+    %div
+      %span Your age
+      %input{:name => 'age', :type => 'text'}
+    %div
+      %span The password
+      %input{:name => 'password', :type => 'password'}
+    %div
+      %label{:for => 'tc'} Accept Ts+Cs?
+      %input{:name => 'ts-and-cs', :type => 'checkbox', :value => '1', :id => 'tc'}
+    %div
+      %input{:type => 'submit', :value => 'Sign in'}
 
 %form#search{:action => '/service/search.html', :method => 'GET'}
   %div

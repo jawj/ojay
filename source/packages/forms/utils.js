@@ -41,41 +41,57 @@ Ojay.Forms = function(description) {
     description.call(DSL);
 };
 
-/**
- * <p>Returns an Ojay collection wrapping the label for the given input.</p>
- * @param {String|HTMLElement|DomCollection} input
- * @returns {DomCollection}
- */
-Ojay.Forms.getLabel = function(input) {
-    input = Ojay(input);
-    if (!input.node) return Ojay();
-    var label = input.ancestors('label');
-    if (label.node) return label.at(0);
-    var id = input.node.id;
-    label = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
-    return Ojay(label.slice(0,1));
-};
-
-/**
- * <p>Returns the serialization of the given <tt>form</tt> as a string.</p>
- * @param {String|HTMLElement|DomCollection} form
- * @returns {String}
- */
-Ojay.Forms.getQueryString = function(form) {
-    var data = YAHOO.util.Connect.setForm(Ojay(form).node);
-    YAHOO.util.Connect.resetFormState();
-    return data;
-};
-
-/**
- * <p>Returns the serialization of the given <tt>form</tt> as an object.</p>
- * @param {String|HTMLElement|DomCollection} form
- * @returns {Object}
- */
-Ojay.Forms.getData = function(form) {
-    return this.getQueryString(form).split('&').reduce(function(memo, pair) {
-        var data = pair.split('=').map(decodeURIComponent);
-        memo[data[0].trim()] = data[1].trim();
-        return memo;
-    }, {});
-};
+JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
+    /**
+     * <p>Returns an Ojay collection wrapping the label for the given input.</p>
+     * @param {String|HTMLElement|DomCollection} input
+     * @returns {DomCollection}
+     */
+    getLabel: function(input) {
+        input = Ojay(input);
+        if (!input.node) return Ojay();
+        var label = input.ancestors('label');
+        if (label.node) return label.at(0);
+        var id = input.node.id;
+        label = [].filter.call(document.getElementsByTagName('label'), function(label) { return id && label.htmlFor == id; });
+        return Ojay(label.slice(0,1));
+    },
+    
+    /**
+     * <p>Returns the serialization of the given <tt>form</tt> as a string.</p>
+     * @param {String|HTMLElement|DomCollection} form
+     * @returns {String}
+     */
+    getQueryString: function(form) {
+        var data = YAHOO.util.Connect.setForm(Ojay(form).node);
+        YAHOO.util.Connect.resetFormState();
+        return data;
+    },
+    
+    /**
+     * <p>Returns the serialization of the given <tt>form</tt> as an object.</p>
+     * @param {String|HTMLElement|DomCollection} form
+     * @returns {Object}
+     */
+    getData: function(form) {
+        return this.getQueryString(form).split('&').reduce(function(memo, pair) {
+            var data = pair.split('=').map(decodeURIComponent);
+            memo[data[0].trim()] = data[1].trim();
+            return memo;
+        }, {});
+    },
+    
+    /**
+     * <p>Goes through all sets of form rules and makes sure each one is associated with
+     * an existing form in the document. Useful for replacing a form dynamically and then
+     * reattaching all the rules. Returns the number of reattached forms.</p>
+     * @returns {Number}
+     */
+    reattach: function() {
+        var n = 0;
+        for (var id in forms) {
+            if (forms[id]._attach()) ++n;
+        }
+        return n;
+    }
+});

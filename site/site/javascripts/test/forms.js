@@ -1,34 +1,8 @@
-Ojay.Forms(function() { with(this) {
-    
-    form('login')
-        .highlightsActiveField()
-        .requires('username').toHaveLength({minimum: 6})
-        .requires('username_confirmation').toConfirm('username')
-        .expects('email').toMatch(EMAIL_FORMAT)
-        .expects('age').toBeNumeric()
-        .requires('password')
-        .requires('ts-and-cs', 'Terms and conditions').toBeChecked();
-    
-    when('login').isValidated(displayErrorsIn('#results'));
-    
-    form('search')
-        .submitsUsingAjax()
-        .requires('q')
-        .requires('lucky')
-        .validates(function(data, errors) {
-            if ( /delete/i.test(data.get('q')) ) errors.add('q', 'Looks like SQL injection!');
-        });
-    
-    when('search').isValidated(function(errors) {
-        window.console && console.log(errors);
-    });
-    
-    when('search').responseArrives(displayResponseIn('#searches'));
-}});
-
 radios = new Ojay.Forms.RadioButtons('#buttons input[name=foo-radio]');
 check = new Ojay.Forms.Checkbox('#buttons input[name=checky]');
 selector = new Ojay.Forms.Select('#drop-down');
+
+Ojay.Forms.reattach();
 
 [radios, check, selector].forEach(it().on('change', function(input) {
     window.console && console.log(input.getValue());
@@ -64,4 +38,15 @@ Ojay('#evil').on('click', function(el,ev) {
             f[k[0]][k[1]] = new (f[k[0]][k[1]].klass);
         });
     }})
+});
+
+// Remove form from the document and replace to check rule re-attachment
+Ojay.Forms.reattach = Ojay.Forms.reattach.traced('reattach()');
+Ojay('#replace').on('click', function(el,ev) {
+    ev.stopEvent();
+    var wrapper = Ojay('#form-wrapper'), formHTML = wrapper.node.innerHTML;
+    wrapper.setContent('');
+    wrapper.setContent(formHTML);
+    Ojay.Forms.getLabel('#email').setContent('Your email address');
+    Ojay.Forms.reattach();
 });

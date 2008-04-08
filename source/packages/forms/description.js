@@ -16,26 +16,28 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
     initialize: function(id) {
         this._formID = id;
         this._attach();
-        if (!this._hasForm()) return;
         
         this._requirements = {};
         this._validators = [];
         this._dsl = new FormDSL(this);
         this._when = new WhenDSL(this);
-        
-        this._inputs = {};
-        this._labels = {};
-        this._names = {};
     },
     
     /**
-     * <p>Finds the form element in the document and hijacks its submit event.</p>
+     * <p>Finds the form element in the document and hijacks its submit event. Returns a
+     * boolean to indicate whether the form was reattached.</p>
+     * @returns {Boolean}
      */
     _attach: function() {
-        if (this._form && this._form.matches('body *')) return;
+        if (this._hasForm()) return false;
+        this._inputs = {};
+        this._labels = {};
+        this._names = {};
         this._form = Ojay.byId(this._formID);
-        if (!this._hasForm()) return;
+        if (!this._hasForm()) return false;
         this._form.on('submit', this.method('_handleSubmission'));
+        for (var field in this._requirements) this._requirements[field]._attach();
+        return true;
     },
     
     /**
@@ -44,8 +46,7 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
      * @returns {Boolean}
      */
     _hasForm: function() {
-        var node = this._form.node;
-        return !!(node && node.tagName.toLowerCase() == 'form');
+        return this._form && this._form.matches('body form');
     },
     
     /**

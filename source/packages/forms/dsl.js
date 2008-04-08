@@ -148,8 +148,8 @@ var DSL = {
      * @returns {Function}
      */
     displayErrorsIn: function(element) {
-        element = Ojay(element);
         return function(errors) {
+            element = Ojay(element);
             var n = errors.length;
             if (n == 0) return element.setContent('');
             var were = (n == 1) ? 'was' : 'were', s = (n == 1) ? '' : 's';
@@ -169,7 +169,9 @@ var DSL = {
      * @returns {Function}
      */
     displayResponseIn: function(element) {
-        return it().insertInto(Ojay(element));
+        return function(response) {
+            response.insertInto(Ojay(element));
+        };
     },
     
     EMAIL_FORMAT: Ojay.EMAIL_FORMAT
@@ -267,9 +269,9 @@ var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
      * @returns {RequirementDSL}
      */
     toBeChecked: function(message) {
-        var element = this._requirement._elements.node;
-        if (element.type.toLowerCase() != 'checkbox') throw new Error('Input "' + this._requirement._field + '" is not a checkbox');
+        var requirement = this._requirement;
         this._requirement._add(function(value) {
+            var element = requirement._elements.node;
             return (value == element.value && element.checked) || [message || 'must be checked'];
         });
         return this;

@@ -21,7 +21,13 @@ var FormRequirement = JS.Class({
         this._field = field;
         this._tests = [];
         this._dsl = new RequirementDSL(this);
-        this._elements = this._form._getInputs(field);
+        this._attach();
+    },
+    
+    /**
+     */
+    _attach: function() {
+        this._elements = this._form._getInputs(this._field);
     },
     
     /**
