@@ -103,6 +103,12 @@
                     errors.add('username', 'cannot contain the phrase "admin"');
             });
             
+            // Set up a pre-validation filter to format data
+            
+            before('signup').isValidated(function(data) {
+                data.title = data.title.charAt(0).toUpperCase() + data.title.slice(1).toLowerCase();
+            });
+            
             // How are you going to display the errors?
             
             when('signup').isValidated(function(errors) {

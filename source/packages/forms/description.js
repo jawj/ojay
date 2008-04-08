@@ -18,9 +18,11 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
         this._attach();
         
         this._requirements = {};
-        this._validators = [];
-        this._dsl = new FormDSL(this);
-        this._when = new WhenDSL(this);
+        this._validators   = [];
+        this._dataFilters  = [];
+        this._dsl    = new FormDSL(this);
+        this._when   = new WhenDSL(this);
+        this._before = new BeforeDSL(this);
     },
     
     /**
@@ -134,14 +136,38 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
     },
     
     /**
+     * <p>Sets the value of the given form field.</p>
+     * @param {String} key
+     * @param {String} value
+     */
+    _setFieldValue: function(key, value) {
+        var input = this._getInputs(key).node;
+        if (!input) return;
+        switch (true) {
+            case  input.type == 'text' || input.type == 'hidden':
+            case /^textarea$/i.test(input.tagName) :
+                input.value = String(value);
+                break;
+            case input.type == 'radio' :
+            case input.type == 'checkbox' :
+            case /^select$/i.test(input.tagName) :
+                // TODO
+        }
+    },
+    
+    /**
      * <p>Validates the form by applying the set of requirements to the form's current data and
      * building up a collection of errors, and notifies any observers that validation has taken
      * place.</p>
      */
     _validate: function() {
         this._errors = new FormErrors(this);
-        var data = new FormData(this._getData()), key;
+        var data = this._getData(), key, input;
         
+        this._dataFilters.forEach(function(filter) { filter(data); });
+        for (key in data) this._setFieldValue(key, data[key]);
+        
+        data = new FormData(data);
         for (key in this._requirements)
             this._requirements[key]._test(data.get(key), data);
         

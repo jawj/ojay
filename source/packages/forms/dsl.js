@@ -141,6 +141,14 @@ var DSL = {
     },
     
     /**
+     * <p>Returns a DSL object for applying pre-processing filters before events take place.</p>
+     * @returns {BeforeDSL}
+     */
+    before: function(id) {
+        return getForm(id)._before || null;
+    },
+    
+    /**
      * <p>Returns a helper function for use with <tt>when().isValidated()</tt>. The returned
      * function will display the forms elements as a bulleted list inside the element you
      * supply, in a <tt>DIV</tt> with the class name <tt>error-explanation</tt>.</p>
@@ -383,7 +391,7 @@ FormDSLMethods.forEach(function(method) {
 
 /**
  * <p>The <tt>WhenDSL</tt> class creates DSL objects used to describe form requirements. All
- * <tt>FormRequirement</tt> objects have one of these objects associated with them. The WhenDSL
+ * <tt>FormDescription</tt> objects have one of these objects associated with them. The WhenDSL
  * is used specifically to describe events linked to forms.</p>
  * @constructor
  * @class WhenDSL
@@ -418,5 +426,28 @@ var WhenDSL = JS.Class(/** @scope WhenDSL.prototype */{
         block = Function.from(block);
         if (context) block = block.bind(context);
         this._form._handleAjaxResponse = block;
+    }
+});
+
+/**
+ * <p>The <tt>BeforeDSL</tt> class creates DSL objects used to describe pre-processing actions. All
+ * <tt>FormDescription</tt> objects have one of these objects associated with them.</p>
+ * @constructor
+ * @class BeforeDSL
+ * @private
+ */
+var BeforeDSL = JS.Class({
+    /**
+     * @param {FormDescription} form
+     */
+    initialize: function(form) {
+        this._form = form;
+    },
+    
+    /**
+     * @param {Function} block
+     */
+    isValidated: function(block) {
+        this._form._dataFilters.push(block);
     }
 });
