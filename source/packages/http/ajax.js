@@ -220,14 +220,17 @@ Ojay.HTTP.Response = JS.Class(/** @scope Ojay.HTTP.Response.prototype */{
     
     /**
      * <p>Inserts the response's body text into the given <tt>elements</tt> at the given
-     * <tt>position</tt> (default is <tt>'replace'</tt>). See <tt>DomCollection#insert.</tt>.</p>
-     * @param {String|HTMLElement|Array} elements A CSS selector, HTML element reference or array of elements
-     * @param {String} position The position at which to insert, defaults to 'replace'
+     * <tt>position</tt> (default is <tt>'replace'</tt>). See <tt>DomCollection#insert.</tt>.
+     * If no position is specified, will accept any object with a <tt>setContent()</tt> method.</p>
+     * @param {String|HTMLElement|DomCollection} elements
+     * @param {String} position
      * @returns {HTTP.Response}
      */
     insertInto: function(elements, position) {
-        elements = Ojay(elements);
-        elements.insert((this.responseText || '').stripScripts(), position || 'replace');
+        elements = elements.setContent ? elements : Ojay(elements);
+        var content = (this.responseText || '').stripScripts();
+        if (!position) elements.setContent(content);
+        else elements.insert(content, position);
         return this;
     },
     
