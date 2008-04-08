@@ -41,6 +41,9 @@ Ojay.Forms = function(description) {
     description.call(DSL);
 };
 
+// Stores all instances of styled form controls.
+var styledInputs = [];
+
 JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
     /**
      * <p>Returns an Ojay collection wrapping the label for the given input.</p>
@@ -93,5 +96,16 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
             if (forms[id]._attach()) ++n;
         }
         return n;
+    },
+    
+    /**
+     * <p>Makes sure all styled form inputs are displaying the right values from the
+     * underlying form inputs.</p>
+     */
+    update: function() {
+        styledInputs.forEach(function(input) {
+            if (input.isA(Ojay.Forms.Select)) input._updateDisplayFromSelect();
+            else input.setChecked();
+        });
     }
 });

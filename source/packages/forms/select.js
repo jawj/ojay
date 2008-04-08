@@ -81,6 +81,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
      * @param {String|HTMLElement|DomCollection} select
      */
     initialize: function(select) {
+        styledInputs.push(this);
         this._input = Ojay(select);
         if (!this._input || this._input.node.tagName.toLowerCase() != 'select')
             throw new TypeError('Attempt to create a Select object with non-select element');

@@ -85,6 +85,7 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
              * @param {DomCollection} input
              */
             initialize: function(group, input) {
+                styledInputs.push(this);
                 if (!input || !input.node || input.node.type != 'radio')
                     throw new TypeError('Attempt to create a RadioButtons object with non-radio element');
                 this._group = group;
