@@ -10,11 +10,13 @@ Ojay.URI = JS.Class({
          */
         parse: function(string) {
             if (string instanceof this) return string;
-            var uri = new this, string = String(string).trim();
-            string = string.replace(/^\w+:\/+/, function(match) { uri.protocol = match; return ''; });
-            string = string.replace(/^[^\/]+/, function(match) { uri.domain = match; return ''; });
-            string = string.replace(/^[^\?]+/, function(match) { uri.path = match; return ''; });
-            string = string.replace(/#.*$/, function(match) { uri.hash = match.slice(1); return ''; });
+            var uri = new this;
+            
+            string = String(string).trim()
+                .replace(/^\w+:\/+/, function(match) { uri.protocol = match; return ''; })
+                .replace(/^[^\/]+/, function(match) { uri.domain = match; return ''; })
+                .replace(/^[^\?]+/, function(match) { uri.path = match; return ''; })
+                .replace(/#.*$/, function(match) { uri.hash = match.slice(1); return ''; });
             
             if (/^\?/.test(string)) string.slice(1).split('&').forEach(function(pair) {
                 var bits = pair.split('=').map(decodeURIComponent).map('trim');
@@ -29,7 +31,7 @@ Ojay.URI = JS.Class({
          * @returns {Boolean}
          */
         compare: function(a,b) {
-            return this.parse(a).equals(this.parse(b));
+            return this.parse(a).equals(b);
         }
     },
     
