@@ -10,7 +10,7 @@ Ojay.URI = JS.Class({
          */
         parse: function(string) {
             if (string instanceof this) return string;
-            var uri = new this;
+            var uri = new this, string = String(string).trim();
             string = string.replace(/^\w+:\/+/, function(match) { uri.protocol = match; return ''; });
             string = string.replace(/^[^\/]+/, function(match) { uri.domain = match; return ''; });
             string = string.replace(/^[^\?]+/, function(match) { uri.path = match; return ''; });
