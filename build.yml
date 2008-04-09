@@ -44,6 +44,7 @@ packages:
     files:
       - ajax
       - cross_domain
+      - uri
     requires:
       - ojay/core-min
   pkg/forms:
