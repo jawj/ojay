@@ -136,26 +136,6 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
     },
     
     /**
-     * <p>Sets the value of the given form field.</p>
-     * @param {String} key
-     * @param {String} value
-     */
-    _setFieldValue: function(key, value) {
-        var input = this._getInputs(key).node;
-        if (!input) return;
-        switch (true) {
-            case  input.type == 'text' || input.type == 'hidden':
-            case /^textarea$/i.test(input.tagName) :
-                input.value = String(value);
-                break;
-            case input.type == 'radio' :
-            case input.type == 'checkbox' :
-            case /^select$/i.test(input.tagName) :
-                // TODO
-        }
-    },
-    
-    /**
      * <p>Validates the form by applying the set of requirements to the form's current data and
      * building up a collection of errors, and notifies any observers that validation has taken
      * place.</p>
@@ -165,7 +145,8 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
         var data = this._getData(), key, input;
         
         this._dataFilters.forEach(function(filter) { filter(data); });
-        for (key in data) this._setFieldValue(key, data[key]);
+        for (key in data) Ojay.Forms.setValue(this._getInputs(key), data[key]);
+        Ojay.Forms.update();
         
         data = new FormData(data);
         for (key in this._requirements)

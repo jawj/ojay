@@ -239,8 +239,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
      * @returns {Forms.Select}
      */
     setValue: function(value, notify) {
-        this._getOptions().forEach(function(option) { option.selected = false; });
-        this.getOptionsByValue(value).forEach(function(option) { option.selected = true; });
+        Ojay.Forms.setValue(this._input, value);
         this._updateDisplayFromSelect(notify);
         return this;
     },

@@ -22,6 +22,18 @@ Ojay('#disabler').on('click', function(el,ev) {
     selector.setDisabled(disabled);
 });
 
+Ojay('#setter1').on('click', function(el,ev) {
+    ev.stopEvent();
+    Ojay.Forms.setValue('#drop-down', 3);
+    Ojay.Forms.update();
+});
+
+Ojay('#setter2').on('click', function(el,ev) {
+    ev.stopEvent();
+    Ojay.Forms.setValue('[name=foo-radio]', 2);
+    Ojay.Forms.update();
+});
+
 // Attemp to exploit security hole by removing errors after validation
 Ojay('#evil').on('click', function(el,ev) {
     ev.stopEvent();

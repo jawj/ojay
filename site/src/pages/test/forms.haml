@@ -4,6 +4,10 @@
 
 %form#buttons
   %button{:id => 'disabler'} Disable things
+  %button{:id => 'setter1'} Set drop-down value
+  %button{:id => 'setter2'} Set radio value
+  %br/
+  %br/
   %input{:type => 'radio', :name => 'foo-radio', :value => 1, :id => 'foo-radio-1'}
   %label{:for => 'foo-radio-1'} Value 1
   %input{:type => 'radio', :name => 'foo-radio', :value => 2, :id => 'foo-radio-2'}
@@ -24,12 +28,13 @@
   %br/
   %br/
   %label{:for => 'drop-down'} Options:
-  %select#drop-down
+  %select#drop-down{:name => 'selectoptions'}
     %option Please choose
     %option{:value => '1'} Number one
     %option{:value => '2'} Number two
     %option{:value => '3'} Number three
     %option{:value => '4'} Number four
+  %input{:type => 'submit', :value => 'Go!'}
 
 %button{:id => 'evil'} Be evil!
 %button{:id => 'replace'} Replace form!
@@ -37,7 +42,7 @@
 #results
 
 #form-wrapper
-  %form#login
+  %form#login{:method => 'get'}
     %div
       %label
         Username

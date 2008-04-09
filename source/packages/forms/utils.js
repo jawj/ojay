@@ -85,6 +85,41 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
     },
     
     /**
+     * @param {String|HTMLElement|DomCollection}
+     * @param {String|Boolean} value
+     */
+    setValue: function(element, value) {
+        var selected, options, element = Ojay(element);
+        switch (true) {
+            
+            case element.every({matches: '[type=radio]'}) :
+                selected = element.map('node').filter({value: value})[0];
+                if (!selected) return;
+                element.setAttributes({checked: false});
+                selected.checked = true;
+                break;
+            
+            case element.matches('[type=checkbox]') :
+                element.node.checked = !!value;
+                break;
+            
+            case element.matches('select') :
+                options = Array.from(element.node.options);
+                selected = options.filter({value: value})[0];
+                if (!selected) return;
+                options.forEach(function(option) { option.selected = false });
+                selected.selected = true;
+                break;
+            
+            case element.matches('input') :
+            case element.matches('[type=hidden]') :
+            case element.matches('textarea') :
+                element.node.value = String(value);
+                break;
+        }
+    }.curry(),
+    
+    /**
      * <p>Goes through all sets of form rules and makes sure each one is associated with
      * an existing form in the document. Useful for replacing a form dynamically and then
      * reattaching all the rules. Returns the number of reattached forms.</p>
