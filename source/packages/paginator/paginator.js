@@ -1,7 +1,57 @@
-Ojay.Paginator = JS.Class({
+/**
+ * <p>The <tt>Paginator</tt> class is used to replace large blocks of content with a smaller,
+ * scrollable area with an API for controlling the area. The content will typically be made up
+ * of series of items of the same size that can be grouped into pages. For example, and image
+ * gallery could be set up as a series of floated divs or a list...</p>
+ *
+ *     &lt;div id="gallery"&gt;
+ *         &lt;div class="item"&gt;&lt;img src="01.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="02.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="03.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="04.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="05.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="06.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="07.jpg" /&gt;&lt;/div&gt;
+ *         &lt;div class="item"&gt;&lt;img src="08.jpg" /&gt;&lt;/div&gt;
+ *     &lt;/div&gt;
+ *
+ * <p>A <tt>Paginator</tt>, when applied to <tt>#gallery</tt>, will wrap its child elements in
+ * a scrollable element that can be controlled using the <tt>Paginator</tt> API. So, your markup
+ * will not look like:</p>
+ *
+ *     &lt;div class="paginator"&gt;
+ *         &lt;div id="gallery"&gt;
+ *             &lt;div class="item"&gt;&lt;img src="01.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="02.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="03.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="04.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="05.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="06.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="07.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="item"&gt;&lt;img src="08.jpg" /&gt;&lt;/div&gt;
+ *         &lt;/div&gt;
+ *     &lt;/div&gt;
+ *
+ * <p>The outer element is referred to as the 'container', and the inner element the 'subject'.
+ * <tt>Paginator</tt> objects publish a number of events -- they are as follows:</p>
+ *
+ * <ul>
+ *      <li><tt>pagechange</tt> - when the current page number changes</li>
+ *      <li><tt>scroll</tt> when any scrolling takes place</li>
+ *      <li><tt>firstpage</tt> - when the paginator reaches the first page</li>
+ *      <li><tt>lastpage</tt> - when the paginator reaches the last page</li>
+ *      <li><tt>focusitem</tt> - when <tt>focusItem()</tt> is called</li>
+ * </ul>
+ *
+ * <p>See the website for further documentation and graphical examples.</p> 
+ *
+ * @constructor
+ * @class Paginator
+ */
+Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
     include: [Ojay.Observable, JS.State],
     
-    extend: {
+    extend: /** @scope Ojay.Paginator */{
         CONTAINER_CLASS:    'paginator',
         ITEM_CLASS:         'item',
         SCROLL_TIME:        0.5,
@@ -10,6 +60,17 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>To initialize, the <tt>Paginator</tt> instance needs a CSS selector and some configuration
+     * options. Available options are:</p>
+     *
+     * <ul>
+     *      <li><tt>width</tt> - the width as a string, in any units, e.g. '512px'. Required.</li>
+     *      <li><tt>height</tt> - the height as a string, in any units, e.g. '512px'. Required.</li>
+     *      <li><tt>scrollTime</tt> - the duration of the scoll effect in seconds. Optional.</li>
+     *      <li><tt>easing</tt> - sets the name of the easing effect to use. Optional.</li>
+     *      <li><tt>direction</tt> - 'horizontal' or 'vertical', sets scroll direction. Required.</li>
+     * </ul>
+     *
      * @param {String|HTMLElement|DomCollection} subject
      * @param {Object} options
      */
@@ -34,12 +95,15 @@ Ojay.Paginator = JS.Class({
     
     /**
      * @param {Object} state
+     * @returns {Paginator}
      */
     changeState: function(state) {
         if (state.page !== undefined) this._handleSetPage(state.page);
+        return this;
     },
     
     /**
+     * <p>Returns an Ojay collection wrapping all the HTML used by the paginator.</p>
      * @returns {DomCollection}
      */
     getHTML: function() {
@@ -57,6 +121,8 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns an Ojay collection wrapping the wrapper element added to your document to
+     * contain the original content element and let it slide.</p>
      * @returns {DomCollection}
      */
     getContainer: function() {
@@ -64,6 +130,8 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns an Ojay collection wrapping the sliding element, i.e. the element you specify
+     * when creating the <tt>Paginator</tt> instance.</p>
      * @returns {DomCollection}
      */
     getSubject: function() {
@@ -71,6 +139,8 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns a <tt>Region</tt> object representing the area of the document occupied by
+     * the <tt>Paginator</tt>'s container element.</p>
      * @returns {Region}
      */
     getRegion: function() {
@@ -79,6 +149,7 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns an Ojay collection wrapping the child elements of the subject.</p>
      * @returns {DomCollection}
      */
     getItems: function() {
@@ -90,6 +161,7 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns the number of pages of content the <tt>Paginator</tt> has.</p>
      * @returns {Number}
      */
     getPages: function() {
@@ -107,6 +179,7 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns the number of the current page, numbered from 1.</p>
      * @returns {Number}
      */
     getCurrentPage: function() {
@@ -114,6 +187,8 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Returns the page number containing the nth child element. Pages and items are
+     * both numbered from 1 upwards.</p>
      * @param {Number} id
      * @returns {Number}
      */
@@ -125,6 +200,8 @@ Ojay.Paginator = JS.Class({
     },
     
     /**
+     * <p>Places a default set of UI controls before or after the <tt>Paginator</tt> in the
+     * document and returns a <tt>Paginator.Controls</tt> instance representing this UI.</p>
      * @returns {Paginator.Controls}
      */
     addControls: function(position) {
@@ -135,12 +212,22 @@ Ojay.Paginator = JS.Class({
     },
     
     states: {
-        CREATED: {
+        /**
+         * <p>The <tt>Paginator</tt> is in the CREATED state when it has been instantiated but
+         * none of its DOM interactions have taken place. This attachment is deferred to the
+         * <tt>setup()</tt> call so that object can be history-managed before its UI is set up.</p>
+         */
+        CREATED: /** @scope Ojay.Paginator.prototype */{
             /**
+             * <p>Sets up all the DOM changes the <tt>Paginator</tt> needs. If you want to history
+             * manage the object, make sure you set up history management before calling this method.
+             * Moves the object to the READY state if successful.</p>
+             * @returns {Paginator}
              */
             setup: function() {
                 var subject = this._elements._subject = Ojay(this._selector).at(0);
-                if (!subject.node) return;
+                if (!subject.node) return this;
+                
                 var container = this.getHTML();
                 subject.insert(container.node, 'after');
                 container.insert(subject.node);
@@ -158,20 +245,32 @@ Ojay.Paginator = JS.Class({
                 this.setState('READY');
                 this._currentPage = state.page;
                 this._handleSetPage(state.page);
+                
+                return this;
             }
         },
         
-        READY: {
+        /**
+         * <p>The <tt>Paginator</tt> is in the READY state when all its DOM behaviour has been
+         * set up and it is not in the process of scrolling.</p>
+         */
+        READY: /** @scope Ojay.Paginator.prototype */{
             /**
+             * <p>Sets the current page of the <tt>Paginator</tt> by scrolling the subject
+             * element. Will fire a <tt>pagechange</tt> event if the page specified is not
+             * equal to the current page.</p>
              * @param {Number} page
+             * @returns {Paginator}
              */
             setPage: function(page) {
                 page = Number(page);
-                if (page == this._currentPage || page < 1 || page > this._numPages) return;
+                if (page == this._currentPage || page < 1 || page > this._numPages) return this;
                 this.changeState({page: page});
+                return this;
             },
             
             /**
+             * <p>Handles request to <tt>changeState()</tt>.</p>
              * @param {Number} page
              */
             _handleSetPage: function(page) {
@@ -179,41 +278,60 @@ Ojay.Paginator = JS.Class({
             },
             
             /**
+             * <p>Increments the current page by one, firing a <tt>pagechange</tt> event.</p>
+             * @returns {Paginator}
              */
             incrementPage: function() {
                 return this.setPage(this._currentPage + 1);
             },
             
             /**
+             * <p>Decrements the current page by one, firing a <tt>pagechange</tt> event.</p>
+             * @returns {Paginator}
              */
             decrementPage: function() {
                 return this.setPage(this._currentPage - 1);
             },
             
             /**
+             * <p>Snaps the scroll offset of the <tt>Paginator</tt> to that of the current
+             * page. The optional <tt>animate</tt> parameter, if set to <tt>false</tt>, will
+             * prevent animation.</p>
              * @param {Boolean} animate
+             * @returns {Paginator}
              */
             snapToPage: function(animate) {
                 this.setScroll((this._currentPage - 1) / (this._numPages - 1),
                         {animate: animate !== false, silent: true});
+                return this;
             },
             
             /**
+             * <p>Scrolls to the page for the given item (numbered from 1) and adds a class
+             * off <tt>focused</tt> to that item's element.</p>
              * @param {Number} id
+             * @returns {Paginator}
              */
             focusItem: function(id) {
                 var page = this.pageForItem(id);
-                if (!page) return;
+                if (!page) return this;
                 var element = this._elements._items.at(id - 1);
                 this.notifyObservers('focusitem', id, element);
                 this.setPage(page);
                 this._elements._items.removeClass('focused');
                 element.addClass('focused');
+                return this;
             },
             
             /**
+             * <p>Sets the scroll offset of the subject element. If <tt>amount</tt> is between
+             * 0 and 1, it is taken as a fraction of the total offset. If it is greater than 1,
+             * it is taken as an absolute pixel value. The options hash may specify <tt>animate</tt>,
+             * to say whether the scroll move should be animated, and <tt>silent</tt>, which if
+             * set to <tt>true</tt> will prevent any <tt>scroll</tt> events from firing.</p>
              * @param {Number} amount
              * @param {Object} options
+             * @returns {Paginator}
              */
             setScroll: function(amount, options) {
                 var orientation = this._options.direction, settings;
@@ -221,7 +339,7 @@ Ojay.Paginator = JS.Class({
                 var pages = this._numPages, total = this.getRegion()[method]() * (pages - 1);
                 
                 if (amount >= 0 && amount <= 1) amount = amount * total;
-                if (amount < 0 || amount > total) return;
+                if (amount < 0 || amount > total) return this;
                 
                 this._elements._items.removeClass('focused');
                 options = options || {};
@@ -252,6 +370,8 @@ Ojay.Paginator = JS.Class({
                     if (page == 1) this.notifyObservers('firstpage');
                     if (page == this._numPages) this.notifyObservers('lastpage');
                 }
+                
+                return this;
             }
         },
         

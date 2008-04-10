@@ -1,6 +1,14 @@
-Ojay.Paginator.extend({
-    Controls: JS.Class({
-        extend: {
+/**
+ * <p>The <tt>Paginator.Controls</tt> class implements a default UI for <tt>Paginator</tt>
+ * instances, which includes previous/next links, indivisual page links, and event listeners
+ * that add class names to the elements in the UI in response to state changes in the
+ * observed paginator object.</p>
+ * @constructor
+ * @class Paginator.Controls
+ */
+Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
+    Controls: JS.Class(/** @scope Ojay.Paginator.Controls.prototype */{
+        extend: /** @scope Ojay.Paginator.Controls */{
             CONTAINER_CLASS:    'paginator-controls',
             PREVIOUS_CLASS:     'previous',
             NEXT_CLASS:         'next',

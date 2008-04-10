@@ -1,7 +1,17 @@
-Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
+/**
+ * <p>The <tt>AjaxPaginator</tt> class extends the <tt>Paginator</tt> with functionality that
+ * allows you to load content for the pages from the server using Ajax. Content is lazy-loaded,
+ * which is to say that each page is not loaded until the user selects to view that page.</p>
+ * @constructor
+ * @class AjaxPaginator
+ */
+Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, /** @scope Ojay.AjaxPaginator.prototype */{
     /**
-     * @param {String} subject
-     * @parsm {Object} options
+     * <p><tt>AjaxPaginator</tt> takes the same initialization data as <tt>Paginator</tt>, but
+     * with one extra required option: <tt>urls</tt>. This should be an array of URLs that
+     * the paginator will pull content from.</p>
+     * @param {String|HTMLElement|DomCollection} subject
+     * @param {Object} options
      */
     initialize: function(subject, options) {
         this.callSuper();
@@ -11,6 +21,7 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
     },
     
     /**
+     * <p>Returns an Ojay collection wrapping the child elements of the subject.</p>
      * @returns {DomCollection}
      */
     getItems: function() {
@@ -29,6 +40,7 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
     },
     
     /**
+     * <p>Returns <tt>true</tt> iff the given page has its content loaded.</p>
      * @param {Number} page
      * @returns {Boolean}
      */
@@ -37,6 +49,9 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
     },
     
     /**
+     * <p>Tells the <tt>AjaxPaginator</tt> to load the content for the given page, if
+     * the content is not already loaded. Fires <tt>pagerequest</tt> and
+     * <tt>pageload</tt> events.</p>
      * @param {Number} page
      * @param {Function} callback
      * @param {Object} scope
@@ -58,6 +73,7 @@ Ojay.AjaxPaginator = JS.Class(Ojay.Paginator, {
     states: {
         READY: {
             /**
+             * <p>Handles request to <tt>changeState()</tt>.</p>
              * @param {Number} page
              */
             _handleSetPage: function(page) {
