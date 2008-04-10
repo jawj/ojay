@@ -38,4 +38,8 @@ Ojay.Forms(function() { with(this) {
     });
     
     when('search').responseArrives(displayResponseIn('#searches'));
+    
+    when('search').responseArrives(function(response) {
+        alert(response.responseText);
+    });
 }});

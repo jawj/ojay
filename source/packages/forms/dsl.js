@@ -415,7 +415,7 @@ var WhenDSL = JS.Class(/** @scope WhenDSL.prototype */{
         if (!this._form._ajax) return;
         block = Function.from(block);
         if (context) block = block.bind(context);
-        this._form._handleAjaxResponse = block;
+        this._form._ajaxResponders.push(block);
     }
 });
 

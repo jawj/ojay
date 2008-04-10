@@ -18,9 +18,10 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
         this._displayNames = {};
         this._attach();
         
-        this._requirements = {};
-        this._validators   = [];
-        this._dataFilters  = [];
+        this._requirements   = {};
+        this._validators     = [];
+        this._dataFilters    = [];
+        this._ajaxResponders = [];
         this._dsl    = new FormDSL(this);
         this._when   = new WhenDSL(this);
         this._before = new BeforeDSL(this);
@@ -73,16 +74,12 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
         if (this._ajax || !valid) evnt.stopDefault();
         if (!this._ajax || !valid) return;
         var form = this._form.node;
-        Ojay.HTTP[(form.method || 'POST').toUpperCase()](form.action,
-                this._data, {onSuccess: this._handleAjaxResponse});
+        Ojay.HTTP[(form.method || 'POST').toUpperCase()](form.action, this._data, {
+            onSuccess: function(response) {
+                this._ajaxResponders.forEach({call: [null, response]});
+            }.bind(this)
+        });
     },
-    
-    /**
-     * <p>Placeholder method for handling Ajax response from the server. The DSL overwrites
-     * this method if the developer specifies their own response handler.</p>
-     * @param {HTTP.Response} response
-     */
-    _handleAjaxResponse: function(response) {},
     
     /**
      * <p>Returns an Ojay collection representing all the inputs in the form with the given
