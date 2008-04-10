@@ -202,16 +202,6 @@ var FormDSL = JS.Class(/** @scope FormDSL.prototype */{
     },
     
     /**
-     * <p>Makes sure the appropriate event listeners are attached to the form. Useful for
-     * dynamically replacing forms in Ajax situations.</p>
-     * @returns {FormDSL}
-     */
-    reattach: function() {
-        this._form._attach();
-        return this;
-    },
-    
-    /**
      * <p>Returns a <tt>RequirementDSL</tt> object used to specify the requirement.</p>
      * @param {String} name
      * @param {String} displayed
@@ -219,7 +209,7 @@ var FormDSL = JS.Class(/** @scope FormDSL.prototype */{
      */
     requires: function(name, displayed) {
         var requirement = this._form._getRequirement(name);
-        if (displayed) this._form._names[name] = displayed;
+        if (displayed) this._form._displayNames[name] = displayed;
         return requirement._dsl;
     },
     

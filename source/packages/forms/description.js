@@ -15,6 +15,7 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
      */
     initialize: function(id) {
         this._formID = id;
+        this._displayNames = {};
         this._attach();
         
         this._requirements = {};
@@ -34,7 +35,7 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
         if (this._hasForm()) return false;
         this._inputs = {};
         this._labels = {};
-        this._names = {};
+        this._names  = {};
         this._form = Ojay.byId(this._formID);
         if (!this._hasForm()) return false;
         this._form.on('submit', this.method('_handleSubmission'));
@@ -90,9 +91,10 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
      * @return {DomCollection}
      */
     _getInputs: function(name) {
-        return this._inputs[name] || ( this._inputs[name] = this._form.descendants(['input', 'textarea', 'select'].map(function(tagName) {
-            return tagName + (name ? '[name=' + name + ']' : '');
-        }).join(', ')) );
+        if (this._inputs[name]) return this._inputs[name];
+        var inputs = this._form.descendants('input, textarea, select');
+        if (name) inputs = inputs.filter(function(element) { return element.node.name == name; });
+        return this._inputs[name] = inputs;
     },
     
     /**
@@ -116,6 +118,7 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
      */
     _getName: function(field) {
         if (this._names[field]) return this._names[field];
+        if (this._displayNames[field]) return this._names[field] = this._displayNames[field];
         var label = this._getLabel(field);
         var name = ((label.node || {}).innerHTML || field).stripTags();
         
