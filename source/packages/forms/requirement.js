@@ -1,5 +1,5 @@
 var isPresent = function(value) {
-    return !Ojay.isBlank(value) || ['is required'];
+    return !Ojay.isBlank(value) || ['may not be blank'];
 };
 
 /**
