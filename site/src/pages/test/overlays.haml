@@ -14,6 +14,8 @@
     %a#fit-and-zoom{:href => '#'}
       Fit to content and zoom in
 
+%button#mover Move the overlay
+
 :plain
   <script type="text/javascript">
     overlays = [];
@@ -54,7 +56,13 @@
         new Ojay.ContentOverlay().setContent('<div style="width: 100px;">Centered!</div>').fitToContent().center().show('zoom');
     });
     
-    Ojay.Keyboard.listen(document, 'ESCAPE', function() { overlays.forEach({close: 'zoom'}) })
+    Ojay('#mover').on('click', function(el,ev) {
+        ev.stopEvent();
+        overlays[0].resize(30, 80, 500, 200).close('zoom');
+        overlays.shift();
+    });
+    
+    Ojay.Keyboard.listen(document, 'ESCAPE', function() { overlays.forEach({close: 'zoom'}); overlays = [] })
   </script>
   
   <style type="text/css">

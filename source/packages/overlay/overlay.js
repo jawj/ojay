@@ -245,10 +245,22 @@ Ojay.Overlay = JS.Class({
             
             close: function(transition) {
                 return this.hide(transition)._(this).close();
+            },
+            
+            resize: function(left, top, width, height) {
+                this.setState('RESIZING');
+                return this._elements._container.animate({
+                    left:   {to:    left},
+                    top:    {to:    top},
+                    width:  {to:    width},
+                    height: {to:    height}
+                }, 0.4, {easing: 'easeOutStrong'})._(this).setState('VISIBLE')._(this);
             }
         },
         
         HIDING: {},
+        
+        RESIZING: {},
         
         CLOSED: {}
     },
