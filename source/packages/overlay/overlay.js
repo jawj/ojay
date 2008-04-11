@@ -74,9 +74,11 @@ Ojay.Overlay = JS.Class({
     getHTML: function() {
         var self = this, elements = self._elements;
         if (elements._container) return elements._container;
-        return elements._container = Ojay(
+        elements._container = Ojay(
             Ojay.HTML.div({className: this.klass.CONTAINER_CLASS})
         ).setStyle({position: 'absolute', overflow: 'hidden'}).hide();
+        (this._options.className || '').trim().split(/\s+/).forEach(elements._container.method('addClass'));
+        return elements._container;
     },
     
     /**

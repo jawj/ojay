@@ -16,6 +16,12 @@
 
 :plain
   <script type="text/javascript">
+    overlays = [];
+    Ojay.Overlay.instanceMethod('initialize', Ojay.Overlay.prototype.initialize.wrap(function(orig, options) {
+        overlays.push(this);
+        orig(options);
+    }));
+    
     Ojay('#new-overlay').on('click', function(el,ev) {
         ev.stopEvent();
         var overlay = new Ojay.ContentOverlay({width: 600, height: 400, left: 500});
@@ -35,21 +41,24 @@
     
     Ojay('#new-mask').on('click', function(el,ev) {
         ev.stopEvent();
-        new Ojay.PageMask().setColor(128, 200, 32).setOpacity(0.7).show();
+        new Ojay.PageMask().setColor(128, 200, 32).setOpacity(0.7).show('fade');
     });
     
     Ojay('#center-fade').on('click', function(el,ev) {
         ev.stopEvent();
-        new Ojay.ContentOverlay().setContent('Centered!').center().show('fade');
+        new Ojay.ContentOverlay({className: 'has-class-name okay'}).setContent('Centered!').center().show('fade');
     });
     
     Ojay('#fit-and-zoom').on('click', function(el,ev) {
         ev.stopEvent();
         new Ojay.ContentOverlay().setContent('<div style="width: 100px;">Centered!</div>').fitToContent().center().show('zoom');
     });
+    
+    Ojay.Keyboard.listen(document, 'ESCAPE', function() { overlays.forEach({close: 'zoom'}) })
   </script>
   
   <style type="text/css">
         .overlay-container { background: #999; color: #fff; font: 14px Arial, sans-serif; }
         .overlay-content { padding: 40px; }
+        .has-class-name { background: #900; }
   </style>
