@@ -42,7 +42,7 @@ Ojay.Mouse = JS.Singleton(/** @scope Ojay.Mouse */{
      * the current mouse position.</p>
      * @param {Event} e
      */
-    updatePosition: function(e) {
+    updatePosition: function(doc, e) {
         var xy = YAHOO.util.Event.getXY(e);
         this.position = {left: xy[0], top: xy[1]};
         this.notifyObservers(this.position);
