@@ -25,7 +25,7 @@ var FormErrors = JS.Class(/** @scope FormErrors.prototype */{
          */
         this.add = function(field, message) {
             this.register(field);
-            errors[field].push(message);
+            if (errors[field].indexOf(message) == -1) errors[field].push(message);
         };
         
         /**
