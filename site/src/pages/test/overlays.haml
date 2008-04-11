@@ -62,11 +62,18 @@
         overlays.shift();
     });
     
-    Ojay.Keyboard.listen(document, 'ESCAPE', function() { overlays.forEach({close: 'zoom'}); overlays = [] })
+    Ojay.Keyboard.listen(document, 'ESCAPE', function() { overlays.forEach({close: 'zoom'}); overlays = [] });
+    
+    var tooltip = new Ojay.Tooltip('Tooltip', {width: 100, height: 40})
+    Ojay.Keyboard.listen(document, 'K', function() { tooltip.show('zoom') });
+    Ojay.Keyboard.listen(document, 'L', function() { tooltip.hide('fade') });
   </script>
   
   <style type="text/css">
         .overlay-container { background: #999; color: #fff; font: 14px Arial, sans-serif; padding: 140px; }
         .overlay-content { padding: 40px; }
         .has-class-name { background: #900; }
+        
+        .tooltip { background: none; }
+        .tooltip .overlay-content { border: 1px solid #333; background: #fc6; color: #000; font-size: 10px Arial, sans-serif; padding: 6px 12px; height: 12px; }
   </style>

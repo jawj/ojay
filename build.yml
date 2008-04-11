@@ -108,6 +108,7 @@ packages:
       - overlay
       - transitions
       - content_overlay
+      - tooltip
       - page_mask
       - end
     requires:
