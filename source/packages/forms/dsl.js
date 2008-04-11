@@ -316,6 +316,20 @@ var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
     },
     
     /**
+     * <p>Specifies that the required field must not be blank in order to be considered valid.
+     * Calling this method is only necessary if you want a custom message for the rule, otherwise
+     * a simple <tt>requires()</tt> will do.</p>
+     * @param {String} message
+     * @returns {RequirementDSL}
+     */
+    toBePresent: function(message) {
+        this._requirement._add(function(value) {
+            return !Ojay.isBlank(value) || [message || 'must not be blank'];
+        });
+        return this;
+    },
+    
+    /**
      * <p>Specifies that the required field must confirm the value in another field.</p>
      * @param {String} field
      * @param {String} message
