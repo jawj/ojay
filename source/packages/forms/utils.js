@@ -78,8 +78,8 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
      */
     getData: function(form) {
         return this.getQueryString(form).split('&').reduce(function(memo, pair) {
-            var data = pair.split('=').map(decodeURIComponent);
-            memo[data[0].trim()] = data[1].trim();
+            var data = pair.split('=').map(decodeURIComponent).map('trim');
+            if (memo[data[0]] === undefined) memo[data[0]] = data[1];
             return memo;
         }, {});
     },
@@ -100,7 +100,7 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
                 break;
             
             case element.matches('[type=checkbox]') :
-                element.node.checked = !!value;
+                element.node.checked = !!(value === true || value == element.node.value);
                 break;
             
             case element.matches('select') :
