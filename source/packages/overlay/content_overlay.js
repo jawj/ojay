@@ -37,6 +37,13 @@ Ojay.ContentOverlay = JS.Class(Ojay.Overlay, /** @scope Ojay.ContentOverlay.prot
     },
     
     /**
+     * @returns {DomCollection}
+     */
+    getContentElement: function() {
+        return this._elements._content;
+    },
+    
+    /**
      * @param {String|HTMLElement} content
      * @param {String} position
      * @returns {Overlay}
