@@ -41,14 +41,12 @@ Ojay.Overlay.Transitions
 
 .add('zoom', {
     hide: function(overlay, chain) {
-        var region = overlay.getRegion(), center = region.getCenter();
-        var left = (region.left + center.left) / 2, top = (region.top + center.top) / 2;
-        var width = region.getWidth() / 2, height = region.getHeight() / 2;
+        var region = overlay.getRegion().scale(0.5), center = region.getCenter();
         overlay.getContainer()
             .animate({
                 opacity: {to: 0},
-                left: {to: left}, top: {to: top},
-                width: {to: width}, height: {to: height}
+                left:   {to: region.left},      width:  {to: region.getWidth()},
+                top:    {to: region.top},       height: {to: region.getHeight()}
             }, 0.4, {easing: 'easeOutStrong'})
             .hide()
             ._(chain.toFunction());
@@ -67,8 +65,8 @@ Ojay.Overlay.Transitions
             .show()
             .animate({
                 opacity: {to: overlay.getOpacity()},
-                left: {to: position.left}, top: {to: position.top},
-                width: {to: size.width}, height: {to: size.height}
+                left:   {to: position.left},    width:  {to: size.width},
+                top:    {to: position.top},     height: {to: size.height}
             }, 0.4, {easing: 'easeOutStrong'})
             ._(chain.toFunction());
         return chain;
