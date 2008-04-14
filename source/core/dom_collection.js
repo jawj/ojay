@@ -26,12 +26,15 @@
         },
         
         /**
-         * <p>Returns the elements of the collection as a native Array type.</p>
+         * <p>Returns the elements of the collection as a native Array type. Can optionally take
+         * a function to convert values as the new array is constructed.</p>
+         * @param {Function} via
          * @returns {Array}
          */
-        toArray: function() {
+        toArray: function(via) {
+            if (via) via = Function.from(via);
             var results = [], i, n = this.length;
-            for (i = 0; i < n; i++) results.push(this[i]);
+            for (i = 0; i < n; i++) results.push(via ? via(this[i]) : this[i]);
             return results;
         },
         
@@ -637,9 +640,7 @@
         (function(name) {
             var noConvert = /^(?:indexOf|lastIndexOf|unique)$/.test(name);
             Ojay.DomCollection.instanceMethod(name, function() {
-                var array = noConvert
-                        ? this.toArray()
-                        : [].map.call(this, function(el) { return Ojay(el); });
+                var array = noConvert ? this.toArray() : this.toArray(Ojay);
                 var result = array[name].apply(array, arguments);
                 if (name == 'filter')
                     result = Ojay(result.map(function(el) { return el.node; }));
