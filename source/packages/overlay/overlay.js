@@ -22,6 +22,8 @@ Ojay.Overlay = JS.Class({
         DEFAULT_POSITION:   {left: 50, top: 50},
         DEFAULT_OPACITY:    1,
         CONTAINER_CLASS:    'overlay-container',
+        TRANSITION_TIME:    0.4,
+        EASING:             'easeOutStrong',
         
         Transitions: JS.Singleton({
             _store: {},
@@ -247,9 +249,10 @@ Ojay.Overlay = JS.Class({
                 return this.hide(transition)._(this).close();
             },
             
-            resize: function(left, top, width, height) {
-                var region = left;
+            resize: function(left, top, width, height, options) {
+                var region = left, options = options || {};
                 if (typeof region == 'object') {
+                    options = top || {};
                     left    = region.left;
                     top     = region.top;
                     width   = region.getWidth();
@@ -261,7 +264,8 @@ Ojay.Overlay = JS.Class({
                     top:    {to:    top},
                     width:  {to:    width},
                     height: {to:    height}
-                }, 0.4, {easing: 'easeOutStrong'})._(this).setState('VISIBLE')._(this);
+                }, options.duration || this.klass.TRANSITION_TIME, {easing: options.easing || this.klass.EASING})
+                ._(this).setState('VISIBLE')._(this);
             }
         },
         

@@ -21,7 +21,7 @@ Ojay.Overlay.Transitions
 .add('fade', {
     hide: function(overlay, chain) {
         overlay.getContainer()
-            .animate({opacity: {to: 0}}, 0.4)
+            .animate({opacity: {to: 0}}, Ojay.Overlay.TRANSITION_TIME)
             .hide()
             ._(chain.toFunction());
         return chain;
@@ -33,7 +33,7 @@ Ojay.Overlay.Transitions
             .setStyle(overlay.getSize(true))
             .setStyle(overlay.getPosition(true))
             .show()
-            .animate({opacity: {to: overlay.getOpacity()}}, 0.4)
+            .animate({opacity: {to: overlay.getOpacity()}}, Ojay.Overlay.TRANSITION_TIME)
             ._(chain.toFunction());
         return chain;
     }
@@ -47,7 +47,7 @@ Ojay.Overlay.Transitions
                 opacity: {to: 0},
                 left:   {to: region.left},      width:  {to: region.getWidth()},
                 top:    {to: region.top},       height: {to: region.getHeight()}
-            }, 0.4, {easing: 'easeOutStrong'})
+            }, Ojay.Overlay.TRANSITION_TIME, {easing: Ojay.Overlay.EASING})
             .hide()
             ._(chain.toFunction());
         return chain;
@@ -67,7 +67,7 @@ Ojay.Overlay.Transitions
                 opacity: {to: overlay.getOpacity()},
                 left:   {to: position.left},    width:  {to: size.width},
                 top:    {to: position.top},     height: {to: size.height}
-            }, 0.4, {easing: 'easeOutStrong'})
+            }, Ojay.Overlay.TRANSITION_TIME, {easing: Ojay.Overlay.EASING})
             ._(chain.toFunction());
         return chain;
     }
