@@ -420,7 +420,7 @@
          * @returns {DomCollection}
          */
         parents: function(selector) {
-            var parents = this.map('node.parentNode');
+            var parents = this.toArray('parentNode');
             return this.query(selector, parents.unique());
         },
         
