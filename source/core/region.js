@@ -54,6 +54,30 @@
         },
         
         /**
+         * @param {Number} x
+         * @param {Number} y
+         * @returns {Region}
+         */
+        shift: function(x,y) {
+            this.left += x;     this.right += x;
+            this.top += y;      this.bottom += y;
+            return this;
+        },
+        
+        /**
+         * @param {Number} factor
+         * @returns {Region}
+         */
+        scale: function(factor) {
+            var w = this.getWidth(), h = this.getHeight();
+            if (w <= 0 || h <= 0) return this;
+            var dx = (factor - 1) * w, dy = (factor - 1) * h;
+            this.left -= dx/2;      this.right += dx/2;
+            this.top -= dy/2;       this.bottom += dy/2;
+            return this;
+        },
+        
+        /**
          * @param {Region} region
          * @returns {Region}
          */
@@ -82,6 +106,13 @@
         union: function(region) {
             var union = this._union(region);
             return new Ojay.Region(union);
+        },
+        
+        /**
+         * @returns {String}
+         */
+        toString: function() {
+            return '(' + this.left + ',' + this.top + ') [' + this.getWidth() + 'x' + this.getHeight() + ']';
         },
         
         extend: /** @scope Ojay.Region */{
