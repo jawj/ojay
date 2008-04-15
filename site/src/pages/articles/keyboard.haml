@@ -96,3 +96,15 @@
   The important thing to remember here is that @allRules@ contains _references_ to rules
   in @rulesA@ and @rulesB@, not copies of the rules. If I call @rulesA.disable()@, half the
   rules in @allRules@ are disabled as well.
+  
+  h3. Finding out which keys are pressed
+  
+  Ojay includes one more helper method for working with the keyboard: @Ojay.Keyboard.isPressed()@.
+  Given a string of keys, this method will return @true@ iff the given key combination is
+  pressed. You can call this method anywhere in your code - not just in key event handlers - 
+  to query the current state of the keyboard.
+  
+  <pre>
+  Ojay('p').on('click', function() {
+    alert(Ojay.Keyboard.isPressed('SHIFT Z'));
+  });</pre>
