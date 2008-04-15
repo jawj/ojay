@@ -1,0 +1,98 @@
+- @title = 'Keyboard events'
+:textile
+  h3. Keyboard events
+  
+  Starting with version 0.2, Ojay provides a wrapper around the @YAHOO.util.KeyListener@
+  class used to listen to keyboard events. It provides a cleaner syntax for creating
+  keyboard rules and some mechanisms for managing sets of rules.
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.5.1/build/selector/selector-beta.js@
+  * @http://yoursite.com/ojay/js-class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/keyboard.js@
+  
+  h3. Single rules
+  
+  To set up a single rule, you write out the keys you want to listen to, the node on
+  which to listen to them, and a callback function to fire when they are pressed. For
+  key names, use the constants defined in @YAHOO.util.KeyListener.KEY@. For letters and
+  numbers, just type the character, not the keycode. For example:
+  
+  <pre>
+  var rule = Ojay.Keyboard.listen(document, 'ALT J', function() {
+    alert('Keys pressed!');
+  });</pre>
+  
+  The rule should listen to at least one non-modifier key (modifiers are @CONTROL@, @ALT@
+  and @SHIFT@) and optionally one, two or three modifiers. If multiple non-modifiers
+  are used, the rule will fire when _any one of them_ is pressed with all the required
+  modifiers. For example, the following rule fires on @SHIFT ALT L@ and @SHIFT ALT P@:
+  
+  <pre>
+  Ojay.Keyboard.listen(document, 'SHIFT ALT L P', function() {
+    window.console && console.log('pressed');
+  });</pre>
+  
+  An optional fourth parameter specifies the execution scope for the callback:
+  
+  <pre>
+  var rule = Ojay.Keyboard.listen(document, 'CONTROL UP', function() {
+    // this === someObject
+  }, someObject);</pre>
+  
+  h3. Controlling rules
+  
+  The @Ojay.Keyboard.listen()@ function returns an object representing the rule you just
+  created. These objects have several methods that allow you to control how the rule is
+  applied:
+  
+  * @rule.enable()@ - activates the rule. All rules are active by default on creation.
+  * @rule.disable()@ - deactivates the rule. Its callback will not fire.
+  * @rule.preventDefault()@ - tells Ojay to prevent the browser's default behaviour for
+    the rule's key comibnation. Some browsers do not let you override default behaviour
+    for certain key combinations. The default will only be prevented while the rule is
+    enabled.
+  * @rule.allowDefault()@ - allows the browser's default behaviour to run when the key
+    combination is pressed.
+  
+  h3. Managing sets of rules
+  
+  When developing an application, you may have a great many keyboard shortcuts that are
+  context-dependant. To help manage these rules, we have the @Keyboard.RuleSet@ class:
+  
+  <pre>
+  var rulesA = new Ojay.Keyboard.RuleSet({
+    'SHIFT S':    function() { alert('S') },
+    'CONTROL Y':  function() { alert('Y') }
+  });
+  rulesA.enable();</pre>
+  
+  This creates a rule for each set of keys and bundles the rules up into one object (@rulesA@).
+  @RuleSet@ objects are not enabled by default, hence the call to @rulesA.enable()@. The
+  @RuleSet@ API has the following methods:
+  
+  * @rules.enable()@ - enable all the rules in the set.
+  * @rules.disable()@ - disables all the rules in the set.
+  * @rules.get(keys)@ - returns a single rule from the set, for example:
+  
+  <pre>
+  rulesA.get('SHIFT S').preventDefault();</pre>
+  
+  * @rules.merge(others)@ returns a new @RuleSet@ containing all the rules from @rules@
+    and @others@. For example:
+  
+  <pre>
+  var rulesB = new Ojay.Keyboard.RuleSet({
+    'SHIFT G':    function() { alert('G') },
+    'ALT N':      function() { alert('N') }
+  });
+  
+  var allRules = rulesA.merge(rulesB);
+  allRules.enable();</pre>
+  
+  The important thing to remember here is that @allRules@ contains _references_ to rules
+  in @rulesA@ and @rulesB@, not copies of the rules. If I call @rulesA.disable()@, half the
+  rules in @allRules@ are disabled as well.

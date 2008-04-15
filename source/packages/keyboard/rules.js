@@ -120,6 +120,14 @@ Keyboard.RuleSet = JS.Class({
     },
     
     /**
+     * @param {String} keys
+     * @returns {Rule}
+     */
+    get: function(keys) {
+        return this._rules[signature(codesFromKeys(keys))] || null;
+    },
+    
+    /**
      * @param {RuleSet} ruleSet
      * @returns {RuleSet}
      */
