@@ -66,15 +66,15 @@ var Rule = JS.Class({
 });
 
 /**
- * <p>The <tt>RuelSet</tt> class is used to set up contexts in which key combinations are mapped
+ * <p>The <tt>RuleSet</tt> class is used to set up contexts in which key combinations are mapped
  * to actions. These contexts can be activated and deactivated easily to modify the behaviour of
  * the keyboard. This class in publicly accessible. An example:</p>
  *
- * <pre><code>var rules = new Ojay.Keyboard.RuleSet({
- *     'UP':            function() { console.log('up'); },
- *     'CONTROL DOWN':  function() { console.log('down'); },
- *     'ALT SHIFT K':   function() { console.log('weird') }
- * });</code></pre>
+ * <pre><code>    var rules = new Ojay.Keyboard.RuleSet({
+ *         'UP':            function() { console.log('up'); },
+ *         'CONTROL DOWN':  function() { console.log('down'); },
+ *         'ALT SHIFT K':   function() { console.log('weird') }
+ *     });</code></pre>
  *
  * @constructor
  * @public
