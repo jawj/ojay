@@ -115,7 +115,8 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
             height: options.height,
             overflow: 'hidden',
             padding: '0 0 0 0',
-            border: 'none'
+            border: 'none',
+            position: 'relative'
         });
         return elements._container = container;
     },
@@ -231,7 +232,7 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
                 var container = this.getHTML();
                 subject.insert(container.node, 'after');
                 container.insert(subject.node);
-                subject.setStyle({padding: '0 0 0 0', border: 'none'});
+                subject.setStyle({padding: '0 0 0 0', border: 'none', position: 'absolute'});
                 
                 var pages = this._numPages = this.getPages(), region = this.getRegion();
                 
@@ -347,16 +348,16 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
                 if (options.animate && YAHOO.util.Anim) {
                     this.setState('SCROLLING');
                     settings = (orientation == 'vertical')
-                            ? { marginTop: {to: -amount} }
-                            : { marginLeft: {to: -amount} };
+                            ? { top: {to: -amount} }
+                            : { left: {to: -amount} };
                     this._elements._subject.animate(settings,
                         this._options.scrollTime, {easing: this._options.easing})._(function(self) {
                         self.setState('READY');
                     }, this);
                 } else {
                     settings = (orientation == 'vertical')
-                            ? { marginTop: (-amount) + 'px' }
-                            : { marginLeft: (-amount) + 'px' };
+                            ? { top: (-amount) + 'px' }
+                            : { left: (-amount) + 'px' };
                     this._elements._subject.setStyle(settings);
                 }
                 
