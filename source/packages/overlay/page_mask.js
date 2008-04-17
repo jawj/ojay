@@ -60,6 +60,15 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
                 : (color ? String(color).replace(/[^0-9a-f]/ig, '') : this.klass.DEFAULT_COLOR);
         this._elements._container.setStyle({backgroundColor: '#' + this._color});
         return this;
+    },
+    
+    states: {
+        INVISIBLE: {
+            show: function() {
+                this.setSize();
+                return this.callSuper();
+            }
+        }
     }
 });
 
