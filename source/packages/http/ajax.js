@@ -69,51 +69,6 @@
  * in the <tt>width</tt> parameter.</p>
  */
 Ojay.HTTP = {
-    
-    /**
-     * <p>Accepts a <tt>url</tt> and a <tt>parameters</tt> object and returns an object with
-     * all the request parameters from both sources.</p>
-     * @param {String} url
-     * @param {Object} parameters
-     * @returns {Object}
-     */
-    _extractParams: function(url, parameters) {
-        var queryParams = String(url).split(/\?+/).slice(1).join('').split(/\&+/);
-        var params = queryParams.reduce(function(memo, part) {
-            var pair = part.split(/\=/);
-            if (pair[0]) memo[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-            return memo;
-        }, {});
-        for (var key in parameters) params[key] = parameters[key];
-        return params;
-    },
-    
-    /**
-     * <p>Accepts a <tt>parameters</tt> object and returns an encoded query string.</p>
-     * @param {Object} parameters
-     * @returns {String}
-     */
-    _serializeParams: function(parameters) {
-        var params = this._evaluateParams(parameters || {}), parts = [];
-        for (var key in params) parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
-        return parts.join('&');
-    },
-    
-    /**
-     * <p>Returns a copy of the given object with any functions evaluted.</p>
-     * @param {Object} parameters
-     * @returns {Object}
-     */
-    _evaluateParams: function(parameters) {
-        var results = {};
-        for (var field in parameters) {
-            results[field] = (typeof parameters[field] == 'function')
-                    ? parameters[field]()
-                    : parameters[field];
-        }
-        return results;
-    },
-    
     /**
      * <p>Object containing named references to XmlHttpRequest ready states.</p>
      */
@@ -156,8 +111,8 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
     initialize: function(verb, url, parameters, callbacks) {
         this._verb          = verb.toUpperCase();
         if (Ojay.HTTP.VERBS.indexOf(this._verb) == -1) return;
-        this._url           = url.split(/\?+/)[0];
-        this._parameters    = Ojay.HTTP._extractParams(url, parameters);
+        this._url           = url;
+        this._parameters    = parameters || {};
         this._callbacks     = callbacks || {};
         this.chain          = new JS.MethodChain();
     },
@@ -166,9 +121,9 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
      * <p>Makes the HTTP request and sets up all the callbacks.</p>
      */
     _begin: function() {
-        var params      = Ojay.HTTP._serializeParams(this._parameters);
-        var url         = (this._verb == 'POST') ? this._url : this._url + (params ? '?' + params : '');
-        var postData    = (this._verb == 'POST') ? params : undefined;
+        var uri         = Ojay.URI.build(this._url, this._parameters);
+        var url         = (this._verb == 'POST') ? uri._getPathWithHost() : uri.toString();
+        var postData    = (this._verb == 'POST') ? uri.getQueryString() : undefined;
         
         YAHOO.util.Connect.asyncRequest(this._verb, url, {
             scope: this,

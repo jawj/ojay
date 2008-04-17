@@ -5,9 +5,7 @@
     // Precompiled regexps
     var PATTERNS = {
         JS:     /\.js$/i,
-        CSS:    /\.css$/i,
-        DOMAIN: /^(https?:\/\/[^\/]+)?/i,
-        Q:      /\?+/
+        CSS:    /\.css$/i
     };
     
     var IFRAME_NAME = '__ojay_cross_domain__';
@@ -22,14 +20,6 @@
             case PATTERNS.CSS.test(url) :   return 'css';       break;
             default :                       return 'script';    break;
         }
-    };
-    
-    var isLocal = function(url) {
-        var pattern = PATTERNS.DOMAIN,
-            host = window.location.href.match(pattern)[0],
-            request = url.match(pattern)[0];
-        
-        return (request == '' || request == host);
     };
     
     JS.extend(HTTP, /** @scope Ojay.HTTP */{
@@ -61,7 +51,7 @@
          * @returns {MethodChain}
          */
         GET: HTTP.GET.wrap(function(ajax, url, parameters, callbacks) {
-            if (isLocal(url) || !YAHOO.util.Get) return ajax(url, parameters, callbacks);
+            if (Ojay.URI.parse(url).isLocal() || !YAHOO.util.Get) return ajax(url, parameters, callbacks);
             this.load(url, parameters, callbacks);
         }),
         
@@ -86,7 +76,7 @@
          * @returns {MethodChain}
          */
         POST: HTTP.POST.wrap(function(ajax, url, parameters, callbacks) {
-            if (isLocal(url)) return ajax(url, parameters, callbacks);
+            if (Ojay.URI.parse(url).isLocal()) return ajax(url, parameters, callbacks);
             this.send(url, parameters);
         }),
         
@@ -103,10 +93,10 @@
          * @param {Object} callbacks    Object containing callback functions
          */
         load: function(url, parameters, callbacks) {
-            var getUrl = url.split(PATTERNS.Q)[0],
-                assetType = determineAssetType(getUrl);
+            var path = Ojay.URI.parse(url).path,
+                assetType = determineAssetType(path);
             
-            YAHOO.util.Get[assetType](this._buildGetUrl(url, parameters), callbacks || {});
+            YAHOO.util.Get[assetType](Ojay.URI.build(url, parameters).toString(), callbacks || {});
         },
         
         /**
@@ -126,15 +116,10 @@
             form.remove();
         },
         
-        _buildGetUrl: function(url, parameters) {
-            var getUrl = url.split(PATTERNS.Q)[0],
-                params = this._serializeParams(this._extractParams(url, parameters));
-            return getUrl + (params ? '?' + params : '');
-        },
-        
         _buildPostForm: function(url, parameters, postToIframe) {
-            var postUrl = url.split(PATTERNS.Q)[0],
-                params = this._extractParams(url, parameters);
+            var uri = Ojay.URI.build(url, parameters),
+                postUrl = uri._getPathWithHost();
+                params = uri.params;
             
             var attributes = {action: postUrl, method: 'POST'};
             if (postToIframe) attributes.target = IFRAME_NAME;
@@ -147,7 +132,7 @@
     });
     
     HTTP.GET.redirectTo = function(url, parameters) {
-        window.location.href = HTTP._buildGetUrl(url, parameters);
+        window.location.href = Ojay.URI.build(url, parameters).toString();
     };
     
     HTTP.POST.redirectTo = function(url, parameters) {

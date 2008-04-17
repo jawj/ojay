@@ -34,6 +34,20 @@ Ojay.URI = JS.Class({
         },
         
         /**
+         * @param {String} url
+         * @param {Object} params
+         * @returns {URI}
+         */
+        build: function(url, params) {
+            var uri = this.parse(url), params = params || {}, value;
+            for (var key in params) {
+                value = (typeof params[key] == 'function') ? params[key]() : params[key];
+                uri.setParam(key, value);
+            }
+            return uri;
+        },
+        
+        /**
          * @param {String|URI} a
          * @param {String|URI} b
          * @returns {Boolean}
@@ -63,11 +77,15 @@ Ojay.URI = JS.Class({
      * @returns {String}
      */
     _toString: function() {
-        var string = this._getProtocolString() + (this.domain||'') + this._getPortString() + (this.path||''), params = [];
+        var string = this._getPathWithHost(), params = [];
         var queryString = this.getQueryString();
         if (queryString.length) string += '?' + queryString;
         if (this.hash) string += '#' + this.hash;
         return string;
+    },
+    
+    _getPathWithHost: function() {
+        return this._getProtocolString() + (this.domain||'') + this._getPortString() + (this.path||'');
     },
     
     /**
