@@ -118,7 +118,7 @@
         
         _buildPostForm: function(url, parameters, postToIframe) {
             var uri = Ojay.URI.build(url, parameters),
-                postUrl = uri._getPathWithHost();
+                postUrl = uri._getPathWithHost(),
                 params = uri.params;
             
             var attributes = {action: postUrl, method: 'POST'};
