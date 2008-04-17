@@ -48,3 +48,40 @@ var TestCase = {
         alert(json.message);
     }
 };
+
+YAHOO.util.Event.onDOMReady(function() {
+    YAHOO.tool.TestRunner.add(new YAHOO.tool.TestCase({
+        name: 'URI parser tests',
+        
+        setUp: function() {
+            this.assert = YAHOO.util.Assert;
+            this.arrayAssert = YAHOO.util.ArrayAssert;
+            this.localProtocol = window.location.protocol + '//';
+            this.localHost = window.location.hostname;
+            this.localPort = window.location.port;
+        },
+        
+        testDomainsAndPorts: function() {
+            var uri = 'http://ojay.othermedia.org'.parseURI();
+            this.assert.areEqual('http', uri.protocol);
+            this.assert.areEqual('ojay.othermedia.org', uri.domain);
+            this.assert.areEqual('80', uri.port);
+            this.assert.areEqual('', uri.path);
+            
+            uri = 'https://ojay.othermedia.org:80'.parseURI();
+            this.assert.areEqual('https', uri.protocol);
+            this.assert.areEqual('80', uri.port);
+            
+            uri = 'https://ojay.othermedia.org'.parseURI();
+            this.assert.areEqual('https', uri.protocol);
+            this.assert.areEqual('443', uri.port);
+            
+            this.assert.areEqual('https://ojay.othermedia.org', 'https://ojay.othermedia.org:443'.parseURI().toString());
+            this.assert.areEqual('http://ojay.othermedia.org/', 'http://ojay.othermedia.org:80/'.parseURI().toString());
+            this.assert.areEqual('http://ojay.othermedia.org:3030/', 'http://ojay.othermedia.org:3030/'.parseURI().toString());
+        }
+    }));
+    
+    var logger = new YAHOO.tool.TestLogger();
+    YAHOO.tool.TestRunner.run();
+});
