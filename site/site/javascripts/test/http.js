@@ -117,6 +117,12 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.isTrue('/path/?foo=bar&something=else'.equalsURI(local + '/path/?something=else&foo=bar'));
             this.assert.isFalse('/path/?something=else'.equalsURI('/path/?something=else&foo=bar'));
             this.assert.isFalse('/path/?foo=k&something=else'.equalsURI('/path/?something=else&foo=bar'));
+        },
+        
+        testToString: function() {
+            var local = this.localProtocol + '://' + this.localHost + ':' + this.localPort;
+            this.assert.areEqual(local + '/path.html?a=b&c=d&e=f', '/path.html?e=f&a=b&c=d'.parseURI().toString());
+            this.assert.areEqual(local + '/path.html?a=b&c=%2F%2F%3F%2F%2F%3F%2F%2F%2F%2F%2F&e=f', '/path.html?e=f&a=b&c=//?//?/////'.parseURI().toString());
         }
     }));
     

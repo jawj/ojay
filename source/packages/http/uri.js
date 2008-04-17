@@ -27,9 +27,8 @@ Ojay.URI = JS.Class({
                 uri.path = this.local.directory + uri.path;
             
             if (/^\?/.test(string)) string.slice(1).split('&').forEach(function(pair) {
-                var bits = pair.split('=').map(decodeURIComponent).map('trim');
-                uri.params[bits[0]] = bits[1] || '';
-                uri.keys.push(bits[0]);
+                var bits = pair.split('=');
+                uri.setParam(bits[0], bits[1]);
             });
             return uri;
         },
@@ -105,6 +104,16 @@ Ojay.URI = JS.Class({
                 this.path != uri.path || this.hash != uri.hash) return false;
         if (!this.paramsEqual(uri)) return false;
         return true;
+    },
+    
+    /**
+     * @param {String} key
+     * @param {String} value
+     */
+    setParam: function(key, value) {
+        var bits = [key, value].map(decodeURIComponent).map('trim');
+        if (this.keys.indexOf(bits[0]) == -1) this.keys.push(bits[0]);
+        this.params[bits[0]] = bits[1];
     },
     
     /**
