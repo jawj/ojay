@@ -56,7 +56,7 @@ YAHOO.util.Event.onDOMReady(function() {
         setUp: function() {
             this.assert = YAHOO.util.Assert;
             this.arrayAssert = YAHOO.util.ArrayAssert;
-            this.localProtocol = window.location.protocol + '//';
+            this.localProtocol = window.location.protocol.replace(/\W/g, '');
             this.localHost = window.location.hostname;
             this.localPort = window.location.port;
         },
@@ -79,6 +79,44 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.areEqual('https://ojay.othermedia.org', 'https://ojay.othermedia.org:443'.parseURI().toString());
             this.assert.areEqual('http://ojay.othermedia.org/', 'http://ojay.othermedia.org:80/'.parseURI().toString());
             this.assert.areEqual('http://ojay.othermedia.org:3030/', 'http://ojay.othermedia.org:3030/'.parseURI().toString());
+            
+            this.assert.areEqual('http://localhost:' + this.localPort + '/path.html', 'http://localhost/path.html'.parseURI().toString());
+        },
+        
+        testCrossDomainDetection: function() {
+            var uri = this.localProtocol + '://' + this.localHost;
+            this.assert.isTrue(uri.parseURI().isLocal());
+            
+            uri = this.localProtocol + '://' + this.localHost + ':' + this.localPort;
+            this.assert.isTrue(uri.parseURI().isLocal());
+            
+            uri = this.localProtocol + '://' + this.localHost + ':443';
+            this.assert.isFalse(uri.parseURI().isLocal());
+            
+            uri = 'https://' + this.localHost + ':' + this.localPort;
+            this.assert.isFalse(uri.parseURI().isLocal());
+            
+            uri = this.localProtocol + '://' + 'ojay.othermedia.org' + ':' + this.localPort;
+            this.assert.isFalse(uri.parseURI().isLocal());
+        },
+        
+        testPathOnly: function() {
+            var local = this.localProtocol + '://' + this.localHost + ':' + this.localPort, uri = 'ojay.othermedia.org'.parseURI();
+            this.assert.areEqual(this.localProtocol, uri.protocol);
+            this.assert.areEqual(this.localPort, uri.port);
+            this.assert.areEqual(local + '/test/ojay.othermedia.org', 'ojay.othermedia.org'.parseURI().toString());
+            this.assert.areEqual(local + '/test/path/to/something.html', 'path/to/something.html'.parseURI().toString());
+            this.assert.areEqual(local + '/path/to/something.html', '/path/to/something.html'.parseURI().toString());
+            this.assert.areEqual(local + '/test/', ''.parseURI().toString());
+            this.assert.areEqual(local + '/', '/'.parseURI().toString());
+        },
+        
+        testQueryStrings: function() {
+            var local = this.localProtocol + '://' + this.localHost + ':' + this.localPort;
+            this.assert.isTrue('/path/?foo=bar&something=else'.equalsURI('/path/?something=else&foo=bar'));
+            this.assert.isTrue('/path/?foo=bar&something=else'.equalsURI(local + '/path/?something=else&foo=bar'));
+            this.assert.isFalse('/path/?something=else'.equalsURI('/path/?something=else&foo=bar'));
+            this.assert.isFalse('/path/?foo=k&something=else'.equalsURI('/path/?something=else&foo=bar'));
         }
     }));
     

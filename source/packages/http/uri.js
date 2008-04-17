@@ -13,13 +13,18 @@ Ojay.URI = JS.Class({
             var uri = new this;
             
             string = String(string).trim()
-                .replace(/^(\w+)/,          function(match, capture) { uri.protocol = capture;  return ''; })
+                .replace(/^(\w+)(:\/+)/,    function(match, capture, keep) { uri.protocol = capture; return keep; })
                 .replace(/^:\/+([^\:\/]+)/, function(match, capture) { uri.domain = capture;    return ''; })
                 .replace(/^:(\d+)/,         function(match, capture) { uri.port = capture;      return ''; })
                 .replace(/^[^\?]+/,         function(match, capture) { uri.path = match;        return ''; })
                 .replace(/#(.*)$/,          function(match, capture) { uri.hash = capture;      return ''; });
             
-            if (!uri.port) uri.port = this.DEFAULT_PORTS[uri.protocol];
+            if (!uri.port) uri.port = (uri.domain == this.local.domain)
+                    ? this.local.port
+                    : this.DEFAULT_PORTS[uri.protocol];
+            
+            if (uri.path.charAt(0) != '/' && uri.domain == this.local.domain)
+                uri.path = this.local.directory + uri.path;
             
             if (/^\?/.test(string)) string.slice(1).split('&').forEach(function(pair) {
                 var bits = pair.split('=').map(decodeURIComponent).map('trim');
@@ -111,16 +116,27 @@ Ojay.URI = JS.Class({
         for (var key in this.params) { if (this.params[key] != uri.params[key]) return false; }
         for (key in uri.params) { if (this.params[key] != uri.params[key]) return false; }
         return true;
+    },
+    
+    /**
+     * @returns {Boolean}
+     */
+    isLocal: function() {
+        return  this.protocol == this.klass.local.protocol &&
+                this.domain == this.klass.local.domain &&
+                this.port == this.klass.local.port;
     }
 });
 
 Ojay.URI.extend({
     local: {
-        protocol:   window.location.protocol + '//',
+        protocol:   window.location.protocol.replace(/\W/g, ''),
         domain:     window.location.hostname,
-        port:       window.location.port || Ojay.URI.DEFAULT_PORTS[window.location.protocol || 'http']
+        directory:  window.location.pathname.replace(/[^\/]*$/, '')
     }
 });
+
+Ojay.URI.local.port = window.location.port || Ojay.URI.DEFAULT_PORTS[Ojay.URI.local.protocol || 'http'];
 
 JS.extend(String.prototype, {
     parseURI:   Ojay.URI.method('parse').methodize(),
