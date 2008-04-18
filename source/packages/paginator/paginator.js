@@ -232,7 +232,7 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
                 var container = this.getHTML();
                 subject.insert(container.node, 'after');
                 container.insert(subject.node);
-                subject.setStyle({padding: '0 0 0 0', border: 'none', position: 'absolute'});
+                subject.setStyle({padding: '0 0 0 0', border: 'none', position: 'absolute', left: 0, right: 0});
                 
                 var pages = this._numPages = this.getPages(), region = this.getRegion();
                 
