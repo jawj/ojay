@@ -15,6 +15,7 @@ packages:
       - state
   core:
     encode_private_vars: true
+    include_version: true
     copyright: COPYRIGHT
     source_dir: .
     files:

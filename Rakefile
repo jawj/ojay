@@ -18,7 +18,10 @@ task :build => [:destroy, :create_directory] do
   
   config['packages'].each do |name, package|
     pack_private = package['encode_private_vars']
+    
     builds[:src][name] = package['files'].map { |f| File.read("#{config['source_dir']}/#{package['source_dir']}/#{f}.js") }.join("\n")
+    builds[:src][name] += "\nOjay.VERSION = '#{get_version}';\n" if package['include_version']
+    
     builds[:min][name] = Packr.pack(builds[:src][name], :shrink_vars => true, :private => pack_private)
     builds[:pack][name] = Packr.pack(builds[:min][name], :base62 => true)
   end
@@ -61,6 +64,21 @@ task :build => [:destroy, :create_directory] do
   File.__send__(:copy, "#{config['build_dir']}/pack/all-min.js", 'site/site/javascripts/ojay/all-min.js')
   File.__send__(:copy, "#{config['build_dir']}/pack/all.js", 'site/site/javascripts/ojay/all.js')
   File.__send__(:copy, 'site/site/javascripts/yui/2.5.1.js', "#{config['build_dir']}/yui.js")
+end
+
+def get_version
+  svn_info = `svn info`.split("\n")
+  url = svn_info.find { |info| info =~ /^URL/i }
+  revision = svn_info.find { |info| info =~ /^Revision/i }
+  if url and revision
+    puts "Building #{url}, #{revision}"
+    return url.scan(/[\d\.]+/).last if url =~ /[\d\.]+\/?$/
+    return 'rev.' + revision.scan(/\d+/).first
+  else
+    return ""
+  end
+rescue
+  return ""
 end
 
 task :create_directory do
