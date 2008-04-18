@@ -53,7 +53,18 @@ Ojay.Overlay = JS.Class({
             get: function(name) {
                 return this._store[name] || this._stub;
             }
-        })
+        }),
+        
+        /**
+         * @param {Object} object
+         * @returns {Number}
+         */
+        getLayer: function(object) {
+            if (object.getLayer) return Number(object.getLayer());
+            if (object.nodeType == Ojay.HTML.ELEMENT_NODE || typeof object == 'string') object = Ojay(object);
+            if (object.getStyle) return Number(object.getStyle('zIndex')) || 0;
+            return 0;
+        }
     },
     
     /**
