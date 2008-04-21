@@ -46,11 +46,11 @@
   
   <pre>
   <div id="the-content">
-    <div class="item"><!-- content here --></div>
-    <div class="item"><!-- content here --></div>
-    <div class="item"><!-- content here --></div>
-    <div class="item"><!-- content here --></div>
-    <!-- more items ... -->
+      <div class="item"><!-- content here --></div>
+      <div class="item"><!-- content here --></div>
+      <div class="item"><!-- content here --></div>
+      <div class="item"><!-- content here --></div>
+      <!-- more items ... -->
   </div></pre>
   
   The class @item@ used here is not required - @Paginator@ will just look for the child elements
@@ -75,17 +75,45 @@
   
   <pre>
   var pager = new Ojay.Paginator('#the-content', {
-    width:      '680px',
-    height:     '120px',
-    direction:  'horizontal'
+      width:      '680px',
+      height:     '120px',
+      direction:  'horizontal'
   });
   pager.setup();</pre>
   
   The reason for the extra @setup()@ call will explained when we get to history management.
   This script will wrap your @#the-content@ element in a @div@ with a class of @paginator@,
-  and the @#the-content@ will be setup up to scroll within its new wrapper. The @paginator@
+  and @#the-content@ will be setup up to scroll within its new wrapper. The @paginator@
   element will have the width and height that you specify when setting up the new
-  @Ojay.Paginator@.
+  @Ojay.Paginator@. Also, all the child elements will be grouped by page into containers
+  so that the final state of the markup will be as follows:
+  
+  <pre>
+  <div class="paginator">
+      <div id="the-content">
+          <div class="page">
+              <div class="item"><!-- content here --></div>
+              <div class="item"><!-- content here --></div>
+              <div class="item"><!-- content here --></div>
+          </div>
+          <div class="page">
+              <div class="item"><!-- content here --></div>
+              <div class="item"><!-- content here --></div>
+              <div class="item"><!-- content here --></div>
+          </div>
+          <!-- more pages ... -->
+      </div>
+  </div></pre>
+  
+  Each @<div class="page">@ element is set up to completely fill the paginator's visible space
+  to ensure items don't break across neighbouring pages. They also allow for horizontally
+  scrolling paginators to have more than one row of items rather than floating all the items
+  out in one long line.
+  
+  In some situations - for example if you want to offer continuous scrolling rather than paging,
+  or if you find you run into performance issues - you can skip the process of creating the
+  wrapper @<div class="page">@ tags by passing @grouping: false@ as an option when creating
+  the paginator.
   
   You'll probably want an interface for the user to navigate from page to page. You can set
   up your own using the API as described below, but Ojay provides a default UI for you, with

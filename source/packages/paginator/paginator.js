@@ -53,6 +53,7 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
     
     extend: /** @scope Ojay.Paginator */{
         CONTAINER_CLASS:    'paginator',
+        PAGE_CLASS:         'page',
         ITEM_CLASS:         'item',
         SCROLL_TIME:        0.5,
         DIRECTION:          'horizontal',
@@ -176,7 +177,30 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
         this._itemsPerCol   = (containerRegion.getWidth() / this._itemWidth).floor() || 1;
         this._itemsPerRow   = (containerRegion.getHeight() / this._itemHeight).floor() || 1;
         this._itemsPerPage  = this._itemsPerRow * this._itemsPerCol;
-        return (items.length / this._itemsPerPage).ceil();
+        this._numPages = (items.length / this._itemsPerPage).ceil();
+        if (this._options.grouping !== false) this._groupItemsByPage();
+        return this._numPages;
+    },
+    
+    /**
+     * <p>Splits the list of item elements into groups by page, and wraps each group of items
+     * in a <tt>div</tt> that represents the page. This allows horizontal galleries to avoid
+     * stringing all the items onto one row.</p>
+     */
+    _groupItemsByPage: function() {
+        var containerRegion = this.getRegion(),
+            width = containerRegion.getWidth(), height = containerRegion.getHeight(),
+            n = this._itemsPerPage, allItems = this._elements._items.toArray();
+        this._numPages.times(function(i) {
+            var items = allItems.slice(i * n, (i+1) * n);
+            var div = Ojay( Ojay.HTML.div({className: this.klass.PAGE_CLASS}) );
+            div.setStyle({
+                'float': 'left', width: width + 'px', height: height + 'px',
+                margin: '0 0 0 0', padding: '0 0 0 0', border: 'none'
+            });
+            items.forEach(div.method('insert'));
+            this._elements._subject.insert(div.node);
+        }, this);
     },
     
     /**
