@@ -1,0 +1,66 @@
+- @title = 'Overlays'
+
+#summary
+  :textile
+    h2. Overlayed content and lightboxes using @Ojay.Overlay@
+    
+    In this example, we demonstrate how Ojay's @Overlay@ package can be used to display content
+    on top of the page's other content in a lightbox-style container. We use the @Ojay.PageMask@
+    and @Ojay.ContentOverlay@ classes to achieve the effect and control appearance and behaviour
+    of the overlayed content.
+    
+    The page content consists of a link to another page. We hijack this link so that instead of
+    redirecting, we pull the page's content into the current page and display it in an overlay.
+    We add a close button with script rather than hard-coding it into the linked page's content.
+
+:plain
+    <style id="display-style" type="text/css">
+        .signup .overlay-content {
+            border:         1px solid #999;
+            background:     #333;
+            color:          #fff;
+            width:          400px;
+            height:         280px;
+            padding:        28px;
+        }
+        
+        .close {
+            color:          #fff;
+            font:           bold 11px Arial, Helvetica, sans-serif;
+            text-transform: uppercase;
+            position:       absolute;
+            top:            16px;
+            right:          16px;
+            cursor:         pointer;
+        }
+    </style>
+  
+    <div style="margin: 30px 0;">
+        <a href="/service/overlay.html" id="the-link">Sign up now!</a>
+    </div>
+    
+    <div id="form-result"></div>
+  
+    <script id="display-script" type="text/javascript">
+        var overlay = new Ojay.ContentOverlay({className: 'signup'});
+        var mask    = new Ojay.PageMask({color: '#ffffff', opacity: 0.7});
+        mask.positionBehind(overlay);
+        
+        // Hijack the link to show the overlay
+        
+        Ojay('#the-link').on('click', function(link, evnt) {
+            evnt.stopDefault();
+            mask.show('fade');
+            Ojay.HTTP.GET(link.node.href).insertInto(overlay)
+                ._(overlay).fitToContent().center().show('fade');
+        });
+        
+        // Create a close button and insert it into the overlay
+        
+        var button = Ojay( Ojay.HTML.div({className: 'close'}, 'Close') );
+        overlay.getContainer().insert(button.node, 'top');
+        
+        button.on('click')
+            ._(overlay).hide('zoom')
+            ._(mask).hide('fade');
+    </script>
