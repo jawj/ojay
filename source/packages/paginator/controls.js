@@ -76,6 +76,7 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             if (page == 1) elements._previous.addClass('disabled');
             if (page == paginator.getPages()) elements._next.addClass('disabled');
             
+            elements._container.addClass(paginator.getDirection());
             return elements._container;
         },
         

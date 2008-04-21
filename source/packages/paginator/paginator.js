@@ -111,6 +111,7 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
         var elements = this._elements, options = this._options;
         if (elements._container) return elements._container;
         var container = Ojay( Ojay.HTML.div({className: this.klass.CONTAINER_CLASS}) );
+        container.addClass(this._options.direction);
         container.setStyle({
             width: options.width,
             height: options.height,
@@ -120,6 +121,14 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
             position: 'relative'
         });
         return elements._container = container;
+    },
+    
+    /**
+     * <p>Returns the direction of the paginator.</p>
+     * @returns {String}
+     */
+    getDirection: function() {
+        return this._options.direction;
     },
     
     /**
