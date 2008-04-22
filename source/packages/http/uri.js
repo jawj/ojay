@@ -6,13 +6,21 @@ Ojay.URI = JS.Class({
     extend: {
         /**
          * @param {String} string
+         * @returns {String}
+         */
+        sanitize: function(string) {
+            return String(string).trim().replace('&amp;', '&').replace('&#38;', '&');
+        },
+        
+        /**
+         * @param {String} string
          * @returns {URI}
          */
         parse: function(string) {
             if (string instanceof this) return string;
             var uri = new this;
             
-            string = String(string).trim()
+            string = this.sanitize(string)
                 .replace(/^(\w+)(:\/+)/,    function(match, capture, keep) { uri.protocol = capture; return keep; })
                 .replace(/^:\/+([^\:\/]+)/, function(match, capture) { uri.domain = capture;    return ''; })
                 .replace(/^:(\d+)/,         function(match, capture) { uri.port = capture;      return ''; })
