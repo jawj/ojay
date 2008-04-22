@@ -240,10 +240,9 @@ Ojay.Overlay = JS.Class({
         
         VISIBLE: {
             center: function() {
-                var region = this.getRegion();
-                var viewport = Ojay.getViewportSize(), scrolls = Ojay.getScrollOffsets(),
-                    left = scrolls.left + viewport.width/2 - region.getWidth()/2,
-                    top = scrolls.top + viewport.height/2.2 - region.getHeight()/2;
+                var region = this.getRegion(), screen = Ojay.getVisibleRegion(),
+                    left = screen.left + (screen.getWidth() - region.getWidth()) / 2,
+                    top = screen.top + (screen.getHeight() - region.getHeight()) / 2;
                 if (left < this.klass.MINIMUM_OFFSET) left = this.klass.MINIMUM_OFFSET;
                 if (top < this.klass.MINIMUM_OFFSET) top = this.klass.MINIMUM_OFFSET;
                 return this.setPosition(left, top);
