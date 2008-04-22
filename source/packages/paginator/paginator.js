@@ -166,6 +166,7 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
     getItems: function() {
         var elements = this._elements;
         if (!elements._subject) return undefined;
+        if (elements._items) return elements._items;
         elements._items = elements._subject.children(this._options.selector);
         elements._items.setStyle({margin: '0 0 0 0'});
         return elements._items;
