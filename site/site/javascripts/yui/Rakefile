@@ -1,7 +1,7 @@
 require 'rake'
 require 'packr'
 
-FILES = %w(yahoo dom event selector json animation connection get history)
+FILES = %w(yahoo dom event selector animation connection get json cookie history)
 
 task :extract do
   version = ENV['v']
