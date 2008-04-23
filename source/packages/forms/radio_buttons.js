@@ -91,6 +91,7 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
                 this._group = group;
                 this._input = input;
                 this._setupButton();
+                if (this._label.node) this._label.addClass('radio');
             }
         })
     }

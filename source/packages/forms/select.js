@@ -88,6 +88,7 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
         var elements = this._elements = {};
         this._input.insert(this.getHTML().node, 'after');
         this._setupInput();
+        if (this._label.node) this._label.addClass('select');
         this.updateOptions();
         
         this.setState('LIST_OPEN');
