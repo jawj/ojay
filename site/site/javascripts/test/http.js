@@ -123,6 +123,27 @@ YAHOO.util.Event.onDOMReady(function() {
             var local = this.localProtocol + '://' + this.localHost + ':' + this.localPort;
             this.assert.areEqual(local + '/path.html?a=b&c=d&e=f', '/path.html?e=f&a=b&c=d'.parseURI().toString());
             this.assert.areEqual(local + '/path.html?a=b&c=%2F%2F%3F%2F%2F%3F%2F%2F%2F%2F%2F&e=f', '/path.html?e=f&a=b&c=//?//?/////'.parseURI().toString());
+        },
+        
+        testHash: function() {
+            var uri = Ojay.URI.parse('http://localhost:8080/#photos=gallery_null');
+            this.assert.areEqual('http', uri.protocol);
+            this.assert.areEqual('localhost', uri.domain);
+            this.assert.areEqual('8080', uri.port);
+            this.assert.areEqual('/', uri.path);
+            this.assert.areEqual('photos=gallery_null', uri.hash);
+            
+            uri = Ojay.URI.parse('/some-sort-of/page/with_no/query.html.js#foo=bar');
+            this.assert.areEqual('/some-sort-of/page/with_no/query.html.js', uri.path);
+            this.assert.areEqual('foo=bar', uri.hash);
+            
+            uri = Ojay.URI.parse('/a-page/with/query?myKey=__myValue__#foo=bar');
+            this.assert.areEqual('/a-page/with/query', uri.path);
+            this.assert.areEqual('foo=bar', uri.hash);
+            this.assert.areEqual('__myValue__', uri.params.myKey);
+            var keys = 0;
+            for (var key in uri.params) keys++;
+            this.assert.areEqual(1, keys);
         }
     }));
     

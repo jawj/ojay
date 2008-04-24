@@ -24,7 +24,7 @@ Ojay.URI = JS.Class({
                 .replace(/^(\w+)(:\/+)/,    function(match, capture, keep) { uri.protocol = capture; return keep; })
                 .replace(/^:\/+([^\:\/]+)/, function(match, capture) { uri.domain = capture;    return ''; })
                 .replace(/^:(\d+)/,         function(match, capture) { uri.port = capture;      return ''; })
-                .replace(/^[^\?]+/,         function(match, capture) { uri.path = match;        return ''; })
+                .replace(/^[^\?\#]+/,       function(match, capture) { uri.path = match;        return ''; })
                 .replace(/#(.*)$/,          function(match, capture) { uri.hash = capture;      return ''; });
             
             if (!uri.port) uri.port = (uri.domain == this.local.domain)
