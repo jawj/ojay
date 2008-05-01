@@ -5,6 +5,20 @@
 JS.extend(Function.prototype, /** @scope Function.prototype */{
     
     /**
+     * <p>'Masks' the internals of a function by setting its toString and valueOf methods
+     * to return the masking function instead of the receiver. This can be used to make sure,
+     * for example, that functions like JS.Class's callSuper() that rely on stringifying
+     * functions for intrspection still work as desired.</p>
+     * @param {Function} wrapper
+     * @returns {Function}
+     */
+    _mask: function(wrapper) {
+        this.valueOf = function() { return wrapper; };
+        this.toString = function() { return wrapper.toString(); };
+        return this;
+    },
+    
+    /**
      * <p>Returns a new function that does the same thing as the original function, but has
      * some of its arguments preset. A contrived example:</p>
      *
@@ -25,7 +39,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
         var method = this, args = Array.from(arguments);
         return function() {
             return method.apply(this, args.concat(Array.from(arguments)));
-        };
+        }._mask(this);
     },
     
     /**
@@ -49,7 +63,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
         return function() {
             if (arguments.length >= n) return method.apply(this, arguments);
             return method.partial.apply(arguments.callee, arguments);
-        };
+        }._mask(this);
     },
     
     /**
@@ -63,7 +77,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
         var method = this;
         return function() {
             return wrapper.apply(this, [method.bind(this)].concat(Array.from(arguments))); 
-        };
+        }._mask(this);
     },
     
     /**
@@ -87,7 +101,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
         var method = this;
         return this._methodized = function() {
             return method.apply(null, [this].concat(Array.from(arguments)));
-        };
+        }._mask(this);
     },
     
     /**
@@ -109,7 +123,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
         return this._functionized = function() {
             var args = Array.from(arguments);
             return method.apply(args.shift(), args);
-        };
+        }._mask(this);
     },
     
     /**
@@ -131,7 +145,7 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
             var result = method.apply(this, arguments);
             window.console && console[func](name, ' -> ', result);
             return result;
-        };
+        }._mask(this);
     },
     
     /**
@@ -145,6 +159,6 @@ JS.extend(Function.prototype, /** @scope Function.prototype */{
         var method = this, count = 0;
         return function() {
             return (count++ < times) ? method.apply(this, arguments) : undefined;
-        };
+        }._mask(this);
     }
 });
