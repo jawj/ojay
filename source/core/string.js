@@ -30,6 +30,14 @@ JS.extend(String.prototype, /** @scope String.prototype */{
     },
     
     /**
+     * <p>Returns the result of parsing the string as JSON. Requires the YUI JSON utility.</p>
+     * @returns {Object|Array}
+     */
+    parseJSON: function() {
+        return YAHOO.lang.JSON.parse(this.valueOf());
+    },
+    
+    /**
      * <p>Returns a copy of the string with all &lt;script&gt; tags removed.</p>
      * @returns {String}
      */

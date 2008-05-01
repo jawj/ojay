@@ -198,6 +198,14 @@ Ojay.HTTP.Response = JS.Class(/** @scope Ojay.HTTP.Response.prototype */{
     },
     
     /**
+     * <p>Returns the result of parsing the response body as JSON.</p>
+     * @returns {Object|Array}
+     */
+    parseJSON: function() {
+        return (this.responseText || '').parseJSON();
+    },
+    
+    /**
      * @returns {HTTP.Response}
      */
     evalScriptTags: function() {
