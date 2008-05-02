@@ -112,13 +112,21 @@ Ojay.Paginator = JS.Class(/** @scope Ojay.Paginator.prototype */{
         if (elements._container) return elements._container;
         var container = Ojay( Ojay.HTML.div({className: this.klass.CONTAINER_CLASS}) );
         container.addClass(this._options.direction);
+        
+        var width = options.width, height = options.height, items;
+        if (options.rows || options.columns) {
+            items = this.getItems();
+            if (options.rows) height = (options.rows * items.getHeight()) + 'px';
+            if (options.columns) width = (options.columns * items.getWidth()) + 'px';
+        }
+        
         container.setStyle({
-            width: options.width,
-            height: options.height,
-            overflow: 'hidden',
-            padding: '0 0 0 0',
-            border: 'none',
-            position: 'relative'
+            width:      width,
+            height:     height,
+            overflow:   'hidden',
+            padding:    '0 0 0 0',
+            border:     'none',
+            position:   'relative'
         });
         return elements._container = container;
     },

@@ -1,8 +1,8 @@
-var pager = new Ojay.Paginator('#items', {width: '520px', height: '104px'});
+var pager = new Ojay.Paginator('#items', {width: '416px', rows: 2});
 
 var slider = YAHOO.widget.Slider.getHorizSlider('slider-bg', 'slider-thumb', 0, 200);
 
-var pager2 = new Ojay.Paginator('#items2', {width: '312px', height: '208px',
+var pager2 = new Ojay.Paginator('#items2', {columns: 3, height: '208px',
         direction: 'vertical', scrollTime: 1.2, easing: 'elasticOut'});
 
 var ajaxer = new Ojay.AjaxPaginator('#ajaxy', {
