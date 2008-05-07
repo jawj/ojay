@@ -17,18 +17,24 @@
  *
  * <p>A <tt>Paginator</tt>, when applied to <tt>#gallery</tt>, will wrap its child elements in
  * a scrollable element that can be controlled using the <tt>Paginator</tt> API. So, your markup
- * will not look like:</p>
+ * will now look like:</p>
  *
  *     &lt;div class="paginator"&gt;
  *         &lt;div id="gallery"&gt;
- *             &lt;div class="item"&gt;&lt;img src="01.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="02.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="03.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="04.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="05.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="06.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="07.jpg" /&gt;&lt;/div&gt;
- *             &lt;div class="item"&gt;&lt;img src="08.jpg" /&gt;&lt;/div&gt;
+ *             &lt;div class="page"&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="01.jpg" /&gt;&lt;/div&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="02.jpg" /&gt;&lt;/div&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="03.jpg" /&gt;&lt;/div&gt;
+ *             &lt;/div&gt;
+ *             &lt;div class="page"&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="04.jpg" /&gt;&lt;/div&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="05.jpg" /&gt;&lt;/div&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="06.jpg" /&gt;&lt;/div&gt;
+ *             &lt;/div&gt;
+ *             &lt;div class="page"&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="07.jpg" /&gt;&lt;/div&gt;
+ *                 &lt;div class="item"&gt;&lt;img src="08.jpg" /&gt;&lt;/div&gt;
+ *             &lt;/div&gt;
  *         &lt;/div&gt;
  *     &lt;/div&gt;
  *
