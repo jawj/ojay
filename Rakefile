@@ -72,7 +72,7 @@ def get_version
   revision = svn_info.find { |info| info =~ /^Revision/i }
   if url and revision
     puts "Building #{url}, #{revision}"
-    return url.scan(/[\d\.]+/).last if url =~ /[\d\.]+\/?$/
+    return url.scan(/[^\/]+/).last if url =~ /\/tags\/[^\/]+\/?$/
     return 'rev.' + revision.scan(/\d+/).first
   else
     return ""
