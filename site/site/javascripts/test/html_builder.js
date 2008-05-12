@@ -24,8 +24,9 @@ YAHOO.util.Event.onDOMReady(function() {
                 html.ul(function(html) {
                     ['One', 'Two', 'Three'].forEach(html.method('li'));
                 });
+                html.concat(Ojay.HTML.h4('Quick'));
             });
-            this.assert.isTrue(/<h1>This is the title<\/h1><p class=\"?para\"?>Lorem ipsum dolor sit amet...<\/p><ul><li>One<\/li><li>Two<\/li><li>Three<\/li><\/ul>/i.test(div.innerHTML.toLowerCase().replace(/[\n\r]/g, '')));
+            this.assert.isTrue(/^<h1>This is the title<\/h1><p class=\"?para\"?>Lorem ipsum dolor sit amet...<\/p><ul><li>One<\/li><li>Two<\/li><li>Three<\/li><\/ul><h4>Quick<\/h4>$/i.test(div.innerHTML.toLowerCase().replace(/[\n\r]/g, '')));
         }
     }));
     

@@ -80,8 +80,19 @@
  */
 Ojay.HtmlBuilder = JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
     
+    /**
+     * @param {HTMLElement} node
+     */
     initialize: function(node) {
-        this.rootNode = node || null;
+        this._rootNode = node || null;
+    },
+    
+    /**
+     * @param {HTMLElement} node
+     */
+    concat: function(node) {
+        if (this._rootNode) this._rootNode.appendChild(node);
+        return node;
     },
     
     extend: {
@@ -112,7 +123,7 @@ Ojay.HtmlBuilder = JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
                                 break;
                         }
                     }
-                    if (this.rootNode) this.rootNode.appendChild(node);
+                    if (this._rootNode) this._rootNode.appendChild(node);
                     return node;
                 };
                 
