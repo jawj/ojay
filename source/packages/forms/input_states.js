@@ -24,6 +24,7 @@ var InputStates = JS.Module(/** @scope InputStates */{
         this._input.on('blur')._(this).setFocused(false);
         
         this._label = Ojay.Forms.getLabel(this._input);
+        if (this._label.node) this._label.addClass(this._inputType);
         
         this._interface = [this._input, this._label];
         if (this.getHTML) this._interface.push(this.getHTML());
@@ -73,6 +74,21 @@ var InputStates = JS.Module(/** @scope InputStates */{
      * @param {String} name
      */
     _setClass: function(state, name) {
-        this._interface.forEach(it()[!!state ? 'addClass' : 'removeClass'](name));
+        this._stateClasses = this._stateClasses || [];
+        if (state) {
+            if (this._stateClasses.indexOf(name) == -1) this._stateClasses.push(name);
+            this._stateClasses.sort();
+        } else {
+            this._stateClasses = this._stateClasses.filter(function(s) { return s != name });
+        }
+        
+        this._interface.forEach(it()[state ? 'addClass' : 'removeClass'](name));
+        var classes = this._interface[0].node.className.split(/\s+/);
+        
+        var type = this._inputType, pattern = new RegExp('^' + type + '-');
+        
+        var stateClass = classes.filter({match: pattern})[0];
+        if (stateClass) this._interface.forEach({removeClass: stateClass});
+        if (this._stateClasses.length) this._interface.forEach({addClass: type + '-' + this._stateClasses.join('-')});
     }
 });
