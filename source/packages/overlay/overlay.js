@@ -1,22 +1,56 @@
-var whileHidden = function(method) {
-    return function() {
-        var container = this._elements._container;
-        container.setStyle({visibility: 'hidden'});
-        this.show('none')[method]().hide('none');
-        container.setStyle({visibility: ''});
-        return this;
-    };
-};
-
 /**
+ * <p>The <tt>Overlay</tt> class is used to encapsulate the process of positioning a
+ * container element on top of the rest of the document and allowing it to be positioned
+ * and sized to order. The class provides a number of transition effects for showing and
+ * hiding overlay elements, which you can use if you include <tt>YAHOO.util.Anim</tt> in
+ * your pages.</p>
+ *
+ * <p>This class is unlikely to be directly useful to you in building pages, but it provides
+ * a base class that other overlay types inherit from. It provides all the positioning,
+ * sizing, layering, showing and hiding functionality useful for implementing any kind of
+ * overlay behaviour.</p>
+ *
+ * <p>To create an overlay, simply call its contructor with a set of initialization options.
+ * These options include (all sizing and position is in pixels):</p>
+ *
+ * <ul>
+ *      <li><tt>left</tt>: the initial left position</li>
+ *      <li><tt>top</tt>: the initial top position</li>
+ *      <li><tt>width</tt>: the initial element width</li>
+ *      <li><tt>height</tt>: the initial element height</li>
+ *      <li><tt>layer</tt>: the initial layer (z-index)</li>
+ *      <li><tt>opacity</tt>: the initial opacity (between 0 and 1 inclusive)</li>
+ *      <li><tt>className</tt>: space-separated list of classes to give to the overlay element</li>
+ * </ul>
+ *
+ * <p>All these options are optional - you can omit any of them and default values will be
+ * applied. An exmaple creation might look like:</p>
+ *
+ * <pre><code>    var overlay = new Ojay.Overlay({
+ *         width:  600,
+ *         height: 300,
+ *         className: 'my-overlay panel'
+ *     });</code></pre>
+ *
+ * <p>Which would insert the following elements at the top of the <tt>body</tt> element:</p>
+ *
+ * <pre><code>    &ltdiv class="overlay-container my-overlay panel"&gt;&lt/div&gt;</code></pre>
+ *
+ * <p>This new <tt>div</tt> will be absolutely positioned and sized according to the setup
+ * options you specified. You can get a reference to it by calling <tt>overlay.getContainer()</tt>:</p>
+ *
+ * <pre><code>    overlay.getContainer().on('click', function() { ... });</code></pre>
+ *
+ * <p>See the method definitions in the class below for further API documentation.</p>
+ *
  * @constructor
  * @class Overlay
  */
-Ojay.Overlay = JS.Class({
+Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     include: [JS.State, JS.Observable],
     
     extend: {
-        BASE_LAYER:         10000,
+        BASE_LAYER:         1000,
         MINIMUM_OFFSET:     20,
         DEFAULT_SIZE:       {width: 400, height: 300},
         DEFAULT_POSITION:   {left: 50, top: 50},
@@ -25,17 +59,53 @@ Ojay.Overlay = JS.Class({
         TRANSITION_TIME:    0.4,
         EASING:             'easeOutStrong',
         
-        Transitions: JS.Singleton({
+        /**
+         * <p>The <tt>Overlay.Transitions</tt> object stores transition effects used to hide and
+         * show overlay instances. This allows new effects to be added without needing to modify
+         * <tt>Overlay</tt> source code. To register new transitions, you need to implement a
+         * <tt>show()</tt> and a <tt>hide()</tt> method, each of which must accept an <tt>Overlay</tt>
+         * object and a <tt>MethodChain</tt> to allow code to be asynchronously chained after
+         * the effect has run. You must decide when to fire the chain, and your methods must
+         * return either the chain or the overlay. You will usually return the chain if your
+         * transition involves animation. The basic pattern is thus:</p>
+         *
+         * <pre><code>    Ojay.Overlay.Transitions.add('myeffect', {
+         *         show: function(overlay, chain) {
+         *             // ...
+         *             return chain;
+         *         },
+         *         hide: function(overlay, chain) {
+         *             // ...
+         *             return chain;
+         *         }
+         *     });</code></pre>
+         *
+         * <p>You will then be able to use this effect to show and hide overlays:</p>
+         *
+         * <pre><code>    overlay.show('myeffect');</code></pre>
+         *
+         * <p>See the transitions that ship with Ojay for some example implementations.</p>
+         *
+         * @class Overlay.Transitions
+         */
+        Transitions: JS.Singleton(/** @scope Ojay.Overlay.Transitions */{
             _store: {},
             
+            /**
+             * <p>The interface used to test registered transitions.</p>
+             */
             INTERFACE: new JS.Interface(['hide', 'show']),
             
+            /**
+             * <p>A stub transition returned if none can be found for a given name.</p>
+             */
             _stub: {
                 hide: function(overlay) { return overlay; },
                 show: function(overlay) { return overlay; }
             },
             
             /**
+             * <p>Adds a new transition object to the set of registered transitions.</p>
              * @param {String} name
              * @param {Object} transitions Must implement Ojay.Overlay.Transitions.INTERFACE
              * @returns {Transitions}
@@ -47,6 +117,7 @@ Ojay.Overlay = JS.Class({
             },
             
             /**
+             * <p>Returns the transition object with the given name.</p>
              * @param {String} name
              * @returns {Object} Implements Ojay.Overlay.Transitions.INTERFACE
              */
@@ -56,6 +127,9 @@ Ojay.Overlay = JS.Class({
         }),
         
         /**
+         * <p>Returns the layer (z-index) of the given object. Can accept <tt>Overlay</tt>
+         * objects and <tt>HTMLElement</tt>/<tt>DomCollection</tt> objects, and anything
+         * with a <tt>getLayer()</tt> method.</p>
          * @param {Object} object
          * @returns {Number}
          */
@@ -82,6 +156,7 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <tp>Returns a <tt>DomCollection</tt> wrapping the HTML elements for the overlay.</p>
      * @returns {DomCollection}
      */
     getHTML: function() {
@@ -95,6 +170,8 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Returns a <tt>DomCollection</tt> wrapping the overlay's container element.
+     * Effectively an alias for <tt>getHTML()</tt>.</p>
      * @returns {DomCollection}
      */
     getContainer: function() {
@@ -102,6 +179,8 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Sets the position of the overlay, measured in pixels from the top-left corner
+     * of the document. Positioning is absolute rather than fixed.</p>
      * @param {Number|String} left
      * @param {Number|String} top
      * @returns {Overlay}
@@ -118,6 +197,11 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Returns the current position of the overlay as an object with <tt>left</tt> and
+     * <tt>top</tt> fields. If the <tt>strings</tt> flag is passed <tt>true</tt>, the positions
+     * are returned as strings containing units, otherwise they are returned as numbers with
+     * the units implcitly being pixels.</p>
+     * @param {Boolean} strings
      * @returns {Object}
      */
     getPosition: function(strings) {
@@ -128,6 +212,8 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Sets the size of the overlay element in pixels. You may also use strings to specify
+     * the dimensions if you want to use units other than pixels, e.g. '67em'.</p>
      * @param {Number|String} width
      * @param {Number|String} height
      * @returns {Overlay}
@@ -144,6 +230,11 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Returns the current size of the overlay as an object with <tt>width</tt> and
+     * <tt>height</tt> fields. If the <tt>strings</tt> flag is passed <tt>true</tt>, the dimensions
+     * are returned as strings containing units, otherwise they are returned as numbers with
+     * the units implcitly being pixels.</p>
+     * @param {Boolean} strings
      * @returns {Object}
      */
     getSize: function(strings) {
@@ -154,6 +245,7 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Returns an <tt>Ojay.Region</tt> instance representing the area occupied by the overlay.</p>
      * @returns {Region}
      */
     getRegion: function() {
@@ -163,6 +255,7 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Sets the opacity of the overlay as a number from 0 to 1 inclusive.</p>
      * @param {Number} opacity
      * @returns {PageMask}
      */
@@ -177,6 +270,7 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Returns the current opacity of the overlay, a number between 0 and 1 inclusive.</p>
      * @returns {Number}
      */
     getOpacity: function() {
@@ -184,22 +278,27 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Positions the receiving overlay behind the passed parameter by setting the receiving
+     * overlay's z-index.</p>
      * @param {Overlay} overlay
      * @returns {Overlay}
      */
     positionBehind: function(overlay) {
-        return this.setLayer(overlay.getLayer() - 1);
+        return this.setLayer(this.klass.getLayer(overlay) - 1);
     },
     
     /**
+     * <p>Positions the receiving overlay in front of the passed parameter by setting the receiving
+     * overlay's z-index.</p>
      * @param {Overlay} overlay
      * @returns {Overlay}
      */
     positionInFront: function(overlay) {
-        return this.setLayer(overlay.getLayer() + 1);
+        return this.setLayer(this.klass.getLayer(overlay) + 1);
     },
     
     /**
+     * <p>Sets the layer (z-index) of the overlay to the given value.</p>
      * @param {Number} index
      * @returns {Overlay}
      */
@@ -211,17 +310,33 @@ Ojay.Overlay = JS.Class({
     },
     
     /**
+     * <p>Returns the current layer (z-index) of the overlay.</p>
      * @returns {Number}
      */
     getLayer: function() {
         return this._layer;
     },
     
-    states: {
+    states: /** @scope Ojay.Overlay.prototype */{
         
-        INVISIBLE: {
+        /**
+         * <p>An overlay is in the INVISIBLE state when it is present in the document
+         * but is not visible.</p>
+         */
+        INVISIBLE: /** @scope Ojay.Overlay.prototype */{
+            /**
+             * <p>Centers the overlay within the viewport.</p>
+             * @returns {Overlay}
+             */
             center: whileHidden('center'),
             
+            /**
+             * <p>Shows the overlay using the given transition. Returns a <tt>MethodChain</tt>
+             * object so you can chain code to run after the transition finishes. The root of
+             * this chain is the receiving overlay instance.</p>
+             * @param {String} transition
+             * @returns {Overlay|MethodChain}
+             */
             show: function(transition) {
                 this.setState('SHOWING');
                 transition = this.klass.Transitions.get(transition || 'none');
@@ -229,6 +344,10 @@ Ojay.Overlay = JS.Class({
                 return transition.show(this, chain);
             },
             
+            /**
+             * <p>'Closes' the overlay by removing it from the document.</p>
+             * @returns {Overlay}
+             */
             close: function() {
                 this._elements._container.remove();
                 this.setState('CLOSED');
@@ -236,9 +355,21 @@ Ojay.Overlay = JS.Class({
             }
         },
         
-        SHOWING: {},
+        /**
+         * <p>An overlay is in the SHOWING state when it is transitioning between
+         * INVISIBLE and VISIBLE.</p>
+         */
+        SHOWING: /** @scope Ojay.Overlay.prototype */{},
         
-        VISIBLE: {
+        /**
+         * <p>An overlay is in the VISIBLE state when it is present in the document
+         * and visible.</p>
+         */
+        VISIBLE: /** @scope Ojay.Overlay.prototype */{
+            /**
+             * <p>Centers the overlay within the viewport.</p>
+             * @returns {Overlay}
+             */
             center: function() {
                 var region = this.getRegion(), screen = Ojay.getVisibleRegion(),
                     left = screen.left + (screen.getWidth() - region.getWidth()) / 2,
@@ -248,6 +379,13 @@ Ojay.Overlay = JS.Class({
                 return this.setPosition(left, top);
             },
             
+            /**
+             * <p>Hides the overlay using the named transition. Does not remove the overlay from
+             * the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
+             * overlay instance on completion of the transition effect.</p>
+             * @param {String} transition
+             * @returns {Overlay|MethodChain}
+             */
             hide: function(transition) {
                 this.setState('HIDING');
                 transition = this.klass.Transitions.get(transition || 'none');
@@ -255,6 +393,13 @@ Ojay.Overlay = JS.Class({
                 return transition.hide(this, chain);
             },
             
+            /**
+             * <p>Closes the overlay by hiding it using the named transition and removing it
+             * from the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
+             * overlay instance on completion of the transition effect.</p>
+             * @param {String} transition
+             * @returns {MethodChain}
+             */
             close: function(transition) {
                 return this.hide(transition)._(this).close();
             },
@@ -279,11 +424,22 @@ Ojay.Overlay = JS.Class({
             }
         },
         
-        HIDING: {},
+        /**
+         * <p>An overlay is in the HIDING state when it is transitioning between
+         * VISIBLE and INVISIBLE.</p>
+         */
+        HIDING: /** @scope Ojay.Overlay.prototype */{},
         
-        RESIZING: {},
+        /**
+         * <p>An overlay is in the RESIZING state when it is in the process of being resized.</p>
+         */
+        RESIZING: /** @scope Ojay.Overlay.prototype */{},
         
-        CLOSED: {}
+        /**
+         * <p>An overlay is in the CLOSED state when it has been removed from the document.
+         * No further work can be done with the overlay once it is in this state.</p>
+         */
+        CLOSED: /** @scope Ojay.Overlay.prototype */{}
     },
     
     _addUnits: function(x) {
