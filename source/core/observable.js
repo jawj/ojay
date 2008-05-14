@@ -78,8 +78,12 @@ Ojay.Observable = JS.Module({
         this.addObserver(function() {
             var args = Array.from(arguments), message = args.shift();
             if (message != eventName) return;
-            if (typeof callback == 'function') callback.apply(scope || null, [this].concat(args));
-            chain.fire(scope || this);
+            var receiver = (args[0]||{}).receiver || this;
+            if (typeof callback == 'function') {
+                if (receiver !== this) args.shift();
+                callback.apply(scope || null, [receiver].concat(args));
+            }
+            chain.fire(scope || receiver);
         }, this);
         return chain;
     }

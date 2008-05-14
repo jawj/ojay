@@ -68,7 +68,9 @@
  * the POST request is made, it will be executed and the return value will be sent to the server
  * in the <tt>width</tt> parameter.</p>
  */
-Ojay.HTTP = {
+Ojay.HTTP = JS.Singleton(/** @scope Ojay.HTTP */{
+    include: Ojay.Observable,
+    
     /**
      * <p>Object containing named references to XmlHttpRequest ready states.</p>
      */
@@ -84,7 +86,7 @@ Ojay.HTTP = {
      * <p>List of verbs supported by <tt>Ojay.HTTP</tt>.</p>
      */
     VERBS: 'GET POST PUT DELETE HEAD'.split(/\s+/)
-};
+});
 
 Ojay.HTTP.VERBS.forEach(function(verb) {
     Ojay.HTTP[verb] = function(url, parameters, callbacks) {
@@ -109,8 +111,8 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
      * @param {Object} callbacks    Object containing callback functions
      */
     initialize: function(verb, url, parameters, callbacks) {
-        this._verb          = verb.toUpperCase();
-        if (Ojay.HTTP.VERBS.indexOf(this._verb) == -1) return;
+        this.verb           = verb.toUpperCase();
+        if (Ojay.HTTP.VERBS.indexOf(this.verb) == -1) return;
         this._url           = url;
         this._parameters    = parameters || {};
         this._callbacks     = callbacks || {};
@@ -118,33 +120,52 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
     },
     
     /**
+     * <p>Returns the URI of the request.
+     */
+    getURI: function() {
+        if (this.uri) return this.uri;
+        return this.uri = Ojay.URI.build(this._url, this._parameters);
+    },
+    
+    /**
      * <p>Makes the HTTP request and sets up all the callbacks.</p>
      */
     _begin: function() {
-        var uri         = Ojay.URI.build(this._url, this._parameters);
-        var url         = (this._verb == 'POST') ? uri._getPathWithHost() : uri.toString();
-        var postData    = (this._verb == 'POST') ? uri.getQueryString() : undefined;
+        var uri         = this.getURI();
+        var url         = (this.verb == 'POST') ? uri._getPathWithHost() : uri.toString();
+        var postData    = (this.verb == 'POST') ? uri.getQueryString() : undefined;
+        Ojay.HTTP.notifyObservers('request', {receiver: this});
         
-        YAHOO.util.Connect.asyncRequest(this._verb, url, {
+        YAHOO.util.Connect.asyncRequest(this.verb, url, {
             scope: this,
             
             // Will fire onSuccess, on2xx, and the chain
             success: function(transport) {
-                var response = new Ojay.HTTP.Response(transport);
+                var response = new Ojay.HTTP.Response(this, transport);
                 var success  = this._callbacks.onSuccess;
                 var onStatus = this._callbacks['on' + response.status];
-                if (success !== undefined) Function.from(success)(response);
-                if (onStatus !== undefined) Function.from(onStatus)(response);
+                var complete = this._callbacks.onComplete;
+                success  && Function.from(success)(response);
+                onStatus && Function.from(onStatus)(response);
+                complete && Function.from(complete)(response);
                 this.chain.fire(response);
+                Ojay.HTTP.notifyObservers('success', {receiver: response});
+                Ojay.HTTP.notifyObservers(response.status, {receiver: response});
+                Ojay.HTTP.notifyObservers('complete', {receiver: response});
             },
             
             // Will fire onFailure, on3xx, on4xx, on5xx
             failure: function(transport) {
-                var response = new Ojay.HTTP.Response(transport);
+                var response = new Ojay.HTTP.Response(this, transport);
                 var failure  = this._callbacks.onFailure;
                 var onStatus = this._callbacks['on' + response.status];
-                if (failure !== undefined) Function.from(failure)(response);
-                if (onStatus !== undefined) Function.from(onStatus)(response);
+                var complete = this._callbacks.onComplete;
+                failure  && Function.from(failure)(response);
+                onStatus && Function.from(onStatus)(response);
+                complete && Function.from(complete)(response);
+                Ojay.HTTP.notifyObservers('failure', {receiver: response});
+                Ojay.HTTP.notifyObservers(response.status, {receiver: response});
+                Ojay.HTTP.notifyObservers('complete', {receiver: response});
             }
             
         }, postData);
@@ -164,12 +185,14 @@ Ojay.HTTP.Request = JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
 Ojay.HTTP.Response = JS.Class(/** @scope Ojay.HTTP.Response.prototype */{
     
     /**
+     * @param {HTTP.Request} request an HTTP.Request object
      * @param {Object} transport An XmlHttpRequest transport object
      */
-    initialize: function(transport) {
-        'status statusText responseText responseXML'.split(/\s+/).forEach(function(key) {
+    initialize: function(request, transport) {
+        'status statusText responseText responseXML readyState'.split(/\s+/).forEach(function(key) {
             this[key] = transport[key];
         }, this);
+        this.request = request;
         this.transport = transport;
     },
     

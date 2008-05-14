@@ -18,6 +18,9 @@ YAHOO.util.Event.onDOMReady(function() {
         onFailure: function() {
             alert('Page not found');
         },
+        onComplete: function() {
+            alert('Completed');
+        },
         on404: function() {
             alert('404');
         }
@@ -30,7 +33,9 @@ YAHOO.util.Event.onDOMReady(function() {
         .insertInto('#message');
     
     Ojay('#get-util').on('click', function() {
-        Ojay.HTTP.load('/service/json.html');
+        Ojay.HTTP.load('/service/json.html', {}, {
+            onSuccess: function(){}.traced()
+        });
         Ojay.HTTP.GET('/service/json.html')._(function() { alert(this.responseText); });
     });
     
@@ -48,6 +53,13 @@ var TestCase = {
         alert(json.message);
     }
 };
+
+Ojay.HTTP.on('request', function(){}.traced())._(function() {
+    window.console && console.log(this.uri)
+});
+Ojay.HTTP.on(200, function() {
+    window.console && console.log(200);
+}.traced());
 
 YAHOO.util.Event.onDOMReady(function() {
     YAHOO.tool.TestRunner.add(new YAHOO.tool.TestCase({
