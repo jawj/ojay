@@ -1,0 +1,146 @@
+- @title = 'Overlays'
+:textile
+  h3. Overlays
+  
+  The @Ojay.Overlay@ package provides a number of classes that help you to place content
+  on top of the rest of the page. You can use these base classes to construct window systems,
+  lightbox effects, and any number of other UIs. The @Overlay@ package is designed to
+  be very general and highly flexible, and is based on the simple idea of positioning an
+  HTML element absolutely on top of the page. The core classes are:
+  
+  * @Overlay@ - provides most of the API, but unlikely you'll use this directly
+  * @ContentOverlay@ - for positioning content on top of the page, extends @Overlay@
+  * @Tooltip@ - extends @ContentOverlay@ to provide overlays that follow the mouse
+  * @PageMask@ - extends @Overlay@, can be used to 'fade out' the page for lightbox effects
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.5.1/build/selector/selector-beta.js@
+  * @http://yui.yahooapis.com/2.5.1/build/animation/animation.js@
+  * @http://yoursite.com/ojay/js-class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/overlay.js@
+  
+  h3. Creating an overlay
+  
+  It is unlikely that you will use the @Overlay@ class directly - you will probably use
+  one of its decendants instead. But since it contains most of the API for the other classes
+  I will be using it to go through the methods available. Click 'Show me' after each bit of
+  code to see it in action.
+  
+  To create an overlay, you pass in a set of options - the available options are listed
+  in this example:
+  
+  <pre>
+  var overlay = new Ojay.Overlay({
+    width:      400,
+    height:     300,
+    left:       450,
+    top:        1050,
+    className:  'example',
+    layer:      10,
+    opacity:    0.7
+  });</pre>
+  
+  h3. Showing and hiding
+  
+  By default, overlays are not shown on creation. To show it, call its @show()@ method
+  with the name of a transition effect. Available transitions are @fade@ and @zoom@; if
+  you don't specify a transition, the overlay shows/hides instantaneously.
+  
+  <pre>
+  overlay.show('fade');</pre>
+  <div class="showme" id="sm1">Show me</div>
+  
+  That's probably getting in your way a bit there, so let's hide it again:
+  
+  <pre>
+  overlay.hide('zoom');</pre>
+  <div class="showme" id="sm2">Show me</div>
+  
+  They are even chainable using @MethodChain@:
+  
+  <pre>
+  overlay.show('zoom').wait(3).hide('fade');</pre>
+  <div class="showme" id="sm3">Show me</div>
+  
+  h3. Positioning methods
+  
+  To set the position of an overlay, you can use its @setPosition()@ method, if you want
+  to center the overlay on the screen call @center()@:
+  
+  <pre>
+  overlay.setPosition(600, 1500);</pre>
+  <div class="showme" id="sm4">Show me</div>
+  
+  <pre>
+  overlay.center();</pre>
+  <div class="showme" id="sm5">Show me</div>
+  
+  As well as horizontal/vertical positioning, @Overlay@ makes z-positioning easy. The following
+  methods can be used to set the z-index of an overlay:
+  
+  * @overlay.setLayer(n)@ - sets the overlay's z-index to @n@
+  * @overlay.positionBehind(another)@ sets the overlay's z-index to it displays behind @another@ overlay
+  * @overlay.positionInFront(another)@ sets the overlay's z-index to it displays in front of @another@ overlay
+  
+  h3. Sizing methods
+  
+  To set the size of an overlay, just pass in the width and height values. These can be numbers,
+  or strings containing units. If numbers are used, we assume the units are pixels:
+  
+  <pre>
+  overlay.setSize('25%', '10%');
+  overlay.center();</pre>
+  <div class="showme" id="sm6">Show me</div>
+  
+  <pre>
+  overlay.setSize(300, 100);
+  overlay.center();</pre>
+  <div class="showme" id="sm7">Show me</div>
+  
+  h3. Getting size and position information
+  
+  There are a number of methods for getting information about the size and position of an
+  overlay these are @getSize()@, @getPosition()@ and @getRegion()@.
+  
+  <pre>
+  var pos = overlay.getPosition(), size = overlay.getSize();
+  alert('Left: ' + pos.left + ', top: ' + pos.top);
+  alert('Width: ' + size.width + ', height: ' + size.height);
+  alert(overlay.getRegion().toString());</pre>
+  <div class="showme" id="sm8">Show me</div>
+  
+:plain
+  <style type="text/css">
+    .example { background : #000; }
+    .showme { cursor: pointer; background: #807065; color: #fff; font-size: 11px; font-weight: bold; width: 60px; padding: 4px 8px; }
+  </style>
+  
+  <script type="text/javascript">
+    var overlay = new Ojay.Overlay({
+      width:      400,
+      height:     300,
+      left:       450,
+      top:        1050,
+      className:  'example',
+      layer:      10,
+      opacity:    0.7
+    });
+    
+    Ojay('#sm1').on('click')._(overlay).show('fade');
+    Ojay('#sm2').on('click')._(overlay).hide('zoom');
+    Ojay('#sm3').on('click')._(overlay).show('zoom').wait(3).hide('fade');
+    Ojay('#sm4').on('click')._(overlay).setPosition(600, 1500);
+    Ojay('#sm5').on('click')._(overlay).center();
+    Ojay('#sm6').on('click')._(overlay).setSize('25%', '10%').center();
+    Ojay('#sm7').on('click')._(overlay).setSize(300, 100).center();
+    
+    Ojay('#sm8').on('click', function() {
+      var pos = overlay.getPosition(), size = overlay.getSize();
+      alert('Left: ' + pos.left + ', top: ' + pos.top);
+      alert('Width: ' + size.width + ', height: ' + size.height);
+      alert(overlay.getRegion().toString());
+    });
+  </script>
