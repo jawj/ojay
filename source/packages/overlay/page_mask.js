@@ -1,12 +1,14 @@
 /**
  * <p>The <tt>PageMask</tt> class is a subtype of <tt>Overlay</tt> that represents elements used
  * to obscure the rest of the document while an overlay is visible. This allows easy creation of
- * 'modal' windows and lightbox-style interfaces.</p>
+ * 'modal' windows and lightbox-style interfaces. The HTML generated is the same as for <tt>Overlay</tt>.
+ * The main features added by <tt>PageMask</tt> are automatic sizing to fill the viewport, and
+ * color control.</p>
  * @constructor
  * @class PageMask
  */
 Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
-    extend: {
+    extend: /** @scope Ojay.PageMask */{
         DEFAULT_COLOR:  '000000',
         DEFAULT_OPACITY:    0.5,
         
@@ -21,6 +23,8 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
     },
     
     /**
+     * <p>Initializes the mask. Options are the same as for <tt>Overlay</tt>, with a single
+     * addition: <tt>color</tt> sets the background color of the mask.</p>
      * @param {Object} options
      */
     initialize: function(options) {
@@ -32,6 +36,9 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
     },
     
     /**
+     * <p><tt>PageMask</tt> overrides <tt>setPosition()</tt> so that the mask is always positioned
+     * at the top-left corner of the screen. The overlay is position 'fixed' in supporting
+     * user agents.</p>
      * @returns {PageMask}
      */
     setPosition: function() {
@@ -39,6 +46,8 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
     },
     
     /**
+     * <p><tt>PageMask</tt> overrides <tt>setSize()</tt> so that the mask always completely covers
+     * the visible area of the document.</p>
      * @returns {PageMask}
      */
     setSize: function() {
@@ -48,6 +57,9 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
     },
     
     /**
+     * <p>Sets the background color of the mask. Can be three separate numbers from 0 to 255
+     * (representing red, green and blue) or a single string representing all three as a hex
+     * value.</p>
      * @param {String} color
      * @returns {PageMask}
      */
@@ -62,14 +74,21 @@ Ojay.PageMask = JS.Class(Ojay.Overlay, /** @scope Ojay.PageMask.prototype */{
         return this;
     },
     
-    states: {
-        INVISIBLE: {
+    states: /** @scope Ojay.PageMask.prototype */{
+        /**
+         * <p>An overlay is in the INVISIBLE state when it is present in the document
+         * but is not visible.</p>
+         */
+        INVISIBLE: /** @scope Ojay.PageMask.prototype */{
+            /**
+             * <p><tt>PageMask</tt> overrides <tt>INVISIBLE#show()</tt> to make sure the mask
+             * is sized correctly before being made visible.</p>
+             * @returns {MethodChain}
+             */
             show: function() {
                 this.setSize();
                 return this.callSuper();
-            }
-        }
-    }
+    }   }   }
 });
 
 if (YAHOO.env.ua.ie)

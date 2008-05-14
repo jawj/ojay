@@ -8,7 +8,23 @@
  * <p>This class is unlikely to be directly useful to you in building pages, but it provides
  * a base class that other overlay types inherit from. It provides all the positioning,
  * sizing, layering, showing and hiding functionality useful for implementing any kind of
- * overlay behaviour.</p>
+ * overlay behaviour. The set of classes implemented by Ojay is:</p>
+ *
+ * <pre>
+ *                          ===============
+ *                          ||  Overlay  ||
+ *                          ===============
+ *                                 |
+ *                    --------------------------
+ *                    |                        |
+ *          ======================      ================
+ *          ||  ContentOverlay  ||      ||  PageMask  ||
+ *          ======================      ================
+ *                    |
+ *             ===============
+ *             ||  Tooltip  ||
+ *             ===============
+ * </pre>
  *
  * <p>To create an overlay, simply call its contructor with a set of initialization options.
  * These options include (all sizing and position is in pixels):</p>
@@ -49,7 +65,7 @@
 Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
     include: [JS.State, JS.Observable],
     
-    extend: {
+    extend: /** @scope Ojay.Overlay */{
         BASE_LAYER:         1000,
         MINIMUM_OFFSET:     20,
         DEFAULT_SIZE:       {width: 400, height: 300},
@@ -404,6 +420,28 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
                 return this.hide(transition)._(this).close();
             },
             
+            /**
+             * <p>Resizes the overlay using an animation that can be controlled via an options
+             * hash. You can specify the area to resize to using left, top, width, height params
+             * individually, or using a region object. The method returns a <tt>MethodChain</tt>
+             * that will fire on the receiving overlay once the animation has finished.</p>
+             *
+             * <p>Some examples:</p>
+             *
+             *      overlay.resize(50, 80, 100, 500);
+             *      
+             * <pre><code>    overlay.resize(Ojay.getVisibleRegion(), {
+             *         duration:   4,
+             *         easing:     'easeBoth'
+             *     });</code></pre>
+             *
+             * @param {Number} left
+             * @param {Number} top
+             * @param {Number} width
+             * @param {Number} height
+             * @param {Object} options
+             * @returns {MethodChain}
+             */
             resize: function(left, top, width, height, options) {
                 var region = left, options = options || {};
                 if (typeof region == 'object') {

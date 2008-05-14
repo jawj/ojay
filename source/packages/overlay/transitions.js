@@ -1,3 +1,8 @@
+/**
+ * @overview
+ * <p>This file defines a set of transition effects for hiding and showing overlay elements.
+ * follow the pattern outlined below to implement your own custom transitions.</p>
+ */
 Ojay.Overlay.Transitions
 
 .add('none', {
