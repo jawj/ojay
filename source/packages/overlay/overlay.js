@@ -458,6 +458,8 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
                     width:  {to:    width},
                     height: {to:    height}
                 }, options.duration || this.klass.TRANSITION_TIME, {easing: options.easing || this.klass.EASING})
+                ._(this).setSize(width, height)
+                ._(this).setPosition(left, top)
                 ._(this).setState('VISIBLE')._(this);
             }
         },

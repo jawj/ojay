@@ -25,7 +25,7 @@
   h3. Creating an overlay
   
   It is unlikely that you will use the @Overlay@ class directly - you will probably use
-  one of its decendants instead. But since it contains most of the API for the other classes
+  one of its descendants instead. But since it contains most of the API for the other classes
   I will be using it to go through the methods available. Click 'Show me' after each bit of
   code to see it in action.
   
@@ -37,11 +37,20 @@
     width:      400,
     height:     300,
     left:       450,
-    top:        1050,
+    top:        1150,
     className:  'example',
     layer:      10,
     opacity:    0.7
   });</pre>
+  
+  This will add the following markup to the top of the @body@ element:
+  
+  <pre>
+  <div class="overlay-container example"></div></pre>
+  
+  The element will be absolutely positioned and have the position and dimensions you
+  specify. All the options are just that - optional; if you omit an option it's given
+  a sensible default value.
   
   h3. Showing and hiding
   
@@ -112,10 +121,75 @@
   alert(overlay.getRegion().toString());</pre>
   <div class="showme" id="sm8">Show me</div>
   
+  If you want to know the z-index of an overlay, just call @overlay.getLayer()@.
+  
+  h3. Changing the opacity
+  
+  Setting and getting the opacity of an overlay is straightforward with the following methods:
+  
+  <pre>
+  overlay.center();
+  alert(overlay.getOpacity());
+  overlay.setOpacity(0.3);</pre>
+  <div class="showme" id="sm9">Show me</div>
+  
+  h3. Using @ContentOverlay@
+  
+  This is likely to be the overlay type you'll use most often. It has all the methods we've
+  discussed so far, plus a few more to let you populate the overlay with HTML content. You
+  create a content overlay in much the same way as above, but you can pass an extra option,
+  @content@ to set the initial content.
+  
+  <pre>
+  var overlay = new Ojay.ContentOverlay({
+    /* standard options here */
+    content: '<h1>The title</h1><p>The content</p>'
+  });</pre>
+  
+  The markup generated is slightly different to that of basic @Overlay@ instances, and looks
+  like the following:
+  
+  <pre>
+  <div class="overlay-container">
+      <div class="overlay-content">
+          <h1>The title</h1>
+          <p>The content</p>
+      </div>
+  </div></pre>
+  
+  @ContentOverlay@ instances have two extra methods on top of those provided by @Overlay@:
+  @setContent()@ and @insert()@. These work in exactly the same way as the methods of the
+  same names found in the Ojay core library, and simply manipulate the contents of the
+  @overlay-content@ element. They also have a @fitToContent()@ method, which sizes the overlay
+  container element so that it only just contains the content element.
+  
+  h3. Using @PageMask@
+  
+  The @PageMask@ class extends @Overlay@ and provides a mechanism for fading out page
+  content to create a 'lightbox' effect. As an example, let's fetch some content using Ajax
+  and display it in a lightbox above the page (push ESC to close the overlay):
+  
+  <pre>
+  var mask = new Ojay.PageMask({color: '#fff', opacity: 0.8});
+  var overlay = new Ojay.ContentOverlay({className: 'ex1'});
+  mask.positionBehind(overlay);
+  
+  Ojay.HTTP.GET('/service/paginator/01.html')
+  .insertInto(overlay)
+  ._(mask).show('fade')
+  ._(overlay).fitToContent().center().show('zoom');
+  
+  Ojay.Keyboard.listen(document, 'ESCAPE', function() {
+    overlay.hide('zoom')._(mask).hide('fade');
+  });</pre>
+  <div class="showme" id="sm10">Show me</div>
+  
 :plain
   <style type="text/css">
     .example { background : #000; }
-    .showme { cursor: pointer; background: #807065; color: #fff; font-size: 11px; font-weight: bold; width: 60px; padding: 4px 8px; }
+    .showme { cursor: pointer; background: #807065; color: #fff; font-size: 10px; font-weight: bold; width: 48px; padding: 2px 4px; margin-top: 0; }
+    pre { margin-bottom: 0; }
+    .ex1 .overlay-content { border: 2px solid #C2ECE7; background: #fff; padding: 0 20px; }
   </style>
   
   <script type="text/javascript">
@@ -123,7 +197,7 @@
       width:      400,
       height:     300,
       left:       450,
-      top:        1050,
+      top:        1150,
       className:  'example',
       layer:      10,
       opacity:    0.7
@@ -142,5 +216,26 @@
       alert('Left: ' + pos.left + ', top: ' + pos.top);
       alert('Width: ' + size.width + ', height: ' + size.height);
       alert(overlay.getRegion().toString());
+    });
+    
+    Ojay('#sm9').on('click', function() {
+      overlay.center();
+      alert(overlay.getOpacity());
+      overlay.setOpacity(0.3);
+    });
+    
+    Ojay('#sm10').on('click', function() {
+      var mask = new Ojay.PageMask({color: '#807065', opacity: 0.8});
+      var overlay = new Ojay.ContentOverlay({className: 'ex1'});
+      mask.positionBehind(overlay);
+      
+      Ojay.HTTP.GET('/service/paginator/01.html')
+      .insertInto(overlay)
+      ._(mask).show('fade')
+      ._(overlay).fitToContent().center().show('zoom');
+      
+      Ojay.Keyboard.listen(document, 'ESCAPE', function() {
+        overlay.hide('zoom')._(mask).hide('fade');
+      });
     });
   </script>

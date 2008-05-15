@@ -65,15 +65,13 @@ Ojay.Overlay.Transitions
                 opacity: 0,
                 left: (position.left + size.width/4) + 'px',
                 top: (position.top + size.height/4) + 'px',
-                width: (size.width / 2) + 'px', height: (size.height / 2) + 'px',
-                fontSize: '50%'
+                width: (size.width / 2) + 'px', height: (size.height / 2) + 'px'
             })
             .show()
             .animate({
                 opacity: {to: overlay.getOpacity()},
                 left:   {to: position.left},    width:  {to: size.width},
-                top:    {to: position.top},     height: {to: size.height},
-                fontSize: {to: 100, unit: '%'}
+                top:    {to: position.top},     height: {to: size.height}
             }, Ojay.Overlay.TRANSITION_TIME, {easing: Ojay.Overlay.EASING})
             ._(chain.toFunction());
         return chain;
