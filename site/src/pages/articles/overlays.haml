@@ -37,7 +37,7 @@
     width:      400,
     height:     300,
     left:       450,
-    top:        1150,
+    top:        1350,
     className:  'example',
     layer:      10,
     opacity:    0.7
@@ -105,7 +105,7 @@
   <div class="showme" id="sm6">Show me</div>
   
   <pre>
-  overlay.setSize(300, 100);
+  overlay.setSize(400, 200);
   overlay.center();</pre>
   <div class="showme" id="sm7">Show me</div>
   
@@ -197,7 +197,7 @@
       width:      400,
       height:     300,
       left:       450,
-      top:        1150,
+      top:        1350,
       className:  'example',
       layer:      10,
       opacity:    0.7
@@ -209,7 +209,7 @@
     Ojay('#sm4').on('click')._(overlay).setPosition(600, 1500);
     Ojay('#sm5').on('click')._(overlay).center();
     Ojay('#sm6').on('click')._(overlay).setSize('25%', '10%').center();
-    Ojay('#sm7').on('click')._(overlay).setSize(300, 100).center();
+    Ojay('#sm7').on('click')._(overlay).setSize(400, 200).center();
     
     Ojay('#sm8').on('click', function() {
       var pos = overlay.getPosition(), size = overlay.getSize();
