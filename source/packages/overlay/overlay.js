@@ -63,7 +63,7 @@
  * @class Overlay
  */
 Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
-    include: [JS.State, JS.Observable],
+    include: [JS.State, Ojay.Observable],
     
     extend: /** @scope Ojay.Overlay */{
         BASE_LAYER:         1000,
@@ -356,7 +356,10 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
             show: function(transition) {
                 this.setState('SHOWING');
                 transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()._(this).setState('VISIBLE')._(this);
+                var chain = new JS.MethodChain()
+                    ._(this).setState('VISIBLE')
+                    ._(this).notifyObservers('show')
+                    ._(this);
                 return transition.show(this, chain);
             },
             
@@ -367,6 +370,7 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
             close: function() {
                 this._elements._container.remove();
                 this.setState('CLOSED');
+                this.notifyObservers('close');
                 return this;
             }
         },
@@ -405,7 +409,10 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
             hide: function(transition) {
                 this.setState('HIDING');
                 transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()._(this).setState('INVISIBLE')._(this);
+                var chain = new JS.MethodChain()
+                    ._(this).setState('INVISIBLE')
+                    ._(this).notifyObservers('hide')
+                    ._(this);
                 return transition.hide(this, chain);
             },
             
