@@ -49,14 +49,15 @@
          */
         delegateEvent: function(map, includeAncestors) {
             return function(element, evnt) {
-                var target = evnt.getTarget();
+                var target = evnt.getTarget(), candidate;
                 for (var selector in map) {
                     if (!target.matches(selector) && !includeAncestors) continue;
-                    if (includeAncestors) while (target && !target.matches(selector)) {
-                        target = Ojay(target.node.parentNode);
-                        if (target.node == document.body) target = null;
+                    candidate = target;
+                    if (includeAncestors) while (candidate && !candidate.matches(selector)) {
+                        candidate = Ojay(candidate.node.parentNode);
+                        if (candidate.node == document.body) candidate = null;
                     }
-                    if (target) Function.from(map[selector]).call(this, target, evnt);
+                    if (candidate) Function.from(map[selector]).call(this, candidate, evnt);
                 }
             };
         },
