@@ -37,14 +37,26 @@
          *     <li>http://www.danwebb.net/2008/2/8/event-delegation-made-easy-in-jquery</li>
          * </ul>
          *
+         * <p>To delegate events, supply an object mapping CSS selectors to callback functions.
+         * when the event fires, the target is compared against all given selectors all all
+         * applicable callbacks are fired. If the secord parameter is set to <tt>true</tt>,
+         * the delegator will crawl back up the DOM tree until it finds an element that contains
+         * the target and matches the given selector.</p>
+         *
          * @param {Object} map
+         * @param {Boolean} includeAncestors
          * @returns {Function}
          */
-        delegateEvent: function(map) {
+        delegateEvent: function(map, includeAncestors) {
             return function(element, evnt) {
                 var target = evnt.getTarget();
                 for (var selector in map) {
-                    if (target.matches(selector)) Function.from(map[selector]).call(this, target, evnt);
+                    if (!target.matches(selector) && !includeAncestors) continue;
+                    if (includeAncestors) while (target && !target.matches(selector)) {
+                        target = Ojay(target.node.parentNode);
+                        if (target.node == document.body) target = null;
+                    }
+                    if (target) Function.from(map[selector]).call(this, target, evnt);
                 }
             };
         },

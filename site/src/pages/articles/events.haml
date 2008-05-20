@@ -119,6 +119,85 @@
   
   See the "@MethodChain@":/articles/method_chain.html page for more information on how to use it.
   
+  h3. How to delegate events
+  
+  Event delegation is the practise of getting a single DOM element to catch and handle events
+  fired by any of its descendant elements. This technique can be used to minimize memory usage
+  with bubbling events and allows event handlers to be applied to elements added to the document
+  later through Ajax, since a fixed ancestor element can be used to catch events fired by its
+  content even if the content changes. For more information, see this "article on icant.co.uk":http://icant.co.uk/sandbox/eventdelegation/.
+  
+  Ojay's event delegation is inspired by "Dan Webb's solution for jQuery":http://www.danwebb.net/2008/2/8/event-delegation-made-easy-in-jquery,
+  with a little added help for nested elements. To catch any clicks on a certain class of
+  links, for example, you could do this:
+  
+  <pre>
+  Ojay('a.external').on('click', ...)</pre>
+  
+  but having a separate listener on every element (as this example creates) wastes memory, and
+  won't help you if any @a.external@ elements are added to the page after this JavaScript call.
+  A better approach, using event delegation:
+  
+  <pre>
+  Ojay('body').on('click', Ojay.delegateEvent({
+    'a.external': function(link, evnt) {
+      // ...
+    }
+  }));</pre>
+  
+  This creates a single listener (on the @body@ element) that catches all the clicks you want
+  to listen to. Inside the callback, @link@ still refers to the event's target element - the
+  clicked link - and not the @body@ element.
+  
+  You can specify more selectors to be handled by a single delegator by simply listing them:
+  
+  <pre>
+  Ojay('body').on('click', Ojay.delegateEvent({
+    'a.external': function(link, evnt) {
+      // ...
+    },
+    
+    '.content p': function(para, evnt) {
+      // ...
+    }
+  }));</pre>
+  
+  For most purposes this works fine but say you have something like this:
+  
+  <pre>
+  <a href="http://example.com" class="external">
+      <img src="some-picture.png" />
+  </a></pre>
+  
+  If someone clicks the link, the image will (more than likely) be the event target, not the
+  anchor element. You could work around this by doing this:
+  
+  <pre>
+  Ojay('body').on('click', Ojay.delegateEvent({
+    'a.external, a.external *': function(element, evnt) {
+      // ...
+    }
+  }));</pre>
+  
+  This would work, but then if you want to refer to the link you need to find out whether the
+  link or one of its children was clicked and do a bit of tree crawling to find the element
+  you're interested in. To make it easier, you can pass @true@ as a second parameter to
+  @delegateEvent()@ and it will crawl back up the DOM tree until it finds a matching element.
+  
+  <pre>
+  Ojay('body').on('click', Ojay.delegateEvent({
+    'a.external': function(link, evnt) {
+      // ...
+    }
+  }, true));</pre>
+  
+  This will catch clicks on @a.external@ elements, and _any elements contained within them_.
+  The @link@ argument will refer to the @a.external@ element, rather than to the direct event
+  target.
+  
+  It should be noted that you do not necessarily need to use the @body@ tag for event delegation,
+  just any permanent element that contains the elements you want to monitor.
+  
 
 %script{:type => 'text/javascript'}
   :plain

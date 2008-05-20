@@ -6,4 +6,12 @@
 
 %p#baz.notfirst Nullam tincidunt, urna non nonummy dictum, augue nunc aliquet arcu, ut sodales risus turpis eu neque. Phasellus nonummy suscipit sapien. Morbi sit amet diam eu sem ultricies nonummy. Quisque sit amet mi. Etiam sapien nulla, sagittis vel, fringilla nec, laoreet sed, mauris. Cras imperdiet, massa a sollicitudin semper, ligula quam egestas orci, in imperdiet ligula lorem a turpis. Vivamus accumsan, urna in tempus tempor, est massa laoreet mi, eget vulputate erat nunc sed nunc. Donec gravida odio a nibh. Phasellus pellentesque, turpis ac molestie mattis, erat odio dignissim velit, ac nonummy libero nisl ut sapien. Proin accumsan, mauris at dignissim consectetuer, neque ante viverra risus, in ultricies sapien nulla sit amet ipsum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras posuere odio in purus. In in ante ac purus tincidunt imperdiet. Phasellus justo nunc, consectetuer id, placerat sed, venenatis sit amet, arcu. Curabitur justo. Cras quis sem. Etiam dolor. Nullam gravida, sapien non pulvinar auctor, ante elit consectetuer quam, ut semper metus ligula vitae ipsum.
 
+.delegator
+  %span.something
+    Should not fire
+
+.delegator-fixed
+  %span.nothing
+    Should fire using tree-crawling delegation
+
 =javascripts 'test/core'

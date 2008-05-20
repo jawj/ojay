@@ -61,4 +61,16 @@ YAHOO.util.Event.onDOMReady(function() {
     
     var logger = new YAHOO.tool.TestLogger();
     YAHOO.tool.TestRunner.run();
+    
+    Ojay('body').on('click', Ojay.delegateEvent({
+        '.delegator': function(el) {
+            alert(el.node.tagName);
+        }
+    }));
+    
+    Ojay('body').on('click', Ojay.delegateEvent({
+        '.delegator-fixed': function(el) {
+            alert(el.node.tagName);
+        }
+    }, true));
 });
