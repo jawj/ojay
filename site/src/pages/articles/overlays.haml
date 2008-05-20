@@ -133,6 +133,26 @@
   overlay.setOpacity(0.3);</pre>
   <div class="showme" id="sm9">Show me</div>
   
+  h3. Listening to events
+  
+  All @Overlay@ instances (and instaces of its subclasses) publish a number of events that you
+  can listen and react to. These events are:
+  
+  * @show@ - fired when an overlay is made visible
+  * @hide@ - fired when an overlay is hidden
+  * @close@ - fired when the overlay is removed from the DOM
+  
+  To listen to one of these events, just use the @on()@ method. The overlay instance is
+  passed as the first argument to your callback.
+  
+  <pre>
+  var overlay = new Ojay.Overlay();
+  
+  overlay.on('show', function(overlay) {
+    // do other stuff with overlay,
+    // call other parts of your codebase
+  });</pre>
+  
   h3. Using @ContentOverlay@
   
   This is likely to be the overlay type you'll use most often. It has all the methods we've
@@ -170,7 +190,7 @@
   and display it in a lightbox above the page (push ESC to close the overlay):
   
   <pre>
-  var mask = new Ojay.PageMask({color: '#fff', opacity: 0.8});
+  var mask = new Ojay.PageMask({color: '#807065', opacity: 0.8});
   var overlay = new Ojay.ContentOverlay({className: 'ex1'});
   mask.positionBehind(overlay);
   
