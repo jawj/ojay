@@ -1,6 +1,6 @@
 /**
  * <p>The <tt>Paginator.Controls</tt> class implements a default UI for <tt>Paginator</tt>
- * instances, which includes previous/next links, indivisual page links, and event listeners
+ * instances, which includes previous/next links, individual page links, and event listeners
  * that add class names to the elements in the UI in response to state changes in the
  * observed paginator object.</p>
  * @constructor
@@ -16,6 +16,8 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
         },
         
         /**
+         * <p>To initialize a <tt>Paginator.Controls</tt> instance, pass in the <tt>Paginator</tt>
+         * to which you want the generated UI elements to apply.</p>
          * @param {Paginator}
          */
         initialize: function(paginator) {
@@ -24,6 +26,9 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
         },
         
         /**
+         * <p>Returns the collection of HTML elements used to implement the UI. When the
+         * elements are first generated, all required event handlers (both DOM and
+         * Observable-based) are set up.</p>
          * @returns {DomCollection}
          */
         getHTML: function() {
@@ -81,6 +86,7 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
         },
         
         /**
+         * <p>Adds the class 'selected' to the current page number.</p>
          * @param {Number}
          */
         _highlightPage: function(page) {
@@ -89,6 +95,7 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
         },
         
         /**
+         * <p>Returns a reference to the 'previous' button.</p>
          * @returns {DomCollection}
          */
         getPreviousButton: function() {
@@ -97,6 +104,7 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
         },
         
         /**
+         * <p>Returns a reference to the 'next' button.</p>
          * @returns {DomCollection}
          */
         getNextButton: function() {
@@ -104,7 +112,8 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             return this._elements._next;
         },
         
-         /**
+        /**
+         * <p>Returns a reference to the collection of page number links.</p>
          * @returns {DomCollection}
          */
         getPageButtons: function() {
