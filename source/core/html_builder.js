@@ -98,36 +98,42 @@ Ojay.HtmlBuilder = JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
     extend: {
         addTagNames: function() {
             var args = (arguments[0] instanceof Array) ? arguments[0] : arguments;
-            for (var i = 0, n = args.length; i < n; i++) (function(builder, name) {
-                
-                builder.prototype[name] = function() {
-                    var node = document.createElement(name), arg, attr, style;
-                    for (var j = 0, m = arguments.length; j < m; j++) {
-                        arg = arguments[j];
-                        switch (typeof arg) {
-                            
-                            case 'object':
-                                for (attr in arg) {
-                                    if (Number(attr) == attr) continue;
-                                    if (attr == 'style')
-                                        for (style in arg[attr]) node.style[style] = arg[attr][style];
-                                    else
-                                        node[attr] = arg[attr];
-                                }
-                                break;
-                                
-                            case 'function': arg(new Ojay.HtmlBuilder(node));
-                                break;
-                                
-                            case 'string': node.appendChild(document.createTextNode(arg));
-                                break;
+            for (var i = 0, n = args.length; i < n; i++)
+                this.addTagName(args[i]);
+        },
+        
+        addTagName: function(name) {
+            this.prototype[name] = function() {
+                var node = document.createElement(name), arg, attr, style, appendable;
+                loop: for (var j = 0, m = arguments.length; j < m; j++) {
+                    arg = arguments[j];
+                    
+                    switch (typeof arg) {
+                    case 'object':
+                        appendable = arg.node || arg;
+                        if (appendable.nodeType === Ojay.HTML.ELEMENT_NODE) {
+                            node.appendChild(appendable);
+                        } else {
+                            for (attr in arg) {
+                                if (Number(attr) == attr) continue;
+                                if (attr == 'style')
+                                    for (style in arg[attr]) node.style[style] = arg[attr][style];
+                                else
+                                    node[attr] = arg[attr];
+                            }
                         }
+                        break;
+                        
+                    case 'function': arg(new Ojay.HtmlBuilder(node));
+                        break;
+                        
+                    case 'string': node.appendChild(document.createTextNode(arg));
+                        break;
                     }
-                    if (this._rootNode) this._rootNode.appendChild(node);
-                    return node;
-                };
-                
-            })(this, args[i]);
+                }
+                if (this._rootNode) this._rootNode.appendChild(node);
+                return node;
+            };
         },
         
         /**

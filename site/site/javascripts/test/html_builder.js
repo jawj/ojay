@@ -27,6 +27,16 @@ YAHOO.util.Event.onDOMReady(function() {
                 html.concat(Ojay.HTML.h4('Quick'));
             });
             this.assert.isTrue(/^<h1>This is the title<\/h1><p class=\"?para\"?>Lorem ipsum dolor sit amet...<\/p><ul><li>One<\/li><li>Two<\/li><li>Three<\/li><\/ul><h4>Quick<\/h4>$/i.test(div.innerHTML.toLowerCase().replace(/[\n\r]/g, '')));
+        },
+        
+        testNestingWithoutFunctions: function() {
+            var p = Ojay.HTML.p(
+                'These are spans: ',
+                Ojay.HTML.span('One'), ', ',
+                Ojay.HTML.span('Two'), ', ',
+                Ojay.HTML.span('Three'), '.'
+            );
+            this.assert.isTrue(/^These are spans: <span>One<\/span>, <span>Two<\/span>, <span>Three<\/span>\.$/i.test(p.innerHTML.toLowerCase()));
         }
     }));
     
