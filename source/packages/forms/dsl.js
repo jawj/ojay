@@ -31,7 +31,7 @@
  * <p>The full list of validator methods can be found in the <tt>RequirementDSL</tt> class. All
  * requirments take as their last argument an optional string specifying the text that should
  * be displayed in the error message if the field is invalid. Additionally, the <tt>requires</tt>
- * and <tt>expects</tt> methods takes an optional argument to specify how the name of the field
+ * and <tt>expects</tt> methods take an optional argument to specify how the name of the field
  * should be presented. If no custom name is given for the field, a name is inferred from the field's
  * label or its <tt>name</tt> attribute.</p>
  *
@@ -108,7 +108,8 @@ var forms = {};
 /**
  * <p>Returns the <tt>FormDescription</tt> for the given <tt>id</tt>. A new description is
  * created if one does not already exist for the <tt>id</tt>.</p>
- * @param {String} id The HTML id of the form
+ * @param {String} id
+ * @returns {FormDescription}
  * @private
  */
 var getForm = function(id) {
@@ -124,7 +125,7 @@ var getForm = function(id) {
 var DSL = {
     /**
      * <p>Returns a DSL object for describing the form with the given <tt>id</tt>.</p>
-     * @param {String} id The id of the form you want to describe
+     * @param {String} id
      * @returns {FormDSL}
      */
     form: function(id) {
@@ -132,8 +133,9 @@ var DSL = {
     },
     
     /**
-     * <p>Returns a DSL object for describing the form with the given <tt>id</tt>.</p>
-     * @param {String} id The id of the form you want to describe
+     * <p>Returns a DSL object for handling events related to the form with the
+     * given <tt>id</tt>.</p>
+     * @param {String} id
      * @returns {WhenDSL}
      */
     when: function(id) {
@@ -142,6 +144,7 @@ var DSL = {
     
     /**
      * <p>Returns a DSL object for applying pre-processing filters before events take place.</p>
+     * @param {String} id
      * @returns {BeforeDSL}
      */
     before: function(id) {
@@ -151,7 +154,7 @@ var DSL = {
     /**
      * <p>Returns a helper function for use with <tt>when().isValidated()</tt>. The returned
      * function will display the forms elements as a bulleted list inside the element you
-     * supply, in a <tt>DIV</tt> with the class name <tt>error-explanation</tt>.</p>
+     * supply, in a <tt>div</tt> with the class name <tt>error-explanation</tt>.</p>
      * @param {String|HTMLElement|DomCollection} element
      * @returns {Function}
      */
@@ -225,6 +228,7 @@ var FormDSL = JS.Class(/** @scope FormDSL.prototype */{
     },
     
     /**
+     * <p>Causes form submissions to be sent using Ajax rather than page-reloading requests.</p>
      * @param {Object} options
      * @returns {FormDSL}
      */
@@ -234,6 +238,8 @@ var FormDSL = JS.Class(/** @scope FormDSL.prototype */{
     },
     
     /**
+     * <p>Causes the form to indicate which field in currently focused by applying a class
+     * name to the focused input element.</p>
      * @returns {FormDSL}
      */
     highlightsActiveField: function() {
@@ -344,7 +350,7 @@ var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
     
     /**
      * <p>Specifies that the required field must have a certain length in order to be considered
-     * valid. Valid inputs are a number (to specifiy an exact length), or an object with
+     * valid. Valid inputs are a number (to specify an exact length), or an object with
      * <tt>minimum</tt> and <tt>maximum</tt> fields.</p>
      * @param {Number|Object} options
      * @param {String} message
@@ -436,6 +442,7 @@ var WhenDSL = JS.Class(/** @scope WhenDSL.prototype */{
     },
     
     /**
+     * <p>Registers a function to handle the HTTP response when an Ajax form submission completes.</p>
      * @param {Function} block
      * @param {Object} context
      */

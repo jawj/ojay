@@ -72,7 +72,7 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
         return this;
     },
     
-    extend: {
+    extend: /** @scope Forms.RadioButtons */{
         /**
          * @constructor
          * @class Forms.RadioButtons.Item

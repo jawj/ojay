@@ -64,8 +64,8 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
     },
     
     /**
-     * <p>Processing form submission events by validating the form and stopping the event
-     * from proceeding if the form is invalid in any way.</p>
+     * <p>Processes form submission events by validating the form and stopping the event
+     * from proceeding if the form data is found to be invalid.</p>
      * @param {DomCollection} form
      * @param {Event} evnt
      */
@@ -107,7 +107,7 @@ var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
     },
     
     /**
-     * <p>Returns a human-readable name for the given field. The the developer has not specified
+     * <p>Returns a human-readable name for the given field. If the developer has not specified
      * a name, it is inferred from the field's label, or from the field's name itself if no label
      * is found.</p>
      * @param {String} name

@@ -16,13 +16,17 @@ Ojay.Forms.Select = JS.Class(/** @scope Forms.Select.prototype */{
     include: [JS.State, InputStates],
     _inputType: 'select',
     
-    extend: {
+    extend: /** @scope Forms.Select */{
         CONTAINER_CLASS:    'select-container',
         DISPLAY_CLASS:      'select-display',
         BUTTON_CLASS:       'select-button',
         LIST_CLASS:         'select-list',
         
-        Option: JS.Class({
+        /**
+         * @constructor
+         * @class Forms.Select.Option
+         */
+        Option: JS.Class(/** @scope Forms.Select.Option.prototype */{
             /**
              * @param {Forms.Select} select
              * @param {HTMLElement} option
