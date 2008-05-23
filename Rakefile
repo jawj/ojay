@@ -15,15 +15,23 @@ end
 
 task :build => [:destroy, :create_directory] do
   builds = {:src => {}, :min => {}, :pack => {}}
+  version = get_version
   
   config['packages'].each do |name, package|
     pack_private = package['encode_private_vars']
     
+    puts "\npackage: #{name}"
+    puts " * Compressing private vars" if pack_private
+    
     builds[:src][name] = package['files'].map { |f| File.read("#{config['source_dir']}/#{package['source_dir']}/#{f}.js") }.join("\n")
-    builds[:src][name] += "\nOjay.VERSION = '#{get_version}';\n" if package['include_version']
+    builds[:src][name] += "\nOjay.VERSION = '#{version}';\n" if package['include_version']
     
     builds[:min][name] = Packr.pack(builds[:src][name], :shrink_vars => true, :private => pack_private)
     builds[:pack][name] = Packr.pack(builds[:min][name], :base62 => true)
+    
+    puts " * Source\t#{'% 6d' % builds[:src][name].size}"
+    puts " * Minified\t#{'% 6d' % builds[:min][name].size}"
+    puts " * Base62\t#{'% 6d' % builds[:pack][name].size}"
   end
   
   builds[:src]['all'] = config['all']['files'].map { |p| builds[:src][p] }.join("\n")
@@ -33,12 +41,12 @@ task :build => [:destroy, :create_directory] do
   builds[:src].each do |name, code|
     min = "#{name}-min"
     
-    { "min/#{name}" => code,
-      "min/#{min}" => builds[:min][name],
-      "gzip/#{name}" => code,
-      "gzip/#{min}" => builds[:min][name],
-      "pack/#{name}" => code,
-      "pack/#{min}" => builds[:pack][name]
+    { "min/#{name}"     => code,
+      "min/#{min}"      => builds[:min][name],
+      "gzip/#{name}"    => code,
+      "gzip/#{min}"     => builds[:min][name],
+      "pack/#{name}"    => code,
+      "pack/#{min}"     => builds[:pack][name]
     }.each do |path, code|
       
       full_path = "#{config['build_dir']}/#{path}.js"
@@ -52,7 +60,6 @@ task :build => [:destroy, :create_directory] do
           ''
       
       File.open(full_path, 'wb') { |f| f.write("#{copyright}#{requires}#{code}") }
-      puts " * Built #{path}, #{(File.size(full_path) / 1024).to_i} kb"
     end
   end
   
@@ -61,9 +68,9 @@ task :build => [:destroy, :create_directory] do
   end
   
   FileUtils.mkdir_p('site/site/javascripts/ojay')
-  File.__send__(:copy, "#{config['build_dir']}/pack/all-min.js", 'site/site/javascripts/ojay/all-min.js')
-  File.__send__(:copy, "#{config['build_dir']}/pack/all.js", 'site/site/javascripts/ojay/all.js')
-  File.__send__(:copy, 'site/site/javascripts/yui/2.5.1.js', "#{config['build_dir']}/yui.js")
+  FileUtils.copy("#{config['build_dir']}/pack/all-min.js", 'site/site/javascripts/ojay/all-min.js')
+  FileUtils.copy("#{config['build_dir']}/pack/all.js", 'site/site/javascripts/ojay/all.js')
+  FileUtils.copy('site/site/javascripts/yui/2.5.1.js', "#{config['build_dir']}/yui.js")
 end
 
 def get_version
