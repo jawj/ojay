@@ -351,26 +351,27 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
              * object so you can chain code to run after the transition finishes. The root of
              * this chain is the receiving overlay instance.</p>
              * @param {String} transition
+             * @param {Object} options
              * @returns {Overlay|MethodChain}
              */
-            show: function(transition) {
+            show: function(transition, options) {
                 this.setState('SHOWING');
                 transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()
-                    ._(this).setState('VISIBLE')
-                    ._(this).notifyObservers('show')
-                    ._(this);
+                var chain = new JS.MethodChain()._(this).setState('VISIBLE');
+                if ((options||{}).silent !== true) chain._(this).notifyObservers('show');
+                chain._(this);
                 return transition.show(this, chain);
             },
             
             /**
              * <p>'Closes' the overlay by removing it from the document.</p>
+             * @param {Object} options
              * @returns {Overlay}
              */
-            close: function() {
+            close: function(options) {
                 this._elements._container.remove();
                 this.setState('CLOSED');
-                this.notifyObservers('close');
+                if ((options||{}).silent !== true) this.notifyObservers('close');
                 return this;
             }
         },
@@ -404,15 +405,15 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
              * the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
              * overlay instance on completion of the transition effect.</p>
              * @param {String} transition
+             * @param {Object} options
              * @returns {Overlay|MethodChain}
              */
-            hide: function(transition) {
+            hide: function(transition, options) {
                 this.setState('HIDING');
                 transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()
-                    ._(this).setState('INVISIBLE')
-                    ._(this).notifyObservers('hide')
-                    ._(this);
+                var chain = new JS.MethodChain()._(this).setState('INVISIBLE');
+                if((options||{}).silent !== true) chain._(this).notifyObservers('hide');
+                chain._(this);
                 return transition.hide(this, chain);
             },
             
@@ -421,10 +422,11 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
              * from the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
              * overlay instance on completion of the transition effect.</p>
              * @param {String} transition
+             * @param {Object} options
              * @returns {MethodChain}
              */
-            close: function(transition) {
-                return this.hide(transition)._(this).close();
+            close: function(transition, options) {
+                return this.hide(transition, options)._(this).close(options);
             },
             
             /**

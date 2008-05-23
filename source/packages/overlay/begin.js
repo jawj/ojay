@@ -13,7 +13,7 @@ var whileHidden = function(method) {
     return function() {
         var container = this._elements._container;
         container.setStyle({visibility: 'hidden'});
-        this.show('none')[method]().hide('none');
+        this.show('none', {silent: true})[method]().hide('none', {silent: true});
         container.setStyle({visibility: ''});
         return this;
     };
