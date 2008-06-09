@@ -196,7 +196,7 @@ var DSL = {
  * @class FormDSL
  * @private
  */
-var FormDSL = JS.Class(/** @scope FormDSL.prototype */{
+var FormDSL = new JS.Class(/** @scope FormDSL.prototype */{
     /**
      * @param {FormDescription} form
      */
@@ -259,7 +259,7 @@ var FormDSLMethods = ['requires', 'expects', 'validates', 'submitsUsingAjax', 'h
  * @class RequirementDSL
  * @private
  */
-var RequirementDSL = JS.Class(/** @scope RequirementDSL.prototype */{
+var RequirementDSL = new JS.Class(/** @scope RequirementDSL.prototype */{
     /**
      * @param {FormRequirement} requirement
      */
@@ -421,7 +421,7 @@ FormDSLMethods.forEach(function(method) {
  * @class WhenDSL
  * @private
  */
-var WhenDSL = JS.Class(/** @scope WhenDSL.prototype */{
+var WhenDSL = new JS.Class(/** @scope WhenDSL.prototype */{
     /**
      * @param {FormDescription} form
      */
@@ -460,7 +460,7 @@ var WhenDSL = JS.Class(/** @scope WhenDSL.prototype */{
  * @class BeforeDSL
  * @private
  */
-var BeforeDSL = JS.Class({
+var BeforeDSL = new JS.Class({
     /**
      * @param {FormDescription} form
      */

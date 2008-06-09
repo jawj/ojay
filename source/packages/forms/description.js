@@ -7,7 +7,7 @@
  * @class FormDescription
  * @private
  */
-var FormDescription = JS.Class(/** @scope FormDescription.prototype */{
+var FormDescription = new JS.Class(/** @scope FormDescription.prototype */{
     include: JS.Observable,
     
     /**

@@ -43,7 +43,7 @@
  * to elements as they are being created, without needing to add IDs or class names to them for
  * later reference. For example:</p>
  *
- * <pre><code>    var FormController = JS.Class({
+ * <pre><code>    var FormController = new JS.Class({
  *         
  *         initialize: function(element) {
  *             element = Ojay(element);
@@ -78,7 +78,7 @@
  * @constructor
  * @class HtmlBuilder
  */
-Ojay.HtmlBuilder = JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
+Ojay.HtmlBuilder = new JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
     
     /**
      * @param {HTMLElement} node

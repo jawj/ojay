@@ -1,4 +1,4 @@
-var URLBrowser = JS.Class({
+var URLBrowser = new JS.Class({
     
     initialize: function(element) {
         this.elementID = element;

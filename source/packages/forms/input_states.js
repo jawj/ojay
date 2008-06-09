@@ -6,7 +6,7 @@
  * @module InputStates
  * @private
  */
-var InputStates = JS.Module(/** @scope InputStates */{
+var InputStates = new JS.Module(/** @scope InputStates */{
     include: Ojay.Observable,
     
     /**

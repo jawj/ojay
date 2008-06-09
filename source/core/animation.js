@@ -6,7 +6,7 @@
  * @constructor
  * @class Animation
  */
-Ojay.Animation = JS.Class(/** @scope Ojay.Animation.prototype */{
+Ojay.Animation = new JS.Class(/** @scope Ojay.Animation.prototype */{
     
     /**
      * @param {DomCollection} elements

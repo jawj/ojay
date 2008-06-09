@@ -2,7 +2,7 @@
  * @constructor
  * @class URI
  */
-Ojay.URI = JS.Class({
+Ojay.URI = new JS.Class({
     extend: {
         /**
          * @param {String} string

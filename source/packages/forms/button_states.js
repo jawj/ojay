@@ -6,7 +6,7 @@
  * @private
  * @module ButtonStates
  */
-var ButtonStates = JS.Module(/** @scope ButtonStates */{
+var ButtonStates = new JS.Module(/** @scope ButtonStates */{
     include: InputStates,
     
     /**

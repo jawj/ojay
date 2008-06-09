@@ -8,7 +8,7 @@
  * @class FormData
  * @private
  */
-var FormData = JS.Class(/** @scope FormData.prototype */{
+var FormData = new JS.Class(/** @scope FormData.prototype */{
     /**
      * @param {Object} data
      */

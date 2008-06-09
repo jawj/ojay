@@ -11,7 +11,7 @@ var isPresent = function(value) {
  * @class FormRequirement
  * @private
  */
-var FormRequirement = JS.Class({
+var FormRequirement = new JS.Class({
     /**
      * @param {FormDescription} form
      * @param {String} field

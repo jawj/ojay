@@ -62,7 +62,7 @@
  * @constructor
  * @class Overlay
  */
-Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
+Ojay.Overlay = new JS.Class(/** @scope Ojay.Overlay.prototype */{
     include: [JS.State, Ojay.Observable],
     
     extend: /** @scope Ojay.Overlay */{
@@ -104,7 +104,7 @@ Ojay.Overlay = JS.Class(/** @scope Ojay.Overlay.prototype */{
          *
          * @class Overlay.Transitions
          */
-        Transitions: JS.Singleton(/** @scope Ojay.Overlay.Transitions */{
+        Transitions: new JS.Singleton(/** @scope Ojay.Overlay.Transitions */{
             _store: {},
             
             /**

@@ -81,7 +81,7 @@
  * <p>As an example, the following is an outline implementation of the <tt>Gallery</tt> class
  * used in the example page above.</p>
  *
- * <pre><code>    var Gallery = JS.Class({
+ * <pre><code>    var Gallery = new JS.Class({
  *         
  *         // Store initialization data, do nothing with the DOM
  *         initialize: function(id) {

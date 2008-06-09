@@ -1,4 +1,4 @@
-var Gallery = JS.Class({
+var Gallery = new JS.Class({
     
     initialize: function(id) {
         this.elementID = id;

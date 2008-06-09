@@ -6,7 +6,7 @@
  * @private
  * @class Rule
  */
-var Rule = JS.Class({
+var Rule = new JS.Class({
     /**
      * @param {HTMLElement} node
      * @param {String|Array} keylist
@@ -80,7 +80,7 @@ var Rule = JS.Class({
  * @public
  * @class RuleSet
  */
-Keyboard.RuleSet = JS.Class({
+Keyboard.RuleSet = new JS.Class({
     /**
      * @param {Object} definitions
      */

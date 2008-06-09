@@ -12,7 +12,7 @@
  * @constructor
  * @class Forms.RadioButtons
  */
-Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
+Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype */{
     include: Ojay.Observable,
     
     /**
@@ -77,7 +77,7 @@ Ojay.Forms.RadioButtons = JS.Class(/** @scope Forms.RadioButtons.prototype */{
          * @constructor
          * @class Forms.RadioButtons.Item
          */
-        Item: JS.Class(/** @scope Forms.RadioButtons.Item.prototype */{
+        Item: new JS.Class(/** @scope Forms.RadioButtons.Item.prototype */{
             include: ButtonStates,
             _inputType: 'radio',
             
