@@ -2,7 +2,7 @@ overlays = [];
 Ojay.Overlay.include({initialize: Ojay.Overlay.prototype.initialize.wrap(function(orig, options) {
     overlays.push(this);
     orig(options);
-}});
+})});
 
 Ojay('#new-overlay').on('click', function(el,ev) {
     ev.stopEvent();
