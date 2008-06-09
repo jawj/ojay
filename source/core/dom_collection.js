@@ -636,17 +636,18 @@
 })(Ojay, YAHOO.util.Dom);
 
 (function() {
-    for (var method in Ojay.ARRAY_METHODS)
-        (function(name) {
-            var noConvert = /^(?:indexOf|lastIndexOf|unique)$/.test(name);
-            Ojay.DomCollection.instanceMethod(name, function() {
-                var array = noConvert ? this.toArray() : this.toArray(Ojay);
-                var result = array[name].apply(array, arguments);
-                if (name == 'filter')
-                    result = Ojay(result.map(function(el) { return el.node; }));
-                return result;
-            });
-        })(method);
+    var methods = {};
+    for (var method in Ojay.ARRAY_METHODS) (function(name) {
+        var noConvert = /^(?:indexOf|lastIndexOf|unique)$/.test(name);
+        methods[name] = function() {
+            var array = noConvert ? this.toArray() : this.toArray(Ojay);
+            var result = array[name].apply(array, arguments);
+            if (name == 'filter')
+                result = Ojay(result.map(function(el) { return el.node; }));
+            return result;
+        };
+    })(method);
+    Ojay.DomCollection.include(methods);
 })();
 
 Ojay.fn = Ojay.DomCollection.prototype;

@@ -406,12 +406,13 @@ var RequirementDSL = new JS.Class(/** @scope RequirementDSL.prototype */{
     }
 });
 
-FormDSLMethods.forEach(function(method) {
-    RequirementDSL.instanceMethod(method, function() {
+RequirementDSL.include(FormDSLMethods.reduce(function(memo, method) {
+    memo[method] = function() {
         var base = this._requirement._form._dsl;
         return base[method].apply(base, arguments);
-    });
-}, this);
+    };
+    return memo;
+}, {}));
 
 /**
  * <p>The <tt>WhenDSL</tt> class creates DSL objects used to describe form requirements. All
