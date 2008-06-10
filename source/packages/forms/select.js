@@ -13,7 +13,7 @@
  * @class Forms.Select
  */
 Ojay.Forms.Select = new JS.Class(/** @scope Forms.Select.prototype */{
-    include: [JS.State, InputStates],
+    include: [JS.State, Inputable],
     _inputType: 'select',
     
     extend: /** @scope Forms.Select */{

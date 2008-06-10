@@ -1,13 +1,13 @@
 /**
- * <p>The <tt>ButtonStates</tt> module extends <tt>InputStates</tt> by providing methods to
+ * <p>The <tt>Checkable</tt> module extends <tt>Inputable</tt> by providing methods to
  * handle checking and unchecking of form elements. It is used by the <tt>Forms.Checkbox</tt>
  * and <tt>Forms.RadioButtons.Item</tt> classes to add and remove class names from their
  * associated <tt>label</tt> tags.</p>
  * @private
- * @module ButtonStates
+ * @module Checkable
  */
-var ButtonStates = new JS.Module(/** @scope ButtonStates */{
-    include: InputStates,
+var Checkable = new JS.Module(/** @scope Checkable */{
+    include: Inputable,
     
     /**
      * <p>Called inside class constructors to set up the behaviour of a form input and its label.
@@ -26,7 +26,7 @@ var ButtonStates = new JS.Module(/** @scope ButtonStates */{
      * order to change the state of the currently checked input.</p>
      * @param {Boolean} state
      * @param {Boolean} notify
-     * @returns {ButtonStates}
+     * @returns {Checkable}
      */
     setChecked: function(state, notify) {
         var oldChecked = !!this.checked;

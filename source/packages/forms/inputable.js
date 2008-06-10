@@ -1,12 +1,12 @@
 /**
- * <p>The <tt>InputStates</tt> module is mixed into <tt>Forms.Select</tt>, and indirectly into
- * <tt>Forms.Checkbox</tt> and <tt>Forms.RadioButtons.Item</tt> through <tt>ButtonStates</tt>.
+ * <p>The <tt>Inputable</tt> module is mixed into <tt>Forms.Select</tt>, and indirectly into
+ * <tt>Forms.Checkbox</tt> and <tt>Forms.RadioButtons.Item</tt> through <tt>Checkable</tt>.
  * It provides methods for setting class names on form elements to indicate the hovered, focused
  * and disabled states of form inputs.</p>
- * @module InputStates
+ * @module Inputable
  * @private
  */
-var InputStates = new JS.Module(/** @scope InputStates */{
+var Inputable = new JS.Module(/** @scope Inputable */{
     include: Ojay.Observable,
     
     /**
@@ -38,7 +38,7 @@ var InputStates = new JS.Module(/** @scope InputStates */{
     /**
      * <p>Adds or removes the class name 'focused' from the input and its label depending on <tt>state</tt>.</p>
      * @param {Boolean} state
-     * @returns {InputStates}
+     * @returns {Inputable}
      */
     setFocused: function(state) {
         if (this._input.node.checked) this.setChecked();
@@ -49,7 +49,7 @@ var InputStates = new JS.Module(/** @scope InputStates */{
     /**
      * <p>Adds or removes the class name 'focused' from the input and its label depending on <tt>state</tt>.</p>
      * @param {Boolean} state
-     * @returns {InputStates}
+     * @returns {Inputable}
      */
     setHovered: function(state) {
         this._setClass(state, 'hovered');
@@ -59,7 +59,7 @@ var InputStates = new JS.Module(/** @scope InputStates */{
     /**
      * <p>Adds or removes the class name 'disabled' from the input and its label depending on <tt>state</tt>.</p>
      * @param {Boolean} state
-     * @returns {InputStates}
+     * @returns {Inputable}
      */
     setDisabled: function(state) {
         this.disabled = (state === undefined) ? this._input.node.disabled : !!state;

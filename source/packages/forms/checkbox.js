@@ -13,7 +13,7 @@
  * @class Forms.Checkbox
  */
 Ojay.Forms.Checkbox = new JS.Class(/* @scope Forms.Checkbox.prototype */{
-    include: ButtonStates,
+    include: Checkable,
     _inputType: 'checkbox',
     
     /**

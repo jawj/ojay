@@ -78,7 +78,7 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
          * @class Forms.RadioButtons.Item
          */
         Item: new JS.Class(/** @scope Forms.RadioButtons.Item.prototype */{
-            include: ButtonStates,
+            include: Checkable,
             _inputType: 'radio',
             
             /**
