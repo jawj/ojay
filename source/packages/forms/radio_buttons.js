@@ -44,7 +44,7 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
      * @param {String|Number} id
      * @returns {Forms.RadioButtons.Item}
      */
-    getInput: function(id) {
+    getItem: function(id) {
         return this._items.filter(function(item) {
             return item._input.node.id == id || item._input.node.value == id;
         })[0];
@@ -60,6 +60,20 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
     },
     
     /**
+     * @returns {DomCollection}
+     */
+    getInput: function() {
+        return Ojay(this._items.map('_input.node'));
+    },
+    
+    /**
+     * @returns {DomCollection}
+     */
+    getLabel: function() {
+        return Ojay(this._items.map('_label.node'));
+    },
+    
+    /**
      * <p>Sets the value of the radio button group to the given <tt>value</tt>, if a button
      * with that value exists.</p>
      * @param {String} value
@@ -67,7 +81,7 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
      * @returns {Forms.RadioButtons}
      */
     setValue: function(value, notify) {
-        var input = this.getInput(value);
+        var input = this.getItem(value);
         if (input) input.setChecked(true, notify);
         return this;
     },

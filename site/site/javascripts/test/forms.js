@@ -17,7 +17,7 @@ disabled = false;
 Ojay('#disabler').on('click', function(el,ev) {
     ev.stopEvent();
     disabled = !disabled;
-    radios.getInput(1).setDisabled(disabled);
+    radios.getItem(1).setDisabled(disabled);
     check.setDisabled(disabled);
     selector.setDisabled(disabled);
 });

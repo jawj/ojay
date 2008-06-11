@@ -25,6 +25,20 @@ Ojay.Forms.Checkbox = new JS.Class(/* @scope Forms.Checkbox.prototype */{
         if (!this._input || !this._input.node || this._input.node.type != 'checkbox')
             throw new TypeError('Attempt to create a Checkbox object with non-checkbox element');
         this._setupButton();
+    },
+    
+    /**
+     * @returns {DomCollection}
+     */
+    getInput: function() {
+        return this._input;
+    },
+    
+    /**
+     * @returns {DomCollection}
+     */
+    getLabel: function() {
+        return this._label;
     }
 });
 

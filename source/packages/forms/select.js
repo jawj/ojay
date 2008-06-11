@@ -142,6 +142,20 @@ Ojay.Forms.Select = new JS.Class(/** @scope Forms.Select.prototype */{
     },
     
     /**
+     * @returns {DomCollection}
+     */
+    getInput: function() {
+        return this._input;
+    },
+    
+    /**
+     * @returns {DomCollection}
+     */
+    getLabel: function() {
+        return this._label;
+    },
+    
+    /**
      * <p>Focuses the <tt>select</tt> element.</p>
      * @returns {Forms.Select}
      */

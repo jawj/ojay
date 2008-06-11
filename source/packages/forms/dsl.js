@@ -160,7 +160,7 @@ var DSL = {
      */
     displayErrorsIn: function(element) {
         return function(errors) {
-            element = element.setContent ? element Ojay(element);
+            element = element.setContent ? element : Ojay(element);
             var n = errors.length;
             if (n == 0) return element.setContent('');
             var were = (n == 1) ? 'was' : 'were', s = (n == 1) ? '' : 's';
