@@ -51,15 +51,6 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
     },
     
     /**
-     * <p>Returns the current value of the radio button group.</p>
-     * @returns {String}
-     */
-    getValue: function() {
-        var item = this._items.filter('_input.node.checked')[0];
-        return item ? item._input.node.value : null;
-    },
-    
-    /**
      * @returns {DomCollection}
      */
     getInput: function() {
@@ -71,6 +62,15 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
      */
     getLabel: function() {
         return Ojay(this._items.map('_label.node'));
+    },
+    
+    /**
+     * <p>Returns the current value of the radio button group.</p>
+     * @returns {String}
+     */
+    getValue: function() {
+        var item = this._items.filter('_input.node.checked')[0];
+        return item ? item._input.node.value : null;
     },
     
     /**

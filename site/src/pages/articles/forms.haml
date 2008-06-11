@@ -167,6 +167,14 @@
   // don't alert listeners to the change in value
   radioButtons.setValue('the-value', false);</pre>
   
+  Finally, @Checkbox@, @RadioButtons@ and @Select@ instances have two methods for
+  accessing their underlying DOM elements:
+  
+  * @getInput()@ returns an Ojay collection wrapping the input element(s) (plural
+    for radio buttons) belonging to the instance.
+  * @getLabel()@ returns an Ojay collection wrapping the label element(s) belonging
+    to the instance.
+  
   h3. Validation API
   
   The final aspect of the @Forms@ package is the validation framework. This provides
