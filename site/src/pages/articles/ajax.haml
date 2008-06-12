@@ -185,3 +185,33 @@
   });</pre>
   
   (@YAHOO.util.Get@ is not required for redirects, only for cross-domain Ajax-style @GET@).
+  
+  h3. HTTP events
+  
+  The @Ojay.HTTP@ object publishes a number of events that allow you to monitor HTTP
+  activity initiated through Ojay. To listen to an event, you just need to specify the
+  name of the event and a callback function, for example:
+  
+  <pre>
+  Ojay.HTTP.on('request', function(req) {
+      console.log(req.getURI().params);
+  });</pre>
+  
+  The full list of event names is:
+  
+  * @request@ - fired whenever a request starts. The @HTTP.Request@ object is passed to the
+    callback.
+  * @complete@ - fired when a request finishes with any status code. Passes the @HTTP.Response@
+    object to the callback.
+  * @success@ - fired when a request completes with a 2xx status. Passes the @HTTP.Response@
+    object to the callback.
+  * @failure@ - fired when a request completes with a 3xx, 4xx or 5xx code. Passes the @HTTP.Response@
+    object to the callback.
+  
+  You can also listen out for specific status codes as follows:
+  
+  <pre>
+  // Listen for status-200 responses
+  Ojay.HTTP.on(200, function(response) {
+      alert('Successful request');
+  });</pre>
