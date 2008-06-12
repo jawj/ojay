@@ -166,6 +166,18 @@
     var upcase = String.prototype.toUpperCase.functionize();
     upcase('foo')         // -> "FOO"</pre>
   
+  * @func.traced()@ - returns a copy of @func@ that logs its input and output to the Firebug
+    console if you have Firebug enabled.
+  
+  * @func.runs(n)@ - returns a function that will only call @func@ a maximum of @n@ times. For
+    example if you want a function that will only run once, no matter how many times it's
+    called:
+    
+    <pre>
+    var addIframe = function() {
+      Ojay('body').insert('<iframe name="foo"></iframe>', 'top');
+    }.runs(1);</pre>
+  
   h3. Number methods
   
   Ojay extends the @Number@ class with the following methods from the @Math@ object:
@@ -185,6 +197,8 @@
   * @string.evalScripts()@ - executes any @<script>@ tags embedded in the string.
   
   * @string.stripScripts()@ - returns a copy of @string@ with any @<script>@ tags removed.
+  
+  * @string.parseJSON()@ - a shorthand for @YAHOO.lang.JSON.parse(string)@.
   
   * @string.stripTags()@ - returns a copy of @string@ with all tags removed.
   
