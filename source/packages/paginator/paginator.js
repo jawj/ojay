@@ -1,7 +1,7 @@
 /**
  * <p>The <tt>Paginator</tt> class is used to replace large blocks of content with a smaller,
  * scrollable area with an API for controlling the area. The content will typically be made up
- * of series of items of the same size that can be grouped into pages. For example, and image
+ * of series of items of the same size that can be grouped into pages. For example, an image
  * gallery could be set up as a series of floated divs or a list...</p>
  *
  *     &lt;div id="gallery"&gt;

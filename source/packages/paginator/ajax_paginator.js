@@ -55,9 +55,10 @@ Ojay.AjaxPaginator = new JS.Class(Ojay.Paginator, /** @scope Ojay.AjaxPaginator.
      * @param {Number} page
      * @param {Function} callback
      * @param {Object} scope
+     * @returns {AjaxPaginator}
      */
     loadPage: function(page, callback, scope) {
-        if (this.pageLoaded(page) || this.inState('CREATED')) return;
+        if (this.pageLoaded(page) || this.inState('CREATED')) return this;
         var url = this._options.urls[page - 1], self = this;
         this.notifyObservers('pagerequest', url._url);
         Ojay.HTTP.GET(url._url, {}, {
@@ -68,6 +69,7 @@ Ojay.AjaxPaginator = new JS.Class(Ojay.Paginator, /** @scope Ojay.AjaxPaginator.
                 if (typeof callback == 'function') callback.call(scope || null);
             }
         });
+        return this;
     },
     
     states: {
