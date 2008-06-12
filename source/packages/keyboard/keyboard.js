@@ -11,7 +11,7 @@
 var Keyboard = Ojay.Keyboard = new JS.Singleton({
     
     /**
-     *<p>Returns a new <tt>Rule</tt> instance for the given node and key combination.</p>
+     * <p>Returns a new <tt>Rule</tt> instance for the given node and key combination.</p>
      * @param {HTMLElement|String} node
      * @param {String} keys
      * @param {Function} callback

@@ -22,36 +22,44 @@ var Rule = new JS.Class({
     
     /**
      * <p>Makes the rule active.</p>
+     * @returns {Rule}
      */
     enable: function() {
         this._active = true;
         this._listener.enable();
         this._prevents_default && Disabler._register(this);
+        return this;
     },
     
     /**
      * <p>Makes the rule inactive.</p>
+     * @returns {Rule}
      */
     disable: function() {
         this._active = false;
         this._listener.disable();
         this._prevents_default && Disabler._unregister(this);
+        return this;
     },
     
     /**
      * <p>Causes the rule to prevent the browser's default behaviour.</p>
+     * @returns {Rule}
      */
     preventDefault: function() {
         this._prevents_default = true;
         this._active && Disabler._register(this);
+        return this;
     },
     
     /**
      * <p>Causes the rule to allow the browser's default behaviour.</p>
+     * @returns {Rule}
      */
     allowDefault: function() {
         this._prevents_default = false;
         this._active && Disabler._unregister(this);
+        return this;
     },
     
     /**
@@ -68,7 +76,7 @@ var Rule = new JS.Class({
 /**
  * <p>The <tt>RuleSet</tt> class is used to set up contexts in which key combinations are mapped
  * to actions. These contexts can be activated and deactivated easily to modify the behaviour of
- * the keyboard. This class in publicly accessible. An example:</p>
+ * the keyboard. This class is publicly accessible. An example:</p>
  *
  * <pre><code>    var rules = new Ojay.Keyboard.RuleSet({
  *         'UP':            function() { console.log('up'); },
@@ -107,16 +115,20 @@ Keyboard.RuleSet = new JS.Class({
     
     /**
      * <p>Enables the set of rules.</p>
+     * @returns {Keyboard.RuleSet}
      */
     enable: function() {
         this.forEach('enable');
+        return this;
     },
     
     /**
      * <p>Disables the set of rules.</p>
+     * @returns {Keyboard.RuleSet}
      */
     disable: function() {
         this.forEach('disable');
+        return this;
     },
     
     /**
