@@ -30,16 +30,19 @@ Ojay.Tooltip = new JS.Class(Ojay.ContentOverlay, /** @scope Ojay.Tooltip.prototy
             var xy = YAHOO.util.Event.getXY(evnt);
             this._instances.forEach(function(tooltip) {
                 var region = tooltip.getRegion();
-                width = region ? region.getWidth() : 100;
-                tooltip.setPosition(xy[0] + 20 - width / 2, xy[1] + 20);
-            });
+                width = region ? region.getWidth() : this.DEFAULT_WIDTH;
+                tooltip.setPosition(xy[0] + this.MOUSE_OFFSET - width / 2, xy[1] + this.MOUSE_OFFSET);
+            }, this);
         },
         
         /**
          * <p><tt>Tooltip</tt> maintains a list of all its instances in order to update
          * their positions.</p>
          */
-        _instances: []
+        _instances: [],
+        
+        DEFAULT_WIDTH:      100,
+        MOUSE_OFFSET:       20
     }
 });
 

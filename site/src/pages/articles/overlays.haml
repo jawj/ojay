@@ -91,8 +91,8 @@
   methods can be used to set the z-index of an overlay:
   
   * @overlay.setLayer(n)@ - sets the overlay's z-index to @n@
-  * @overlay.positionBehind(another)@ sets the overlay's z-index to it displays behind @another@ overlay
-  * @overlay.positionInFront(another)@ sets the overlay's z-index to it displays in front of @another@ overlay
+  * @overlay.positionBehind(another)@ sets the overlay's z-index so it displays behind @another@ overlay
+  * @overlay.positionInFront(another)@ sets the overlay's z-index so it displays in front of @another@ overlay
   
   h3. Sizing methods
   
@@ -112,7 +112,7 @@
   h3. Getting size and position information
   
   There are a number of methods for getting information about the size and position of an
-  overlay these are @getSize()@, @getPosition()@ and @getRegion()@.
+  overlay. These are @getSize()@, @getPosition()@ and @getRegion()@.
   
   <pre>
   var pos = overlay.getPosition(), size = overlay.getSize();
@@ -135,7 +135,7 @@
   
   h3. Listening to events
   
-  All @Overlay@ instances (and instaces of its subclasses) publish a number of events that you
+  All @Overlay@ instances (and instances of its subclasses) publish a number of events that you
   can listen and react to. These events are:
   
   * @show@ - fired when an overlay is made visible

@@ -40,7 +40,7 @@
  * </ul>
  *
  * <p>All these options are optional - you can omit any of them and default values will be
- * applied. An exmaple creation might look like:</p>
+ * applied. An example creation might look like:</p>
  *
  * <pre><code>    var overlay = new Ojay.Overlay({
  *         width:  600,
