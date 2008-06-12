@@ -178,7 +178,7 @@
   h3. Validation API
   
   The final aspect of the @Forms@ package is the validation framework. This provides
-  developers with a very high-level API for expression form validation rules, error
+  developers with a very high-level API for expressing form validation rules, error
   handling routines and Ajax submission processes. To inspect form data, this part of
   the package uses @YAHOO.util.Connect.setForm()@ so you will need to include that
   module in your page before using @Ojay.Forms@ for validation. Also, if you want to
@@ -231,6 +231,8 @@
   * @toBeNumeric()@ - makes sure the content of a field is a number.
   * @toBeOneOf(list)@ - makes sure the data matches one of the values in the array
     @list@. Comparison is performed using @==@.
+  * @toBeNoneOf(list)@ - makes sure the data does not equal any of the values in
+    the array @list@.
   * @toConfirm(field)@ - checks that the required field's value matches that in
     in the input with name @field@.
   * @toHaveLength(options)@ - makes sure the input has a certain length. @options@

@@ -54,4 +54,4 @@ var Checkable = new JS.Module(/** @scope Checkable */{
     }
 });
 
-JS.MethodChain.addMethods(['focus']);
+JS.MethodChain.addMethod('focus');

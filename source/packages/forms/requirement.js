@@ -39,6 +39,7 @@ var FormRequirement = new JS.Class({
     
     /**
      * @param {String} value
+     * @param {Object} data
      * @returns {Array|Boolean}
      */
     _test: function(value, data) {

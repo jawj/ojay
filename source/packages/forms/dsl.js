@@ -97,7 +97,7 @@
  *             Ojay('#response').setContent(response.responseText);
  *         });
  *         
- *         // Or use Ojay's pre-build display method:
+ *         // Or use Ojay's pre-built display method:
  *         when('login').responseArrives(displayResponseIn('#response'));
  *     }});</code></pre>
  */

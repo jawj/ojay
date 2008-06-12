@@ -13,27 +13,33 @@ var FormErrors = new JS.Class(/** @scope FormErrors.prototype */{
         /**
          * <p>Creates storage space to put errors for the named field</p>
          * @param {String} field
+         * @returns {FormErrors}
          */
         this.register = function(field) {
             errors[field] = errors[field] || [];
+            return this;
         };
         
         /**
          * <p>Adds an error to the given <tt>field</tt> with message <tt>message</tt>.</p>
          * @param {String} field
          * @param {String} message
+         * @returns {FormErrors}
          */
         this.add = function(field, message) {
             this.register(field);
             if (errors[field].indexOf(message) == -1) errors[field].push(message);
+            return this;
         };
         
         /**
          * <p>Adds an error to the form as a whole rather than to an individual field.</p>
          * @param {String} message
+         * @returns {FormErrors}
          */
         this.addToBase = function(message) {
             base.push(message);
+            return this;
         };
         
         /**

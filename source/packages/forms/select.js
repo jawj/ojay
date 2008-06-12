@@ -4,7 +4,7 @@
  * off-screen rather than hidden using <tt>display</tt> or <tt>visibility</tt>) and their labels
  * have their class names changed to mirror changes to the inputs as the user interacts with the form.</p>
  *
- * <p>This class is designed as a light-weight and unobtrusive replacement for <tt>YAHOO.util.Menu</tt>
+ * <p>This class is designed as a light-weight and unobtrusive replacement for <tt>YAHOO.widget.Button</tt>
  * for the simple case where you want to style your form inputs and retain programmatic access to them.
  * It encourages accessible markup through use of <tt>label</tt> elements, and does not alter the HTML
  * structure of your form in any way.</p>
