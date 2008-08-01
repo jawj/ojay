@@ -48,8 +48,9 @@
         Username
         %input{:name => 'username'}
     %div
-    %div{:style => "display: none;"}
+    %div{:class => "notshown"}
       %input{:name => 'notshown'}
+    %div
       %label
         Confirm username
         %input{:name => 'username_confirmation'}
@@ -107,4 +108,6 @@
     .select-list ul, .select-list li { list-style: none; margin: 0; padding: 0; }
     .select-list li { width: 182px; border-top: 1px solid #cce; padding: 4px 8px; }
     .select-list li.hovered { background: #cef; }
+    
+    .notshown { display: none; }
   </style>
