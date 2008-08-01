@@ -43,6 +43,7 @@ var FormRequirement = new JS.Class({
      * @returns {Array|Boolean}
      */
     _test: function(value, data) {
+        if (!this._visible()) return true;
         var errors = [], tests = this._tests.length ? this._tests : [isPresent], value = value || '';
         tests.forEach(function(block) {
             var result = block(value, data), message, field;
@@ -52,6 +53,18 @@ var FormRequirement = new JS.Class({
                 this._form._errors.add(field, message);
             }
         }, this);
-        return errors.length ? errors : true;
+    },
+    
+    /**
+     * @returns {Boolean}
+     */
+    _visible: function() {
+        return !!this._elements && this._elements.reduce(function(truth, element) {
+            var node = element.node;
+            do {
+                if ((node.style||{}).display == 'none') return false;
+            } while (node = node.parentNode)
+            return truth;
+        }, true);
     }
 });

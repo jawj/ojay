@@ -9,6 +9,7 @@ Ojay.Forms(function() { with(this) {
         .highlightsActiveField()
         .requires('username').toHaveLength({minimum: 6})
         .requires('username_confirmation').toConfirm('username')
+        .requires('notshown').toHaveLength(2)
         .expects('email').toMatch(EMAIL_FORMAT)
         .expects('age').toBeNumeric()
         .requires('password')
