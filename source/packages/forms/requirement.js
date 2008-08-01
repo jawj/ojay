@@ -62,7 +62,7 @@ var FormRequirement = new JS.Class({
         return !!this._elements && this._elements.reduce(function(truth, element) {
             var node = element.node;
             do {
-                if ((node.style||{}).display == 'none') return false;
+                if (node.parentNode && Ojay(node).getStyle('display') == 'none') return false;
             } while (node = node.parentNode)
             return truth;
         }, true);
