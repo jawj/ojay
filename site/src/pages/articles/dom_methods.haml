@@ -78,6 +78,29 @@
   Ojay('a').addClass('popup').removeClass('foo');
   Ojay('#widget').hasClass('bar')   // -> true or false</pre>
   
+  h3. Attribute methods
+  
+  Ojay's @setAttributes()@ method alters the attributes of all elements in an
+  Ojay collection. To make all forms on the page perform GET requests when
+  submitted, you could write:
+    
+  <pre>
+  Ojay('form').setAttributes({method: 'get'});</pre>
+  
+  While to change the value of an input field, you could write:
+    
+  <pre>
+  Ojay('input#first-name').setAttributes({value: 'John Smith'});</pre>
+  
+  You can specify multiple attributes together to save you lots of lines of DOM code:
+  
+  <pre>
+  Ojay('form.contact').setAttributes({
+      method:   'post',
+      target:   'someFrame',
+      action:   '/path/to/action.html'
+  });</pre>
+  
   h3. Styling methods
   
   These manipulate CSS styling properties on elements. @setStyle()@ is chainable,
