@@ -1,3 +1,15 @@
+Version 0.2.1
+August 6 2008
+================================================================
+
+* The first argument to Keyboard.listen() is now optional, and
+  defaults to 'document'.
+* Keyboard.RuleSet() can take a node to listen to as the first
+  argument. This is optional and defaults to 'document'.
+* Forms package does not validate fields that are hidden using
+  'display: none'.
+
+
 Version 0.2.0
 June 13 2008
 ================================================================

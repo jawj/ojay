@@ -14,12 +14,13 @@ var Rule = new JS.Class({
      * @param {Object} scope
      */
     initialize: function(node, keylist, callback, scope) {
+        var args = Array.from(arguments);
         node = Ojay(node).node;
         if (!node) {
             node     = document;
-            keylist  = arguments[0];
-            callback = arguments[1];
-            scope    = arguments[2];
+            keylist  = args.shift();
+            callback = args.shift();
+            scope    = args.shift();
         }
         if (scope) callback = callback.bind(scope);
         this._codes = codesFromKeys(keylist);
@@ -100,10 +101,11 @@ Keyboard.RuleSet = new JS.Class({
      * @param {Object} definitions
      */
     initialize: function(node, definitions) {
+        var args = Array.from(arguments);
         node = Ojay(node).node;
         if (!node) {
             node        = document;
-            definitions = arguments[0];
+            definitions = args.shift();
         }
         this._node = node;
         this._rules = {};
