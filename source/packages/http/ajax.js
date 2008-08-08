@@ -115,6 +115,7 @@ Ojay.HTTP.Request = new JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
         if (Ojay.HTTP.VERBS.indexOf(this.verb) == -1) return;
         this._url           = url;
         this._parameters    = parameters || {};
+        if (typeof callbacks != 'object') callbacks = {onSuccess: callbacks};
         this._callbacks     = callbacks || {};
         this.chain          = new JS.MethodChain();
     },
