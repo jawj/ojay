@@ -1,0 +1,35 @@
+%h1 Accordion tests
+
+#accordV
+  .section
+    .handle See our products
+    %p
+      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam ornare, ipsum eu rutrum iaculis, magna enim vehicula nisl, a luctus nulla mauris at metus. Phasellus ultricies. Donec ligula magna, sodales eu, venenatis sit amet, lacinia dictum, diam. Nunc vestibulum nibh a orci. Nunc odio. Fusce elementum augue ut leo. Nullam hendrerit ullamcorper nisi. Pellentesque quam dui, laoreet sed, placerat nec, cursus non, lacus. Proin mi turpis, ullamcorper vel, interdum in, pellentesque vitae, nibh. Nam imperdiet felis nec diam. Pellentesque eu lorem sed felis pretium eleifend. Praesent nec nunc. Morbi lobortis lacus vel purus. Pellentesque velit enim, eleifend non, commodo ac, tincidunt ac, urna. Pellentesque dapibus lectus non lacus. Duis iaculis dui in nibh. Fusce purus.
+  .section
+    .handle We're hiring
+    %p
+      Donec sodales, quam at convallis congue, risus mauris imperdiet tortor, ultrices fringilla leo ante id sem. Fusce nec felis vitae risus egestas fermentum. Maecenas posuere, pede vel malesuada lobortis, massa nulla porttitor mauris, ut pretium ipsum diam eget metus. Nulla molestie sem a lorem. Pellentesque condimentum, nulla vel sodales lobortis, mi turpis commodo massa, sit amet venenatis elit neque eu erat. Maecenas ultricies luctus eros. Donec in felis. Donec cursus. Curabitur cursus nibh vel nisi. Nullam imperdiet lectus pulvinar neque. Aliquam eu magna nec erat sagittis mollis. Praesent dictum ullamcorper odio. Duis vitae nunc vitae risus suscipit dignissim. Nullam sapien est, porttitor in, iaculis vel, interdum eget, tortor. Phasellus egestas. Ut ornare. Quisque lacus ligula, gravida porttitor, faucibus eu, porttitor ac, sem. Nullam at elit. 
+  .section
+    .handle About us
+    %p
+      In congue metus ac mi. Donec nulla nunc, placerat sit amet, vestibulum vitae, suscipit eget, mi. Suspendisse nunc. Nulla facilisi. Aliquam tellus velit, sodales sit amet, fringilla sit amet, ultrices auctor, metus. Duis bibendum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam pellentesque purus vel purus. In eros. Ut enim. Integer pretium. Morbi mattis felis eu tortor. 
+  .section
+    .handle Read our blog
+    %p
+      Phasellus malesuada nibh nec ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam erat volutpat. Integer magna. Pellentesque eget metus. In consectetuer nibh at turpis. Suspendisse tempus diam quis leo. Vestibulum luctus. Nullam luctus consequat lacus. Cras id velit. Donec et nisl quis dolor accumsan mattis. Integer sollicitudin, nisl in iaculis adipiscing, urna urna elementum nisi, nec egestas nisi dolor in ligula. Cras ut erat. In a pede. Vestibulum ac lacus. Pellentesque libero. 
+  .section
+    .handle Download our library
+    %p
+      Nulla facilisi. Suspendisse et diam. Suspendisse gravida. Pellentesque consequat. Duis tempor rutrum libero. Curabitur a turpis id metus volutpat vehicula. Nunc nunc. Vivamus quis tortor et sem pellentesque placerat. Vivamus laoreet massa vitae mi. Nulla eu magna eu ipsum dignissim sollicitudin.
+     
+:plain
+  <style type="text/css">
+    body { font-family: Arial, sans-serif; }
+    .section { width: 400px; border: 1px solid #ccc; }
+    .section .handle { background: #444; color: #fff; padding: 4px 8px; }
+    .section p { font-size: 10px; color: #666; margin: 0; padding: 12px; }
+  </style>
+  
+  <script type="text/javascript">
+    new Ojay.Accordion('vertical', '#accordV .section', 'p');
+  </script>

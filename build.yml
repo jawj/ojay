@@ -38,6 +38,13 @@ packages:
     requires:
       - yui
       - ojay/js-class-min
+  pkg/accordion:
+    encode_private_vars: true
+    copyright: COPYRIGHT
+    source_dir: packages/accordion
+    files:
+      - accordion
+      - section
   pkg/http:
     encode_private_vars: true
     copyright: COPYRIGHT
@@ -131,6 +138,7 @@ all:
     - js-class
     - core
     - pkg/http
+    - pkg/accordion
     - pkg/forms
     - pkg/history
     - pkg/keyboard
