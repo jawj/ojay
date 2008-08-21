@@ -5,6 +5,7 @@ Ojay.Accordion.extend({
      */
     Section: new JS.Class({
         extend: /** @scope Accordion.Section */{
+            SECTION_CLASS:      'accordion-section',
             COLLAPSER_CLASS:    'collapser',
             DEFAULT_EVENT:      'click'
         },
@@ -26,6 +27,7 @@ Ojay.Accordion.extend({
             this.collapse(false);
             
             options = options || {};
+            this._element.addClass(this.klass.SECTION_CLASS);
             this._element.on(options.event || this.klass.DEFAULT_EVENT)._(this).expand();
         },
         
@@ -39,6 +41,7 @@ Ojay.Accordion.extend({
             var settings = {};
             settings[this.param] = (animate === false) ? 0 : {to: 0};
             this._open = false;
+            this._element.removeClass('expanded').addClass('collapsed');
             if (animate === false) {
                 this._collapser.setStyle(settings).setStyle({overflow: 'hidden'});
                 return this;
@@ -61,6 +64,7 @@ Ojay.Accordion.extend({
             var settings = {};
             settings[this.param] = (animate === false) ? size + 'px' : {to: size};
             this._open = true;
+            this._element.addClass('expanded').removeClass('collapsed');
             if (animate === false) {
                 this._collapser.setStyle(settings).setStyle({overflow: ''});
                 return this;
