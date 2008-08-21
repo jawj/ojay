@@ -1,45 +1,48 @@
-JS.Observable = {
+JS.Observable = new JS.Module({
   addObserver: function(observer, context) {
-    (this._observers = this._observers || []).push({bk: observer, cx: context || null});
+    (this.__observers__ = this.__observers__ || []).push({bk: observer, cx: context || null});
   },
   
   removeObserver: function(observer, context) {
-    this._observers = this._observers || [];
+    this.__observers__ = this.__observers__ || [];
     context = context || null;
-    for (var i = 0, n = this.countObservers(); i < n; i++) {
-      if (this._observers[i].bk == observer && this._observers[i].cx == context) {
-        this._observers.splice(i,1);
+    var i = this.countObservers();
+    while (i--) {
+      if (this.__observers__[i].bk == observer && this.__observers__[i].cx == context) {
+        this.__observers__.splice(i,1);
         return;
       }
     }
   },
   
   removeObservers: function() {
-    this._observers = [];
+    this.__observers__ = [];
   },
   
   countObservers: function() {
-    return (this._observers = this._observers || []).length;
+    return (this.__observers__ = this.__observers__ || []).length;
   },
   
   notifyObservers: function() {
     if (!this.isChanged()) return;
-    for (var i = 0, n = this.countObservers(), observer; i < n; i++) {
-      observer = this._observers[i];
+    var i = this.countObservers(), observer;
+    while (i--) {
+      observer = this.__observers__[i];
       observer.bk.apply(observer.cx, arguments);
     }
   },
   
   setChanged: function(state) {
-    this._changed = !(state === false);
+    this.__changed__ = !(state === false);
   },
   
   isChanged: function() {
-    if (this._changed === undefined) this._changed = true;
-    return !!this._changed;
+    if (this.__changed__ === undefined) this.__changed__ = true;
+    return !!this.__changed__;
   }
-};
+});
 
-JS.Observable.subscribe   = JS.Observable.addObserver;
-JS.Observable.unsubscribe = JS.Observable.removeObserver;
-JS.Observable = JS.Module(JS.Observable);
+JS.Observable.include({
+  subscribe:    JS.Observable.instanceMethod('addObserver'),
+  unsubscribe:  JS.Observable.instanceMethod('removeObserver')
+});

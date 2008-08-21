@@ -18,3 +18,9 @@ var Ojay = function() {
     }
     return new Ojay.DomCollection(elements.unique());
 };
+Array.from = JS.array;
+
+Function.prototype.bind = function() {
+    return JS.bind.apply(JS, [this].concat(JS.array(arguments)));
+};
+
