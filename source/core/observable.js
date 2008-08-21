@@ -67,6 +67,9 @@ Ojay.Observable = new JS.Module({
     include: JS.Observable,
     
     /**
+     * <p>Registers an event listener on the object. Takes an event name and an optional
+     * callback function, and returns a <tt>MethodChain</tt> that will fire on the source
+     * object. The callback receives the source object as the first parameter.</p>
      * @param {String} eventName
      * @param {Function} callback
      * @param {Object} scope
@@ -78,13 +81,45 @@ Ojay.Observable = new JS.Module({
         this.addObserver(function() {
             var args = Array.from(arguments), message = args.shift();
             if (message != eventName) return;
-            var receiver = (args[0]||{}).receiver || this;
-            if (typeof callback == 'function') {
-                if (receiver !== this) args.shift();
-                callback.apply(scope || null, [receiver].concat(args));
-            }
-            chain.fire(scope || receiver);
+            if (typeof callback == 'function') callback.apply(scope || null, args);
+            chain.fire(scope || args[0]);
         }, this);
         return chain;
+    },
+    
+    /**
+     * <p>Notifies all observers of an object, sending them the supplied arguments. Use
+     * the first argument to specify the event name for handlers registered using
+     * <tt>Observable#on()</tt>.</p>
+     * @returns {Observable}
+     */
+    notifyObservers: function() {
+        var args = Array.from(arguments),
+            receiver = (args[1]||{}).receiver || this;
+        
+        if (receiver == this) args.splice(1, 0, receiver);
+        else args[1] = receiver;
+        
+        this.callSuper.apply(this, args);
+        
+        args[1] = {receiver: receiver};
+        var classes = this.klass.ancestors(), klass;
+        while (klass = classes.pop())
+            klass.notifyObservers && klass.notifyObservers.apply(klass, args);
+        
+        return this;
+    },
+    
+    extend: /** @scope Ojay.Observable */{
+        /**
+         * <p>Any module that includes <tt>Observable</tt> is also extended
+         * using <tt>Observable</tt>.</p>
+         * @param {Class|Module} base
+         */
+        included: function(base) {
+            base.extend(this);
+        }
     }
 });
+
+Ojay.Observable.extend(Ojay.Observable);

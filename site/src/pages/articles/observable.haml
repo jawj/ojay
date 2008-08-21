@@ -62,5 +62,20 @@
   p.on('start').pause();</pre>
  
   Will cause @p@ to call its @pause()@ method whenever its @start@ event is fired.
+  
+  h3. Class-level listeners
+  
+  When you include @Ojay.Observable@ into a class, the @on()@ method gets added to the class
+  itself, allowing you to listen to all instances of the class with a single call. The callback
+  is sent a reference to the instance that fired the event:
+  
+  <pre>
+  Player.on('pause', function(p) {
+      // p is an instance of class Player
+  });</pre>
+  
+  In general, calling @notifyObservers()@ on an object will also find the object's class,
+  the class' ancestor classes and included modules, and call @notifyObservers()@ on all
+  the classes/modules that provide that method.
  
   For further information on this module, see the "@JS.Observable@":http://jsclass.jcoglan.com/observable.html documentation.
