@@ -38,6 +38,20 @@ Ojay.Accordion.extend({
         },
         
         /**
+         * @returns {DomCollection}
+         */
+        getContainer: function() {
+            return this._element;
+        },
+        
+        /**
+         * @returns {DomCollection}
+         */
+        getCollapser: function() {
+            return this._collapser;
+        },
+        
+        /**
          * @param {Boolean} animate
          * @returns {Accordion.Section}
          */

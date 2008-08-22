@@ -49,5 +49,6 @@
         easing: 'easeOut'
     });
     
-    new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'});
+    new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'}).on('sectionexpand',
+            function() {}.traced());
   </script>
