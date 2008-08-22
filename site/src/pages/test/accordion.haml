@@ -21,16 +21,33 @@
     .handle Download our library
     %p
       Nulla facilisi. Suspendisse et diam. Suspendisse gravida. Pellentesque consequat. Duis tempor rutrum libero. Curabitur a turpis id metus volutpat vehicula. Nunc nunc. Vivamus quis tortor et sem pellentesque placerat. Vivamus laoreet massa vitae mi. Nulla eu magna eu ipsum dignissim sollicitudin.
-     
+
+#accordH
+  .section
+    %img{:src => "/images/gallery/04.jpg"}
+  .section
+    %img{:src => "/images/gallery/05.jpg"}
+  .section
+    %img{:src => "/images/gallery/06.jpg"}
+
 :plain
   <style type="text/css">
     body { font-family: Arial, sans-serif; }
-    .section { width: 400px; border: 1px solid #ccc; }
-    .section .handle { background: #444; color: #fff; padding: 4px 8px; }
-    .section p { font-size: 10px; color: #666; margin: 0; padding: 12px; }
-    .expanded .handle { background: #fff; color: #000; }
+    #accordV .section { width: 400px; border: 1px solid #ccc; }
+    #accordV .section .handle { background: #444; color: #fff; padding: 4px 8px; }
+    #accordV .section p { font-size: 10px; color: #666; margin: 0; padding: 12px; }
+    #accordV .expanded .handle { background: #fff; color: #000; }
+    
+    #accordH .section { background: #444; padding: 18px; color: #fff; border-left: 1px solid #fff; font-weight: bold; }
+    #accordH img { width: 600px; height: 400px; }
+    #accordH .accordion-section { float: left; display: inline; }
   </style>
   
   <script type="text/javascript">
-    new Ojay.Accordion('vertical', '#accordV .section', 'p');
+    new Ojay.Accordion('vertical', '#accordV .section', 'p', {
+        duration: 0.5,
+        easing: 'easeOut'
+    });
+    
+    new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'});
   </script>

@@ -7,7 +7,9 @@ Ojay.Accordion.extend({
         extend: /** @scope Accordion.Section */{
             SECTION_CLASS:      'accordion-section',
             COLLAPSER_CLASS:    'collapser',
-            DEFAULT_EVENT:      'click'
+            DEFAULT_EVENT:      'click',
+            DEFAULT_DURATION:   0.4,
+            DEFAULT_EASING:     'easeBoth'
         },
         
         /**
@@ -23,12 +25,16 @@ Ojay.Accordion.extend({
             this._collapser = Ojay( Ojay.HTML.div({className: this.klass.COLLAPSER_CLASS}) );
             target.insert(this._collapser, 'before');
             this._collapser.insert(target);
-            this._open = true;
-            this.collapse(false);
             
             options = options || {};
+            this._duration = options.duration || this.klass.DEFAULT_DURATION;
+            this._easing = options.easing || this.klass.DEFAULT_EASING;
+            
             this._element.addClass(this.klass.SECTION_CLASS);
             this._element.on(options.event || this.klass.DEFAULT_EVENT)._(this).expand();
+            
+            this._open = true;
+            this.collapse(false);
         },
         
         /**
@@ -46,7 +52,7 @@ Ojay.Accordion.extend({
                 this._collapser.setStyle(settings).setStyle({overflow: 'hidden'});
                 return this;
             } else {
-                return this._collapser.animate(settings, 0.4)
+                return this._collapser.animate(settings, this._duration, {easing: this._easing})
                         .setStyle({overflow: 'hidden'})
                         ._(this);
             }
@@ -69,7 +75,7 @@ Ojay.Accordion.extend({
                 this._collapser.setStyle(settings).setStyle({overflow: ''});
                 return this;
             } else {
-                return this._collapser.animate(settings, 0.4)
+                return this._collapser.animate(settings, this._duration, {easing: this._easing})
                         .setStyle({overflow: ''})
                         ._(this);
             }
@@ -89,9 +95,16 @@ Ojay.Accordion.extend({
          * @returns {Number}
          */
         getSize: function() {
-            if (!this._open) this._collapser.setStyle({width: ''});
+            var sections = this._accordion.getSections();
+            var sizes = sections.map(function(section) {
+                var collapser = section._collapser, size = collapser.getRegion().getWidth();
+                collapser.setStyle({width: section == this ? '' : 0});
+                return size;
+            }, this);
             var size = this._collapser.getRegion().getWidth();
-            if (!this._open) this._collapser.setStyle({width: 0});
+            sections.forEach(function(section, i) {
+                section._collapser.setStyle({width: sizes[i] + 'px'});
+            });
             return size;
         }
     }),
