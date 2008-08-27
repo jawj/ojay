@@ -104,7 +104,12 @@ Ojay.HtmlBuilder = new JS.Class(/* @scope Ojay.HtmlBuilder.prototype */{
         
         addTagName: function(name) {
             this.prototype[name] = function() {
-                var node = document.createElement(name), arg, attr, style, appendable;
+                var node = document.createElement(name), arg, attr, style, appendable,
+                    type = (arguments[0]||{}).type || 'text';
+                
+                if (YAHOO.env.ua.ie && name == 'input')
+                    node = document.createElement('<input type="' + type + '">');
+                
                 loop: for (var j = 0, m = arguments.length; j < m; j++) {
                     arg = arguments[j];
                     
