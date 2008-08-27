@@ -105,7 +105,9 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
             
             case element.matches('select') :
                 options = Array.from(element.node.options);
-                selected = options.filter({value: value})[0];
+                selected = options.filter(function(option) {
+                    return (option.value == value) || (option.text == value);
+                })[0];
                 if (!selected) return;
                 options.forEach(function(option) { option.selected = false });
                 selected.selected = true;
