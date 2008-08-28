@@ -33,6 +33,11 @@ Ojay.Accordion.extend({
             this._element.addClass(this.klass.SECTION_CLASS);
             this._element.on(options.event || this.klass.DEFAULT_EVENT)._(this).expand();
             
+            if (options.collapseOnClick)
+                this._element.on('click', function() {
+                    if (this._open) this.collapse();
+                }, this);
+            
             this._open = true;
             this.collapse(false);
         },
@@ -58,17 +63,24 @@ Ojay.Accordion.extend({
         collapse: function(animate) {
             if (!this._open) return this;
             this._collapser.setStyle({overflow: 'hidden'});
+            this._element.removeClass('expanded').addClass('collapsed');
+            
             var settings = {};
             settings[this.param] = (animate === false) ? 0 : {to: 0};
-            this._open = false;
-            this._element.removeClass('expanded').addClass('collapsed');
+            
+            var acc = this._accordion;
+            if (animate !== false ) acc.notifyObservers('sectioncollapse',
+                    acc._sections.indexOf(this), this);
+            
             if (animate === false) {
                 this._collapser.setStyle(settings).setStyle({overflow: 'hidden'});
+                this._open = false;
                 return this;
             } else {
                 return this._collapser.animate(settings, this._duration, {easing: this._easing})
-                        .setStyle({overflow: 'hidden'})
-                        ._(this);
+                .setStyle({overflow: 'hidden'})
+                ._(function(self) { self._open = false; }, this)
+                ._(this);
             }
         },
         
@@ -80,18 +92,25 @@ Ojay.Accordion.extend({
             if (this._open) return this;
             this._accordion._expand(this);
             this._collapser.setStyle({overflow: 'hidden'});
+            this._element.addClass('expanded').removeClass('collapsed');
+            
             var size = this.getSize();
             var settings = {};
             settings[this.param] = (animate === false) ? size + 'px' : {to: size};
-            this._open = true;
-            this._element.addClass('expanded').removeClass('collapsed');
+            
+            var acc = this._accordion;
+            if (animate !== false ) acc.notifyObservers('sectionexpand',
+                    acc._sections.indexOf(this), this);
+            
             if (animate === false) {
                 this._collapser.setStyle(settings).setStyle({overflow: ''});
+                this._open = true;
                 return this;
             } else {
                 return this._collapser.animate(settings, this._duration, {easing: this._easing})
-                        .setStyle({overflow: ''})
-                        ._(this);
+                .setStyle({overflow: ''})
+                ._(function(self) { self._open = true; }, this)
+                ._(this);
             }
         }
     })

@@ -44,9 +44,16 @@
   </style>
   
   <script type="text/javascript">
-    new Ojay.Accordion('vertical', '#accordV .section', 'p', {
+    var acc = new Ojay.Accordion('vertical', '#accordV .section', 'p', {
         duration: 0.5,
-        easing: 'easeOut'
+        easing: 'easeOut',
+        collapseOnClick: true
+    });
+    acc.on('sectionexpand', function(acc, i) {
+        window.console && console.log('expanding: ' + i);
+    });
+    acc.on('sectioncollapse', function(acc, i) {
+        window.console && console.log('collapsing: ' + i);
     });
     
     new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'}).on('sectionexpand',

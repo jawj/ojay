@@ -32,7 +32,6 @@ Ojay.Accordion = new JS.Class(/** @scope Ojay.Accordion.prototype */{
     _expand: function(section) {
         if (this._currentSection) this._currentSection.collapse();
         this._currentSection = section;
-        this.notifyObservers('sectionexpand', this._sections.indexOf(section), section);
     },
     
     /**
