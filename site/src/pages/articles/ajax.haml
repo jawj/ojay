@@ -58,7 +58,7 @@
     @elements@ can be a CSS selector, and Ojay collection or a raw @HTMLElement@
     reference. Script tags in the response are removed.
     
-  * @evalScriptTags()@ - evaluates any script blocks in the response body.
+  * @evalScripts()@ - evaluates any script blocks in the response body.
   
   Some examples:
   
@@ -91,7 +91,7 @@
   That means you can do stuff like this:
   
   <pre>
-  Ojay.HTTP.GET('/index.html').insertInto('div').evalScriptTags();
+  Ojay.HTTP.GET('/index.html').insertInto('div').evalScripts();
   
   // Make an Ajax call on click
   

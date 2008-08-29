@@ -38,7 +38,7 @@
  * the response and inserting it into the document. Its methods are listed below. You can use the
  * <tt>response</tt> methods to chain after HTTP calls for more sentence-like code:</p>
  *
- * <pre><code>    Ojay.HTTP.GET('/index.html').insertInto('#container').evalScriptTags();</pre></code>
+ * <pre><code>    Ojay.HTTP.GET('/index.html').insertInto('#container').evalScripts();</pre></code>
  *
  * <p>It's best to use this chaining for really simple stuff -- just remember the chain is called
  * asynchronously after the HTTP request completes, so any code following a chain like this should
