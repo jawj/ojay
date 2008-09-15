@@ -30,7 +30,7 @@ JS = {
   extend: function(object, methods) {
     methods = methods || {};
     for (var prop in methods) {
-      if (object[prop] == methods[prop]) continue;
+      if (object[prop] === methods[prop]) continue;
       object[prop] = methods[prop];
     }
     return object;
@@ -95,7 +95,7 @@ JS = {
   },
   
   ignore: function(key, object) {
-    return /^(include|extend)$/.test(key) && typeof object == 'object';
+    return /^(include|extend)$/.test(key) && typeof object === 'object';
   }
 };
 
@@ -107,15 +107,15 @@ JS.extend(JS.Module.prototype, {
     this.__inc__ = [];
     this.__fns__ = {};
     this.__dep__ = [];
-    this.__res__ = options.resolve || null;
+    this.__res__ = options._resolve || null;
     this.include(methods || {});
   },
   
   define: function(name, func, options) {
     options = options || {};
     this.__fns__[name] = func;
-    if (JS.Module._notify && options.notify && JS.isFn(func))
-        JS.Module._notify(name, options.notify);
+    if (JS.Module._notify && options._notify && JS.isFn(func))
+        JS.Module._notify(name, options._notify);
     var i = this.__dep__.length;
     while (i--) this.__dep__[i].resolve();
   },
@@ -128,35 +128,42 @@ JS.extend(JS.Module.prototype, {
   include: function(module, options, resolve) {
     if (!module) return resolve && this.resolve();
     options = options || {};
-    var inc = module.include, ext = module.extend, modules, i, n, method;
+    var inc = module.include, ext = module.extend, modules, i, n, method,
+        includer = options._included || this;
+    
     if (module.__inc__ && module.__fns__) {
       this.__inc__.push(module);
       module.__dep__.push(this);
-      if (options.extended) module.extended && module.extended(options.extended);
-      else module.included && module.included(options.included || this);
+      if (options._extended) module.extended && module.extended(options._extended);
+      else module.included && module.included(includer);
     }
     else {
-      if (typeof inc == 'object') {
-        modules = [].concat(inc);
-        for (i = 0, n = modules.length; i < n; i++)
-          this.include(modules[i], options);
-      }
-      if (typeof ext == 'object') {
-        modules = [].concat(ext);
-        for (i = 0, n = modules.length; i < n; i++)
-          (options.included || this).extend(modules[i], false);
-        (options.included || this).extend();
-      }
-      for (method in module) {
-        if (JS.ignore(method, module[method])) continue;
-        this.define(method, module[method], {notify: options.included || options.extended || this});
+      if (options._recall) {
+        for (method in module) {
+          if (JS.ignore(method, module[method])) continue;
+          this.define(method, module[method], {_notify: includer || options._extended || this});
+        }
+      } else {
+        if (typeof inc === 'object') {
+          modules = [].concat(inc);
+          for (i = 0, n = modules.length; i < n; i++)
+            includer.include(modules[i], options);
+        }
+        if (typeof ext === 'object') {
+          modules = [].concat(ext);
+          for (i = 0, n = modules.length; i < n; i++)
+            includer.extend(modules[i], false);
+          includer.extend();
+        }
+        options._recall = true;
+        return includer.include(module, options, resolve);
       }
     }
     resolve && this.resolve();
   },
   
   includes: function(moduleOrClass) {
-    if (Object == moduleOrClass || this == moduleOrClass || this.__res__ === moduleOrClass.prototype)
+    if (Object === moduleOrClass || this === moduleOrClass || this.__res__ === moduleOrClass.prototype)
       return true;
     var i = this.__inc__.length;
     while (i--) {
@@ -171,8 +178,8 @@ JS.extend(JS.Module.prototype, {
     for (var i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].ancestors(results);
     var klass = (this.__res__||{}).klass,
-        result = (klass && this.__res__ == klass.prototype) ? klass : this;
-    if (JS.indexOf(results, result) == -1) results.push(result);
+        result = (klass && this.__res__ === klass.prototype) ? klass : this;
+    if (JS.indexOf(results, result) === -1) results.push(result);
     return results;
   },
   
@@ -217,7 +224,7 @@ JS.extend(JS.Module.prototype, {
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
     
-    if (target == this) {
+    if (target === this) {
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
     }
@@ -228,7 +235,7 @@ JS.extend(JS.Module.prototype, {
       this.__inc__[i].resolve(target);
     for (key in this.__fns__) {
       made = target.make(key, this.__fns__[key]);
-      if (resolved[key] != made) resolved[key] = made;
+      if (resolved[key] !== made) resolved[key] = made;
     }
   }
 });
@@ -236,13 +243,13 @@ JS.extend(JS.Module.prototype, {
 JS.ObjectMethods = new JS.Module({
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
-    var module = this.__meta__ = new JS.Module({}, {resolve: this});
+    var module = this.__meta__ = new JS.Module({}, {_resolve: this});
     module.include(this.klass.__mod__);
     return module;
   },
   
   extend: function(module, resolve) {
-    return this.__eigen__().include(module, {extended: this}, resolve !== false);
+    return this.__eigen__().include(module, {_extended: this}, resolve !== false);
   },
   
   isA: function(moduleOrClass) {
@@ -251,7 +258,7 @@ JS.ObjectMethods = new JS.Module({
   
   method: function(name) {
     var self = this, cache = self.__mcache__ = self.__mcache__ || {};
-    if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
+    if ((cache[name] || {}).fn === self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: JS.bind(self[name], self)}).bd;
   }
 });
@@ -290,17 +297,17 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     var p = this.prototype = JS.makeBridge(klass);
     p.klass = p.constructor = this;
     
-    this.__mod__ = new JS.Module({}, {resolve: this.prototype});
+    this.__mod__ = new JS.Module({}, {_resolve: this.prototype});
     this.include(JS.ObjectMethods, null, false);
     
     if (klass !== Object) this.include(klass.__mod__ || new JS.Module(klass.prototype,
-        {resolve: klass.prototype}), null, false);
+        {_resolve: klass.prototype}), null, false);
   },
   
   include: function(module, options, resolve) {
     if (!module) return;
     var mod = this.__mod__, options = options || {};
-    options.included = this;
+    options._included = this;
     return mod.include(module, options, resolve !== false);
   },
   
@@ -327,7 +334,6 @@ JS.Module.include(JS.ObjectMethods);
 JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.ObjectMethods.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
-JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
 
 JS.Module.extend({
   _observers: [],
