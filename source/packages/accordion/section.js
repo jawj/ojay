@@ -94,9 +94,12 @@ Ojay.Accordion.extend({
             this._collapser.setStyle({overflow: 'hidden'});
             this._element.addClass('expanded').removeClass('collapsed');
             
-            var size = this.getSize();
-            var settings = {};
-            settings[this.param] = (animate === false) ? size + 'px' : {to: size};
+            var size = this.getSize(),
+                settings = {},
+                postAnim = {overflow: ''};
+            
+            settings[this.param] = (animate === false) ? '' : {to: size};
+            postAnim[this.param] = '';
             
             var acc = this._accordion;
             if (animate !== false ) acc.notifyObservers('sectionexpand',
@@ -108,7 +111,7 @@ Ojay.Accordion.extend({
                 return this;
             } else {
                 return this._collapser.animate(settings, this._duration, {easing: this._easing})
-                .setStyle({overflow: ''})
+                .setStyle(postAnim)
                 ._(function(self) { self._open = true; }, this)
                 ._(this);
             }
