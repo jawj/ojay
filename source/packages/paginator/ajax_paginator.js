@@ -80,13 +80,11 @@ Ojay.AjaxPaginator = new JS.Class(Ojay.Paginator, /** @scope Ojay.AjaxPaginator.
              */
             _handleSetPage: function(page) {
                 if (this.pageLoaded(page)) return this.callSuper();
-                // Under JS.Class 1.6 we could use callSuper here, but the async
-                // call does not work under 2.0 -- investigate a fix for this
-                var _super = this.klass.superclass.prototype._handleSetPage;
+                var _super = this.method('callSuper');
                 this.setState('REQUESTING');
                 this.loadPage(page, function() {
                     this.setState('READY');
-                    _super.call(this, page);
+                    _super();
                 }, this);
             }
         },
