@@ -1,0 +1,71 @@
+- @title = 'Accordions'
+:textile
+  h3. Accordions
+  
+  @Ojay.Accordion@ implements the well-known accordion menu widget. It allows for both
+  horizontal and vertical collapse directions, and allows the animation to be configured. Like
+  all Ojay widgets, it comes with a set of events that you can use to couple an accordion
+  instance to other parts of your application.
+ 
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.5.2/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.5.2/build/selector/selector-beta.js@
+  * @http://yui.yahooapis.com/2.5.2/build/animation/animation.js@
+  * @http://yoursite.com/ojay/js-class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/accordion.js@
+  
+  h3. Creating an accordion
+  
+  Creating an accordion is straightforward. Start with a list of elements, each of which
+  should contain an element that you want to collapse. For example:
+ 
+  <pre>
+  <div class="section">
+      <h3>Section 1</h3>
+      <p>Lorem ipsum...</p>
+  </div>
+  <div class="section">
+      <h3>Section 2</h3>
+      <p>Dolor sit amet...</p>
+  </div>
+  <div class="section">
+      <h3>Section 3</h3>
+      <p>Quaniam omnes...</p>
+  </div></pre>
+ 
+  In this example, the paragraphs will collapse and the headings will be the menu tabs.
+  The following script sets up the menu:
+ 
+  <pre>
+  var acc = new Ojay.Accordion('horizontal',
+          '.section', 'p');</pre>
+ 
+  This will make a few changes to the markup, which you'll need to be aware of in order
+  to apply CSS. After the script runs, the document will look like this:
+ 
+  <pre>
+  <div class="section accordion-section">
+      <h3>Section 1</h3>
+  </div>
+  <div class="accordion-collapsible">
+      <p>Lorem ipsum...</p>
+  </div>
+  <div class="section accordion-section">
+      <h3>Section 2</h3>
+  </div>
+  <div class="accordion-collapsible">
+      <p>Dolor sit amet...</p>
+  </div>
+  <div class="section accordion-section">
+      <h3>Section 3</h3>
+  </div>
+  <div class="accordion-collapsible">
+      <p>Quaniam omnes...</p>
+  </div></pre>
+ 
+  The original sections get an additional class to indicate that they're part of an
+  @Accordion@ instance, and the collapsible elements get placed inside a new wrapper
+  element, outside their original parent. This seems a little odd but is required to work
+  around a layout bug in WebKit.
