@@ -6,7 +6,7 @@ Ojay.Accordion.extend({
     Section: new JS.Class({
         extend: /** @scope Accordion.Section */{
             SECTION_CLASS:      'accordion-section',
-            COLLAPSER_CLASS:    'collapser',
+            COLLAPSER_CLASS:    'accordion-collapsible',
             DEFAULT_EVENT:      'click',
             DEFAULT_DURATION:   0.4,
             DEFAULT_EASING:     'easeBoth'
@@ -25,6 +25,7 @@ Ojay.Accordion.extend({
             this._collapser = Ojay( Ojay.HTML.div({className: this.klass.COLLAPSER_CLASS}) );
             target.insert(this._collapser, 'before');
             this._collapser.insert(target);
+            this._element.insert(this._collapser, 'after');
             
             options = options || {};
             this._duration = options.duration || this.klass.DEFAULT_DURATION;
