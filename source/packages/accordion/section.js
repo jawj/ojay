@@ -1,10 +1,14 @@
-Ojay.Accordion.extend({
+Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
     /**
+     * <p>The <tt>Accordion.Section</tt> class models a single collapsible section within an
+     * accordion menu. Only one section of an accordion may be open at any time. Ojay supports
+     * both vertical and horizontal accordions; these have different methods for size calculations
+     * and are implemented as subclasses. This class should be considered abstract.</p>
      * @constructor
      * @class Accordion.Section
      */
-    Section: new JS.Class({
-        extend: /** @scope Accordion.Section */{
+    Section: new JS.Class(/** @scope Ojay.Accordion.Section.prototype */{
+        extend: /** @scope Ojay.Accordion.Section */{
             SECTION_CLASS:      'accordion-section',
             COLLAPSER_CLASS:    'accordion-collapsible',
             DEFAULT_EVENT:      'click',
@@ -13,6 +17,10 @@ Ojay.Accordion.extend({
         },
         
         /**
+         * <p>To instantiate a section, pass in an <tt>Accordion</tt> instance, the section's
+         * container element, and an element within the container that should be collapsible.
+         * The final argument sets configuration options, passed through from the <tt>Accordion</tt>
+         * constructor.</p>
          * @param {Accordion} accordion
          * @param {DomCollection} element
          * @param {String} collapsible
@@ -21,6 +29,10 @@ Ojay.Accordion.extend({
         initialize: function(accordion, element, collapsible, options) {
             this._accordion = accordion;
             this._element = element;
+            
+            // Restructure the HTML - wrap the collapsing element with a div for resizing,
+            // and move the collapsing element outside its original parent (workaround for
+            // WebKit layout bug affecting horizontal menus).
             var target = element.descendants(collapsible).at(0);
             this._collapser = Ojay( Ojay.HTML.div({className: this.klass.COLLAPSER_CLASS}) );
             target.insert(this._collapser, 'before');
@@ -44,6 +56,8 @@ Ojay.Accordion.extend({
         },
         
         /**
+         * <p>Returns a reference to the outer container element for the section. This element
+         * acts as the click target for toggling visibility.</p>
          * @returns {DomCollection}
          */
         getContainer: function() {
@@ -51,6 +65,7 @@ Ojay.Accordion.extend({
         },
         
         /**
+         * <p>Returns a reference to the element that collapses, hiding its content.</p>
          * @returns {DomCollection}
          */
         getCollapser: function() {
@@ -58,6 +73,8 @@ Ojay.Accordion.extend({
         },
         
         /**
+         * <p>Causes the section to collapse. Pass the parameter <tt>false</tt> to prevent
+         * animation.</p>
          * @param {Boolean} animate
          * @returns {Accordion.Section}
          */
@@ -86,12 +103,14 @@ Ojay.Accordion.extend({
         },
         
         /**
+         * <p>Causes the section to expand. Pass the parameter <tt>false</tt> to prevent
+         * animation. Any section in the same accordion that is currently open will collapse.</p>
          * @param {Boolean} animate
          * @returns {Accordion.Section}
          */
         expand: function(animate) {
             if (this._open) return this;
-            this._accordion._expand(this);
+            this._accordion._expand(this, animate);
             this._collapser.setStyle({overflow: 'hidden'});
             this._element.addClass('expanded').removeClass('collapsed');
             
@@ -120,15 +139,17 @@ Ojay.Accordion.extend({
     })
 });
 
-Ojay.Accordion.extend({
+Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
     /**
      * @constructor
-     * @class Accordion.HorizontalSection
+     * @class Ojay.Accordion.HorizontalSection
      */
-    HorizontalSection:  new JS.Class(Ojay.Accordion.Section, {
+    HorizontalSection:  new JS.Class(Ojay.Accordion.Section,
+    /** @scope Ojay.Accordion.HorizontalSection.prototype */{
         param:  'width',
         
         /**
+         * <p>Returns the width of the section at full expansion.</p>
          * @returns {Number}
          */
         getSize: function() {
@@ -148,12 +169,14 @@ Ojay.Accordion.extend({
     
     /**
      * @constructor
-     * @class Accordion.VerticalSection
+     * @class Ojay.Accordion.VerticalSection
      */
-    VerticalSection:    new JS.Class(Ojay.Accordion.Section, {
+    VerticalSection:    new JS.Class(Ojay.Accordion.Section,
+    /** @scope Ojay.Accordion.VerticalSection.prototype */{
         param:  'height',
         
         /**
+         * <p>Returns the height of the section at full expansion.</p>
          * @returns {Number}
          */
         getSize: function() {
