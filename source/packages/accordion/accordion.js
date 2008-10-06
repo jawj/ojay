@@ -94,6 +94,28 @@ Ojay.Accordion = new JS.Class(/** @scope Ojay.Accordion.prototype */{
      */
     getSections: function() {
         return this._sections.slice();
+    },
+    
+    /**
+     * @param {Number} n
+     * @param {Boolean} animate
+     * @returns {Accordion}
+     */
+    expand: function(n, animate) {
+        var section = this._sections[n];
+        if (section) section.expand(animate);
+        return this;
+    },
+    
+    /**
+     * @param {Number} n
+     * @param {Boolean} animate
+     * @returns {Accordion}
+     */
+    collapse: function(n, animate) {
+        var section = this._sections[n];
+        if (section) section.collapse(animate);
+        return this;
     }
 });
 

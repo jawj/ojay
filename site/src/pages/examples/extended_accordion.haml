@@ -1,0 +1,55 @@
+- @title = 'Accordion with extra effects'
+
+#summary
+  :textile
+    h2. Menu using @Ojay.Accordion@ with extra effects
+    
+    This example shows how to create an accordion menu using @Ojay.Accordion@, and how
+    to customize it using its event API and using the CSS classes it generates.
+    
+    We begin with a simple list of @<div class="section">@ elements, each containing
+    an @<h3>@ and a @<p>@. The accordion is easily created using a single line, and
+    some event listeners are added to add an opacity fade to the expand/collpase
+    animations.
+
+:plain
+    <style id="display-style" type="text/css">
+        #menu { font-size: 12px; width: 400px; margin: 30px auto; }
+        #menu h3 { background: #444; color: #fff; font-weight: bold; padding: 3px 8px; }
+        #menu .accordion-section h3 { cursor: pointer; margin: 0 0 0 0; border-bottom: 1px solid #ccc; }
+        #menu p { padding: 12px; }
+        #menu .accordion-collapsible p { margin: 0 0 0 0; }
+    </style>
+    
+    <div id="menu">
+        <div class="section">
+            <h3>Who we are and what we do</h3>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin vehicula dui quis odio. Etiam lacinia neque. Mauris nunc tortor, tincidunt vitae, luctus sed, fringilla quis, eros. Nullam tempor lobortis purus. Nunc quam. Vestibulum consequat. Nullam non risus. Curabitur ultricies. Donec placerat dui nec lacus. Nullam eu tortor. Donec id nisi. Donec lorem. Vivamus ac tortor. Morbi erat eros, viverra porttitor, tempor sit amet, vestibulum non, mi. Aenean dictum, justo vel pulvinar porta, neque nisi imperdiet erat, ut suscipit nisl nisi ac turpis. Aenean iaculis neque et pede.</p>
+        </div>
+        <div class="section">
+            <h3>How to find us</h3>
+            <p>Vestibulum placerat lacinia neque. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse a sapien id massa dignissim porta. Duis varius vulputate orci. Cras congue leo eu ligula. Phasellus eget tortor eget felis sagittis aliquet. Morbi faucibus sapien. Duis nibh nisl, facilisis eu, feugiat id, vestibulum at, lorem. Vestibulum tempus nunc nec ligula. Phasellus non neque rhoncus felis luctus tempus. Cras a erat at pede iaculis condimentum. Proin hendrerit accumsan urna. Suspendisse eleifend felis id neque. Nunc eleifend. Cras consequat purus.</p>
+        </div>
+        <div class="section">
+            <h3>Look at our awesome products</h3>
+            <p>Curabitur nec elit eget leo dignissim ornare. In dignissim, arcu nec dignissim feugiat, nulla eros scelerisque felis, vel euismod nunc tellus nec lectus. Aliquam fringilla, sem eget tincidunt consequat, risus tortor lacinia est, eu lacinia ligula est eget urna. Praesent vehicula lacinia felis. Donec at velit eu quam fermentum vehicula. Duis convallis neque quis nisi. Proin ut magna id lorem tempor viverra. Vestibulum semper risus non risus. Nunc sed erat non metus volutpat ullamcorper. Proin venenatis, dolor aliquet pulvinar vulputate, odio lectus condimentum nunc, sed fermentum metus nunc accumsan libero. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce mi est, lacinia nec, sollicitudin ac, varius fermentum, est. Cras nec libero ac augue sagittis sagittis.</p>
+        </div>
+        <div class="section">
+            <h3>Come work for us!</h3>
+            <p>Nullam odio mi, sagittis in, iaculis sit amet, semper at, felis. Duis id neque et diam bibendum sagittis. Fusce gravida mauris sit amet sapien. Suspendisse potenti. Nullam at arcu nec ante mattis tempus. Ut iaculis pretium lectus. Pellentesque gravida lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam volutpat dui eget nulla. Nulla ac enim. Nullam varius elementum ligula. In auctor. Donec commodo, metus et congue rhoncus, libero magna commodo turpis, ac ullamcorper purus nisi eget tellus. Morbi fringilla suscipit augue. Sed id neque. Vivamus mi metus, porta ac, cursus nec, rutrum vitae, lacus. Morbi mollis justo et dolor. Proin vel neque ut lectus congue pharetra. Aliquam dignissim sapien eu mi. Aenean ac eros.</p>
+        </div>
+    </div>
+    
+    <script id="display-script" type="text/javascript">
+        var acc = new Ojay.Accordion('vertical', '#menu .section', 'p', {
+            duration: 0.8
+        });
+        
+        acc.on('sectioncollapse', function(acc, i, section){
+            section.getCollapser().animate({opacity: {from: 1, to: 0}}, 0.6);
+        });
+        
+        acc.on('sectionexpand', function(acc, i, section) {
+            section.getCollapser().animate({opacity: {from: 0, to: 1}}, 0.6);
+        });
+    </script>

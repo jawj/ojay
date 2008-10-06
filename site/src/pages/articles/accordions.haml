@@ -16,6 +16,10 @@
   * @http://yoursite.com/ojay/core.js@
   * @http://yoursite.com/ojay/pkg/accordion.js@
   
+  h3. Examples
+  
+  * "Accordion menu extended with extra effects":/examples/extended_accordion.html
+  
   h3. Creating an accordion
   
   Creating an accordion is straightforward. Start with a list of elements, each of which
@@ -69,3 +73,39 @@
   @Accordion@ instance, and the collapsible elements get placed inside a new wrapper
   element, outside their original parent. This seems a little odd but is required to work
   around a layout bug in WebKit.
+  
+  h3. Custom events and API
+  
+  The @Ojay.Accordion@ class exposes some events that you can hook into when sections collapse
+  and/or expand. These events are called @sectionexpand@ and @sectioncollapse@, and the
+  listeners for them are passed the @Accordion@ instance, the index of the relevant section
+  (numbered from zero) and an object reperesenting the section, that you can use to
+  add extra effects to the collapse/expand transition. For example, to cause the section to
+  fade in when it expands, you can do the following:
+  
+  <pre>
+  acc.on('sectionexpand', function(acc, i, section) {
+      section.getCollapser().animate({opacity: {from: 0, to: 1}}, 0.3);
+  });</pre>
+  
+  See "the example":/examples/extended_accordion.html to see this code in action. The
+  variable @section@ is an instance of @Ojay.Accordion.Section@, which has the following
+  methods in its API:
+  
+  * @section.collapse(animate = true)@ - collapses the section, using animation by default.
+    The optional argument, if set to @false@, stops animation.
+  * @section.expand(animate = true)@ - expands the section, using animation by default.
+    The optional argument, if set to @false@, stops animation.
+  * @section.getContainer()@ - returns an @Ojay@ collection wrapping the click target
+    element for the section, i.e. the element marked with the class @accordion-section@.
+  * @section.getCollapser()@ - returns an @Ojay@ collection wrapping the collapsible part
+    of the section, i.e. the element marked with the class @accordion-collapsible@.
+  
+  The @Ojay.Accordion@ class itself also lets you expand/collapse sections by numeric
+  index, numbered from zero. So, these methods are available on the @acc@ object in the
+  above examples:
+  
+  * @acc.expand(n, animate = true)@ - expands section number @n@, using animation unless
+    the second parameter is set to @false@.
+  * @acc.collapse(n, animate = true)@ - collapses section number @n@, using animation unless
+    the second parameter is set to @false@.
