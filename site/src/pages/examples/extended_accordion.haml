@@ -8,9 +8,11 @@
     to customize it using its event API and using the CSS classes it generates.
     
     We begin with a simple list of @<div class="section">@ elements, each containing
-    an @<h3>@ and a @<p>@. The accordion is easily created using a single line, and
+    an @<h3>@ and a @<p>@. The accordion is easily created using a single call, and
     some event listeners are added to add an opacity fade to the expand/collpase
-    animations.
+    animations. We also use @Ojay.History@ to allow navigation between the accordion's
+    sections to be recorded in the browser history, allowing sections to be bookmarked
+    and traversed using the back/forward buttons.
 
 :plain
     <style id="display-style" type="text/css">
@@ -41,9 +43,19 @@
     </div>
     
     <script id="display-script" type="text/javascript">
+        // Create the accordion
         var acc = new Ojay.Accordion('vertical', '#menu .section', 'p', {
             duration: 0.8
         });
+        
+        // Use history management -- this step is optional
+        Ojay.History.manage(acc, 'menu');
+        Ojay.History.initialize({asset: '/service/hello.html'});
+        
+        // Setup the menu
+        acc.setup();
+        
+        // Add event listeners
         
         acc.on('sectioncollapse', function(acc, i, section){
             section.getCollapser().animate({opacity: {from: 1, to: 0}}, 0.6);

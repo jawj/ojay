@@ -16,6 +16,11 @@
   * @http://yoursite.com/ojay/core.js@
   * @http://yoursite.com/ojay/pkg/accordion.js@
   
+  To manage history and allow sections to be bookmarked:
+  
+  * @http://yui.yahooapis.com/2.5.2/build/history/history.js@
+  * @http://yoursite.com/ojay/pkg/history.js@
+  
   h3. Examples
   
   * "Accordion menu extended with extra effects":/examples/extended_accordion.html
@@ -44,7 +49,8 @@
  
   <pre>
   var acc = new Ojay.Accordion('horizontal',
-          '.section', 'p');</pre>
+          '.section', 'p');
+  acc.setup();</pre>
  
   This will make a few changes to the markup, which you'll need to be aware of in order
   to apply CSS. After the script runs, the document will look like this:
@@ -109,3 +115,20 @@
     the second parameter is set to @false@.
   * @acc.collapse(n, animate = true)@ - collapses section number @n@, using animation unless
     the second parameter is set to @false@.
+  
+  h3. History management
+  
+  @Ojay.Accordion@ is compatible with "@Ojay.History@":/articles/history.html, allowing
+  the state of the menu (in terms of which section is open) to be bookmarked and navigated
+  using the browser's back/forward buttons. To add history management to an accordion,
+  make sure to call @Ojay.History@ before you call @setup()@:
+  
+  <pre>
+  var acc = new Ojay.Accordion('horizontal',
+          '.section', 'p');
+  
+  Ojay.History.manage(acc, 'menu');
+  acc.setup();</pre>
+  
+  Remember to call @Ojay.History.initialize()@ once all your objects are registered.
+  See the "history documentation":/articles/history.html for more info.

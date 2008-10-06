@@ -22,11 +22,12 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
          * The final argument sets configuration options, passed through from the <tt>Accordion</tt>
          * constructor.</p>
          * @param {Accordion} accordion
+         * @param {Number} index
          * @param {DomCollection} element
          * @param {String} collapsible
          * @param {Object} options
          */
-        initialize: function(accordion, element, collapsible, options) {
+        initialize: function(accordion, index, element, collapsible, options) {
             this._accordion = accordion;
             this._element = element;
             
@@ -44,7 +45,7 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
             this._easing = options.easing || this.klass.DEFAULT_EASING;
             
             this._element.addClass(this.klass.SECTION_CLASS);
-            this._element.on(options.event || this.klass.DEFAULT_EVENT)._(this).expand();
+            this._element.on(options.event || this.klass.DEFAULT_EVENT)._(this._accordion).changeState({section: index});
             
             if (options.collapseOnClick)
                 this._element.on('click', function() {
