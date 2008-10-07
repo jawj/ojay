@@ -299,18 +299,22 @@
          * collection for chaining. Remember to use <tt>className</tt> for classes, and <tt>htmlFor</tt>
          * for label attributes.</p>
          *
-         * <pre><code>    Ojay('img').setAttributes({src: 'images/tom.png'});</code></pre>
+         * <pre><code>    Ojay('img').set({src: 'images/tom.png'});</code></pre>
          *
          * @param Object options
          * @returns DomCollection
          */
-        setAttributes: function(options) {
+        set: function(options) {
             for (var i = 0, n = this.length; i < n; i++) {
                 for (var key in options)
-                    this[i][key] = options[key];
+                    this[i].setAttribute(key, options[key]);
             }
             return this;
         },
+        
+        setAttributes: function() {
+            return this.set.apply(this, arguments);
+        }.traced('setAttributes() is deprecated; used set() instead', 'warn'),
         
         /**
          * <p>Hides every element in the collection and returns the collection.</p>
