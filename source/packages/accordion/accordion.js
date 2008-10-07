@@ -89,6 +89,7 @@ Ojay.Accordion = new JS.Class(/** @scope Ojay.Accordion.prototype */{
         }, this);
         var state = this.getInitialState();
         this._sections[state.section].expand(false);
+        return this;
     },
     
     /**

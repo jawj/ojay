@@ -53,7 +53,7 @@
         duration: 0.5,
         easing: 'easeOut',
         collapseOnClick: true
-    });
+    }).setup();
     acc.on('sectionexpand', function(acc, i) {
         window.console && console.log('expanding: ' + i);
     });
@@ -61,6 +61,7 @@
         window.console && console.log('collapsing: ' + i);
     });
     
-    new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'}).on('sectionexpand',
-            function() {}.traced());
+    new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'})
+    .setup()
+    .on('sectionexpand', function() {}.traced());
   </script>
