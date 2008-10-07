@@ -80,22 +80,22 @@
   
   h3. Attribute methods
   
-  Ojay's @setAttributes()@ method alters the attributes of all elements in an
+  Ojay's @set()@ method alters the attributes of all elements in an
   Ojay collection. To make all forms on the page perform GET requests when
   submitted, you could write:
     
   <pre>
-  Ojay('form').setAttributes({method: 'get'});</pre>
+  Ojay('form').set({method: 'get'});</pre>
   
   While to change the value of an input field, you could write:
     
   <pre>
-  Ojay('input#first-name').setAttributes({value: 'John Smith'});</pre>
+  Ojay('input#first-name').set({value: 'John Smith'});</pre>
   
   You can specify multiple attributes together to save you lots of lines of DOM code:
   
   <pre>
-  Ojay('form.contact').setAttributes({
+  Ojay('form.contact').set({
       method:   'post',
       target:   'someFrame',
       action:   '/path/to/action.html'
