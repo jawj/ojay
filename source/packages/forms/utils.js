@@ -95,7 +95,7 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
             case element.every({matches: '[type=radio]'}) :
                 selected = element.map('node').filter({value: value})[0];
                 if (!selected) return;
-                element.setAttributes({checked: false});
+                element.set({checked: false});
                 selected.checked = true;
                 break;
             

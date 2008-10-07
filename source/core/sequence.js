@@ -89,7 +89,7 @@ Ojay.Sequence = new JS.Class(/** @scope Ojay.Sequence.prototype */{
  *     var element = Ojay('#something');
  *     
  *     var sequence = imgs.sequence(function(imgageSource, i) {
- *         element.setAttributes({src: imageSource});
+ *         element.set({src: imageSource});
  *     });
  *     
  *     // Start sequence looping with a time period

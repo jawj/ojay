@@ -244,7 +244,7 @@
          * @returns {DomCollection}
          */
         setClass: function(className) {
-            return this.setAttributes({className: className});
+            return this.set({className: className});
         },
         
         /**
