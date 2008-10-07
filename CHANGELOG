@@ -1,3 +1,42 @@
+Version 0.3.0
+October [TODO] 2008
+================================================================
+
+* JS.Class updated to 2.0.2. This does not affect the Ojay API
+  but will affect you if you use JS.Class explicitly yourself.
+  See http://jsclass.jcoglan.com/upgrade.html
+
+* New packages: Accordion
+
+* Additions to core:
+    * Observable now causes and event to bubble up the inheritance
+      tree of the object that fired it. So you can listen to all
+      instances of Paginator using Ojay.Paginator.on()
+
+* Additions to Forms package:
+    * Ojay.Forms.setValue() now selects options in drop-down
+      menus based on text content, not just values
+
+* Additions to HTTP package:
+    * onSuccess callbacks can now be specified implicitly, like
+      they are in jQuery. If you supply a single function (rather
+      than a named list), that function is taken to be onSuccess.
+      e.g.
+          
+          Ojay.HTTP.GET('/search', {q: 'hello'}, function(r) { ... });
+
+* Bug fixes:
+    * Ojay.HTML.input() generates inputs with the correct type in IE
+    * DomCollection#setAttributes() was failing on attrs that required
+      use of HTMLElement#setAttribute. This is now fixed.
+
+* Deprecations:
+    * HTTP.Response#evalScriptTags() has been removed. Use
+      HTTP.Response#evalScripts().
+    * DomCollection#setAttributes() has been deprecated in favour of
+      the shorter DomCollection#set()
+
+
 Version 0.2.1
 August 6 2008
 ================================================================
