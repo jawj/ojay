@@ -307,7 +307,7 @@
         setAttributes: function(options) {
             for (var i = 0, n = this.length; i < n; i++) {
                 for (var key in options)
-                    this[i][key] = options[key];
+                    this[i].setAttribute(key, options[key]);
             }
             return this;
         },
