@@ -73,4 +73,6 @@ YAHOO.util.Event.onDOMReady(function() {
             alert(el.node.tagName);
         }
     }, true));
+    
+    Ojay('.red').setStyle({color: 'red'})._('.green').setStyle({color: 'green'});
 });
