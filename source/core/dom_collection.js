@@ -244,7 +244,9 @@
          * @returns {DomCollection}
          */
         setClass: function(className) {
-            return this.set({className: className});
+            for (var i = 0, n = this.length; i < n; i++)
+                this[i].className = className;
+            return this;
         },
         
         /**
@@ -296,8 +298,7 @@
         
         /**
          * <p>Sets the given HTML attributes of all the elements in the collection, and returns the
-         * collection for chaining. Remember to use <tt>className</tt> for classes, and <tt>htmlFor</tt>
-         * for label attributes.</p>
+         * collection for chaining. Use <tt>setClass()</tt> to change class names.</p>
          *
          * <pre><code>    Ojay('img').set({src: 'images/tom.png'});</code></pre>
          *
