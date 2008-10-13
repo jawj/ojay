@@ -85,7 +85,10 @@ Ojay.Accordion = new JS.Class(/** @scope Ojay.Accordion.prototype */{
     setup: function() {
         var SectionClass = this.klass[this.klass.DIRECTIONS[this._direction]];
         this._sections = Ojay(this._sections).map(function(section, index) {
-            return new SectionClass(this, index, section, this._collapsible, this._options);
+            var section = new SectionClass(this, index, section, this._collapsible, this._options);
+            section.on('expand')._(this).notifyObservers('sectionexpand', index, section);
+            section.on('collapse')._(this).notifyObservers('sectioncollapse', index, section);
+            return section;
         }, this);
         var state = this.getInitialState();
         this._sections[state.section].expand(false);

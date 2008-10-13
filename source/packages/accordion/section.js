@@ -8,6 +8,8 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
      * @class Accordion.Section
      */
     Section: new JS.Class(/** @scope Ojay.Accordion.Section.prototype */{
+        include: Ojay.Observable,
+        
         extend: /** @scope Ojay.Accordion.Section */{
             SECTION_CLASS:      'accordion-section',
             COLLAPSER_CLASS:    'accordion-collapsible',
@@ -88,8 +90,7 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
             settings[this.param] = (animate === false) ? 0 : {to: 0};
             
             var acc = this._accordion;
-            if (animate !== false ) acc.notifyObservers('sectioncollapse',
-                    acc._sections.indexOf(this), this);
+            if (animate !== false ) this.notifyObservers('collapse');
             
             if (animate === false) {
                 this._collapser.setStyle(settings).setStyle({overflow: 'hidden'});
@@ -123,8 +124,7 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
             postAnim[this.param] = '';
             
             var acc = this._accordion;
-            if (animate !== false ) acc.notifyObservers('sectionexpand',
-                    acc._sections.indexOf(this), this);
+            if (animate !== false ) this.notifyObservers('expand');
             
             if (animate === false) {
                 this._collapser.setStyle(settings).setStyle({overflow: ''});
