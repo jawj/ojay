@@ -39,7 +39,9 @@
                 
                 showSource = function(name) {
                     var code = unindent(Ojay('#display-' + name).node.innerHTML);
-                    Ojay('#' + name + '-display').setAttributes({value: code, rows: code.split(/\n/).length + 1});
+                    var area = Ojay('#' + name + '-display');
+                    area.set({rows: code.split(/\n/).length + 1});
+                    area.node.value = code;
                 };
                 
                 showSource('script');

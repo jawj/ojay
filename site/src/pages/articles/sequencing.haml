@@ -27,14 +27,14 @@
   
   <pre>
   function(source) {
-    Ojay('#my-image').setAttributes({src: source});
+    Ojay('#my-image').set({src: source});
   }</pre>
   
   You create a sequence to perform this action like so:
   
   <pre>
   var seq = sources.sequence(function(source) {
-    Ojay('#my-image').setAttributes({src: source});
+    Ojay('#my-image').set({src: source});
   });</pre>
   
   You can then tell the sequence to loop, pausing by some number of seconds between each
