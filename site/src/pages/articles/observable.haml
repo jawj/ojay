@@ -2,11 +2,19 @@
 :textile
   h3. The @Observable@ module
   
-  @Ojay.Observable@ is an extension of the @JS.Observable@ module that adds an
+  @Ojay.Observable@ is an extension of the "@JS.Observable@":http://jsclass.jcoglan.com/observable.html module that adds an
   @on()@ method that behaves similarly to @DomCollection#on()@, used for monitoring
   DOM events. It can be used to set up an interface through which an object may
   publish named events, and other objects can listen to such events, just as for DOM
-  events. Here's an example of a class that uses the module:</p>
+  events.
+  
+  h3. Examples
+  
+  * "Using class-level observers to modify library behaviour":/examples/observable.html
+  
+  h3. Using @Observable@ in your own classes
+  
+  Here's an example of a class that uses the module:</p>
  
   <pre>
   var Player = new JS.Class({
@@ -76,6 +84,7 @@
   
   In general, calling @notifyObservers()@ on an object will also find the object's class,
   the class' ancestor classes and included modules, and call @notifyObservers()@ on all
-  the classes/modules that provide that method.
+  the classes/modules that provide that method. You can use this to modify the behaviour of
+  all objects of a particular type; "see the example":/examples/observable.html for more ideas.
  
   For further information on this module, see the "@JS.Observable@":http://jsclass.jcoglan.com/observable.html documentation.

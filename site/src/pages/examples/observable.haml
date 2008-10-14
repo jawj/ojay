@@ -2,17 +2,23 @@
 
 #summary
   :textile
-    h2. Menu using @Ojay.Accordion@ with extra effects
+    h2. Modifying the behaviour of a class using @Ojay.Observable@'s class-level listeners
     
-    This example shows how to create an accordion menu using @Ojay.Accordion@, and how
-    to customize it using its event API and using the CSS classes it generates.
+    When setting up event listeners in the DOM, you often specify a _type_ of object to
+    listen to, rather than a specific instance. For example, you call @Ojay('p').on(...)@, or
+    @Ojay('.gallery-item').on(...)@. @Ojay.Observable@ provides a similar mechanism for
+    JavaScript classes, in that it allows you to register event listeners on a class, and
+    have those listeners fire whenever an _instance_ of said class fires the relevant event.
     
-    We begin with a simple list of @<div class="section">@ elements, each containing
-    an @<h3>@ and a @<p>@. The accordion is easily created using a single call, and
-    some event listeners are added to add an opacity fade to the expand/collpase
-    animations. We also use @Ojay.History@ to allow navigation between the accordion's
-    sections to be recorded in the browser history, allowing sections to be bookmarked
-    and traversed using the back/forward buttons.
+    In this example, we set up event listeners on the @Ojay.Accordion.Section@ class in order
+    to modify the behaviour of all accordion menus. Our event listeners cause the accordion
+    sections to change opacity as they change height. The listeners are passed a reference
+    to the section firing each event so they can perform their action.
+    
+    Note that accordion sections are actaully instances of either @Accordion.VerticalSection@
+    or @Accordion.HorizontalSection@; since events 'bubble' up the inheritance tree from
+    the objects that fire them, the parent class @Accordion.Section@ can be used to catch
+    events from all types of accordion section.
 
 :plain
     <style id="display-style" type="text/css">
@@ -44,25 +50,19 @@
     </div>
     
     <script id="display-script" type="text/javascript">
-        // Create the accordion
+        // Add event listeners
+        
+        Ojay.Accordion.Section.on('collapse', function(section) {
+            section.getCollapser().animate({opacity: {from: 1, to: 0}}, 0.5);
+        });
+        
+        Ojay.Accordion.Section.on('expand', function(section) {
+            section.getCollapser().animate({opacity: {from: 0, to: 1}}, 2.0);
+        });
+        
+        // Create our accordion instance
         var acc = new Ojay.Accordion('vertical', '#menu .section', 'p', {
             duration: 0.8
         });
-        
-        // Use history management -- this step is optional
-        Ojay.History.manage(acc, 'menu');
-        Ojay.History.initialize({asset: '/service/hello.html'});
-        
-        // Setup the menu
         acc.setup();
-        
-        // Add event listeners
-        
-        acc.on('sectioncollapse', function(acc, i, section) {
-            section.getCollapser().animate({opacity: {from: 1, to: 0}}, 0.6);
-        });
-        
-        acc.on('sectionexpand', function(acc, i, section) {
-            section.getCollapser().animate({opacity: {from: 0, to: 1}}, 0.6);
-        });
     </script>
