@@ -204,6 +204,26 @@
         },
         
         /**
+         * @param {Object} parameters
+         * @param {Number|Function} duration
+         * @param {Object} options
+         * @returns {MethodChain}
+         */
+        scroll: function(parameters, duration, options) {
+            if (duration) {
+                var animation = new Ojay.Animation(this, {scroll: {to: parameters}}, duration, options, YAHOO.util.Scroll);
+                animation.run();
+                return animation.chain;
+            } else {
+                for (var i = 0, n = this.length; i < n; i++) {
+                    this[i].scrollLeft = parameters[0];
+                    this[i].scrollTop = parameters[1];
+                }
+                return this;
+            }
+        },
+        
+        /**
          * <p>Adds the given string as a class name to all the elements in the collection and returns
          * a reference to the collection for chaining.</p>
          * @param {String} className

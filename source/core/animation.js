@@ -8,17 +8,23 @@
  */
 Ojay.Animation = new JS.Class(/** @scope Ojay.Animation.prototype */{
     
+    extend: /** @scope Ojay.Animation */{
+        DEFAULT_YUI_CLASS: YAHOO.util.ColorAnim
+    },
+    
     /**
      * @param {DomCollection} elements
      * @param {Object|Function} parameters
      * @param {Number|Function} duration
      * @param {Object} options
+     * @param {klass} animationClass
      */
-    initialize: function(elements, parameters, duration, options) {
+    initialize: function(elements, parameters, duration, options, animationClass) {
         this._collection        = elements;
         this._parameters        = parameters || {};
         this._duration          = duration || 1.0;
         this._options           = options || {};
+        this._animClass         = animationClass || this.klass.DEFAULT_YUI_CLASS;
         this._easing            = YAHOO.util.Easing[this._options.easing || 'easeBoth'];
         var after = this._options.after, before = this._options.before;
         this._afterCallback     = after && Function.from(after);
@@ -34,7 +40,7 @@ Ojay.Animation = new JS.Class(/** @scope Ojay.Animation.prototype */{
      */
     _evaluateOptions: function(options, element, i) {
         if (typeof options == 'function') options = options(i, element);
-        if (typeof options != 'object') return options;
+        if ((options instanceof Array) || (typeof options != 'object')) return options;
         var results = {};
         for (var field in options) results[field] = arguments.callee(options[field], element, i);
         return results;
@@ -54,7 +60,7 @@ Ojay.Animation = new JS.Class(/** @scope Ojay.Animation.prototype */{
         
         this._collection.forEach(function(element, i) {
             var parameters = paramSets[i], duration = durations[i];
-            var anim = new YAHOO.util.ColorAnim(element.node, parameters, duration, this._easing);
+            var anim = new this._animClass(element.node, parameters, duration, this._easing);
             anim.onComplete.subscribe(function() {
                 if (YAHOO.env.ua.ie && (parameters.opacity || {}).to !== undefined)
                     element.setStyle({opacity: parameters.opacity.to});
