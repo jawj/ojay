@@ -1,0 +1,65 @@
+- @title = 'CSS selectors'
+:textile
+  h3. CSS selectors
+  
+  To help you refer to HTML elements within a page, Ojay lets you use CSS selector syntax to
+  grab element references. It is expected that you will probably be using the @YAHOO.util.Selector@
+  library to support CSS syntax, but Ojay can use a variety of other selector libraries to
+  give you more choice. The libraries we currently support are:
+  
+  * "@document.querySelectorAll@":http://www.w3.org/TR/selectors-api/
+  * "@YAHOO.util.Selector@":http://developer.yahoo.com/yui/selector/
+  * "@Ext.DomQuery@":http://extjs.com/deploy/ext/docs/output/Ext.DomQuery.html
+  * "Sizzle":http://github.com/jeresig/sizzle
+  * "Peppy":http://jamesdonaghue.com/static/peppy/
+  
+  @document.querySelectorAll@ is the default engine used in browsers that support it; less
+  capable browsers will use @YAHOO.util.Selector@ by default. You can set which engine you
+  want to use using the following commands:
+  
+  <pre>
+  // document.querySelectorAll
+  Ojay.cssEngine = Ojay.Selectors.Native;
+  
+  // YAHOO.util.Selector
+  Ojay.cssEngine = Ojay.Selectors.Yahoo;
+  
+  // Ext.DomQuery
+  Ojay.cssEngine = Ojay.Selectors.Ext;
+  
+  // Sizzle
+  Ojay.cssEngine = Ojay.Selectors.Sizzle;
+  
+  // Peppy
+  Ojay.cssEngine = Ojay.Selectors.Peppy;</pre>
+  
+  Note that @Ojay.Selectors.Native@ only works in browsers that support the W3C Selectors API.
+  If you want to use another library not listed above, adding support for it is trivial.
+  Basically, you need to assign an object to @Ojay.cssEngine@ that supports two methods:
+  
+  * @query(selector, root)@ - takes a selector string and an optional root element (defaults
+    to @document@), and returns an array of @HTMLElement@ references.
+  * @test(node, selector)@ - takes an @HTMLElement@ and a selector string and returns @true@
+    or @false@ to indicate whether the element matches the selector.
+  
+  So, your engine needs to have the following outline:
+  
+  <pre>
+  Ojay.cssEngine = {
+      /**
+       * @param {String} selector
+       * @param {HTMLElement} root
+       * @returns {Array}
+       */
+      query: function(selector, root) {},
+      
+      /**
+       * @param {HTMLElement} node
+       * @param {String} selector
+       * @returns {Boolean}
+       */
+      test: function(node, selector) {}
+  };</pre>
+  
+  These two functions will need to call methods in your chosen CSS selector library and return
+  results as expected by Ojay.
