@@ -1,12 +1,6 @@
 (function(Dom) {
     JS.extend(Ojay, /** @scope Ojay */{
         
-        query: function(selector, node) {
-            return document.querySelectorAll
-                    ? Array.from((node || document).querySelectorAll(selector))
-                    : YAHOO.util.Selector.query(selector, node);
-        },
-        
         /**
          * <p>Returns an Ojay Collection containing zero or one element that matches the ID. Used
          * for situations where IDs contains dots, slashes, etc.</p>

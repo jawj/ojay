@@ -5,9 +5,9 @@ YAHOO.util.Event.onDOMReady(function() {
         setUp: function() {
             this.assert = YAHOO.util.Assert;
             this.arrayAssert = YAHOO.util.ArrayAssert;
-            this.foo = Ojay.query('#content #foo')[0];
-            this.bar = Ojay.query('#content #bar')[0];
-            this.baz = Ojay.query('#content #baz')[0];
+            this.foo = YAHOO.util.Selector.query('#content #foo')[0];
+            this.bar = YAHOO.util.Selector.query('#content #bar')[0];
+            this.baz = YAHOO.util.Selector.query('#content #baz')[0];
         },
         
         testReturnsDomCollection: function() {

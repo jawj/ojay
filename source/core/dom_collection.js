@@ -421,7 +421,7 @@
          */
         matches: function(selector) {
             if (!this.node) return undefined;
-            return YAHOO.util.Selector.test(this.node, selector);
+            return Ojay.cssEngine.test(this.node, selector);
         },
         
         /**
@@ -497,7 +497,7 @@
             selector = selector || '*';
             var descendants = [];
             this.toArray().forEach(function(element) {
-                var additions = Ojay.query(selector, element), arg;
+                var additions = Ojay.cssEngine.query(selector, element), arg;
                 while (arg = additions.shift()) {
                     if (descendants.indexOf(arg) == -1)
                         descendants.push(arg);

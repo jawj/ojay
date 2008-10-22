@@ -11,13 +11,14 @@ var Ojay = function() {
     var elements = [], arg, i, n;
     for (i = 0, n = arguments.length; i < n; i++) {
         arg = arguments[i];
-        if (typeof arg == 'string') arg = Ojay.query(arg);
+        if (typeof arg == 'string') arg = Ojay.cssEngine.query(arg);
         if (arg.toArray) arg = arg.toArray();
         if (!(arg instanceof Array)) arg = [arg];
         elements = elements.concat(arg);
     }
     return new Ojay.DomCollection(elements.unique());
 };
+
 Array.from = JS.array;
 
 Function.prototype.bind = function() {
