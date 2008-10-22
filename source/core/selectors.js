@@ -8,6 +8,27 @@
  * <tt>peppy</tt> engines, but it is trivial to add support for others.</p>
  */
 Ojay.Selectors = {
+    Native: {
+        /**
+         * @param {String} selector
+         * @param {HTMLElement} context
+         * @returns {Array}
+         */
+        query: function(selector, context) {
+            return Array.from((context || document).querySelectorAll(selector));
+        },
+        
+        /**
+         * @param {HTMLElement} node
+         * @param {String} selector
+         * @returns {Boolean}
+         */
+        test: function(node, selector) {
+            var results = this.query(selector, node.parentNode);
+            return results.indexOf(node) != -1;
+        }
+    },
+    
     Yahoo: {
         /**
          * @param {String} selector
@@ -15,9 +36,7 @@ Ojay.Selectors = {
          * @returns {Array}
          */
         query: function(selector, context) {
-            return document.querySelectorAll
-                    ? Array.from((context || document).querySelectorAll(selector))
-                    : YAHOO.util.Selector.query(selector, context);
+            return YAHOO.util.Selector.query(selector, context);
         },
         
         /**
@@ -27,6 +46,26 @@ Ojay.Selectors = {
          */
         test: function(node, selector) {
             return YAHOO.util.Selector.test(node, selector);
+        }
+    },
+    
+    Ext: {
+        /**
+         * @param {String} selector
+         * @param {HTMLElement} context
+         * @returns {Array}
+         */
+        query: function(selector, context) {
+            return Ext.DomQuery.select(selector, context);
+        },
+        
+        /**
+         * @param {HTMLElement} node
+         * @param {String} selector
+         * @returns {Boolean}
+         */
+        test: function(node, selector) {
+            return Ext.DomQuery.is(node, selector);
         }
     },
     
@@ -72,6 +111,8 @@ Ojay.Selectors = {
     }
 };
 
-// Default choice is YUI
-Ojay.cssEngine = Ojay.Selectors.Yahoo;
+// Default choice is YUI, or qSA if available
+Ojay.cssEngine = document.querySelectorAll
+               ? Ojay.Selectors.Native
+               : Ojay.Selectors.Yahoo;
 

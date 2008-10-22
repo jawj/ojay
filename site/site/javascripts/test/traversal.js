@@ -25,7 +25,7 @@ YAHOO.util.Event.onDOMReady(function() {
         
         testChildren: function() {
             var actual = Ojay('#content #foo, #content #bar, #content #baz').children();
-            var expected = Ojay('#content #first-p, #content p.something, #content ul#first-ul, #content .contains-blockquote, #content .wizzbang');
+            var expected = Ojay('#content #first-p, #innerdesc, #content p.something, #content ul#first-ul, #content .contains-blockquote, #content .wizzbang');
             this.assert.isTrue(new JS.Set(expected.toArray()).equals( new JS.Set(actual.toArray()) ));
             
             actual = Ojay('#content #foo, #content #bar, #content #baz').children('p');
@@ -40,6 +40,11 @@ YAHOO.util.Event.onDOMReady(function() {
             
             actual = Ojay('#content #foo, #content #bar, #content #baz').children('p');
             expected = Ojay('#content #first-p, #content p.something');
+            this.assert.isTrue(new JS.Set(expected.toArray()).equals( new JS.Set(actual.toArray()) ));
+            
+            this.assert.areEqual(2, Ojay('.desc').length);
+            actual = Ojay('#foo').descendants('.desc');
+            expected = Ojay('#innerdesc');
             this.assert.isTrue(new JS.Set(expected.toArray()).equals( new JS.Set(actual.toArray()) ));
         },
         
