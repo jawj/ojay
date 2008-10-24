@@ -12,6 +12,10 @@ October [TODO] 2008
     * Observable now causes and event to bubble up the inheritance
       tree of the object that fired it. So you can listen to all
       instances of Paginator using Ojay.Paginator.on()
+    * Multiple CSS selector engines are now supported, and new ones
+      can be added fairly easily. Supports W3C API, YUI, Ext,
+      Sizzle and Peppy out of the box.
+    * New method for animated scrolling: DomCollection#scroll().
 
 * Additions to Forms package:
     * Ojay.Forms.setValue() now selects options in drop-down
@@ -24,6 +28,11 @@ October [TODO] 2008
       e.g.
           
           Ojay.HTTP.GET('/search', {q: 'hello'}, function(r) { ... });
+
+* Additions to Overlay package:
+    * ContentOverlay#fitToContent() can now animate the transition
+      between sizes, and balance the change so the center of the
+      overlay does not move.
 
 * Bug fixes:
     * Ojay.HTML.input() generates inputs with the correct type in IE
