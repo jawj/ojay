@@ -168,6 +168,29 @@
     content: 'Lorem ipsum dolor sit amet...'
   });</pre>
   
+  h3. Transparent JSON-P support
+  
+  Ojay lets you use the same API for cross-domain JSON-P calls as you'd use to talk to
+  your own server. This means that, rather than explicitly naming a global data handler
+  (as in the @handleJSON@ example above), you can use the standard Ajax syntax with
+  anonymous callback functions. To do this, you just need to specify the name of the
+  callback parameter used by the third-party JSON-P API. For example, the following
+  service calls the JSON-P callback param @callback@:
+  
+  <pre>
+  Ojay.HTTP.GET('http://json-time.appspot.com/time.json', {
+    tz: 'America/Chicago',
+    jsonp: 'callback'
+  }, {
+    onSuccess: function(data) {
+      // handle data
+    }
+  });</pre>
+  
+  Remember that for cross-domain requests, the callback parameter will not be an
+  @HTTP.Response@ object as it is for local requests. @data@ will be whatever native
+  JavaScript object the third-party provides, typically a basic @Object@.
+  
   h3. @GET@ and @POST@ redirects
   
   Ojay's HTTP package provides convenient methods for doing both @GET@- and @POST@-based
