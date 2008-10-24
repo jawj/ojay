@@ -94,10 +94,22 @@ Ojay.ContentOverlay = new JS.Class(Ojay.Overlay, /** @scope Ojay.ContentOverlay.
         VISIBLE: /** @scope Ojay.ContentOverlay.prototype */{
             /**
              * <p>Sets the size of the overlay to just contain its content.</p>
+             * @param {Object} options
              * @returns {ContentOverlay}
              */
-            fitToContent: function() {
-                var region = this._elements._content.getRegion();
-                return this.setSize(region.getWidth(), region.getHeight());
+            fitToContent: function(options) {
+                var options     = options || {},
+                    animate     = !!options.animate,
+                    balance     = !!options.balance,
+                    innerRegion = this._elements._content.getRegion(),
+                    outerRegion = this.getRegion();
+                
+                if (balance) innerRegion.centerOn(outerRegion);
+                
+                if (animate) return this.resize(innerRegion, options);
+                
+                this.setSize(innerRegion.getWidth(), innerRegion.getHeight());
+                this.setPosition(innerRegion.left, innerRegion.top);
+                return this;
     }   }   }
 });

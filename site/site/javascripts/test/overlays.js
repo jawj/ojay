@@ -36,6 +36,21 @@ Ojay('#fit-and-zoom').on('click', function(el,ev) {
     new Ojay.ContentOverlay().setContent('<div style="width: 100px;">Centered!</div>').fitToContent().center().show('zoom');
 });
 
+Ojay('#animated-fit').on('click', function(el,ev) {
+    ev.stopEvent();
+    var overlay = new Ojay.ContentOverlay({width: 300, height: 200});
+    
+    overlay.setContent(Ojay.HTML.ul(function(HTML) {
+        Ojay(HTML.li('Fit to content')).on('click', function(li,ev) {
+            overlay.getContentElement().setStyle({width: '600px', height: '400px'});
+            overlay.fitToContent({animate: true, balance: true, easing: 'bounceOut', duration: 1.5});
+        });
+    }));
+    
+    overlay.setPosition(500,300);
+    overlay.show();
+});
+
 Ojay('#mover').on('click', function(el,ev) {
     ev.stopEvent();
     overlays[0].resize(30, 80, 500, 200, {duration: 2, easing: 'backBoth'}).close('zoom');

@@ -78,6 +78,22 @@
         },
         
         /**
+         * @param {Number} left
+         * @param {Number} top
+         * @returns {Region}
+         */
+        centerOn: function(left, top) {
+            var myCenter = this.getCenter(), theirCenter;
+            if (typeof left == 'object') {
+                theirCenter = left.getCenter();
+                left = theirCenter.left;
+                top = theirCenter.top;
+            }
+            this.shift(left - myCenter.left, top - myCenter.top);
+            return this;
+        },
+        
+        /**
          * @param {Region} region
          * @returns {Region}
          */
