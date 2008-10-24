@@ -8,11 +8,21 @@
         CSS:    /\.css$/i
     };
     
-    var IFRAME_NAME = '__ojay_cross_domain__';
+    var IFRAME_NAME        = '__ojay_cross_domain__',
+        JSONP_HANDLER_NAME = '__ojay_jsonp_handler__';
     
     var createIframe = function() {
         Ojay(document.body).insert('<iframe name="' + IFRAME_NAME + '" style="display: none;"></iframe>', 'top');
     }.runs(1);
+    
+    var handleJsonP = function(callback, data) {
+        var args = Array.from(arguments), callback = args.shift();
+        callback.apply(null, args);
+    };
+    
+    var removeHandler = function() {
+        delete window[JSONP_HANDLER_NAME];
+    };
     
     var determineAssetType = function(url) {
         switch (true) {
@@ -93,10 +103,21 @@
          * @param {Object} callbacks    Object containing callback functions
          */
         load: function(url, parameters, callbacks) {
-            var path = Ojay.URI.parse(url).path,
-                assetType = determineAssetType(path);
+            var path      = Ojay.URI.parse(url).path,
+                assetType = determineAssetType(path),
+                uri       = Ojay.URI.build(url, parameters),
+                callbacks = callbacks || {};
             
-            YAHOO.util.Get[assetType](Ojay.URI.build(url, parameters).toString(), callbacks || {});
+            if (typeof callbacks == 'function') callbacks = {onSuccess: callbacks};
+            
+            if (uri.params.jsonp && callbacks.onSuccess) {
+                uri.setParam(uri.params.jsonp, JSONP_HANDLER_NAME);
+                delete uri.params.jsonp;
+                window[JSONP_HANDLER_NAME] = handleJsonP.partial(callbacks.onSuccess);
+                callbacks.onSuccess = removeHandler;
+            }
+            
+            YAHOO.util.Get[assetType](uri.toString(), callbacks);
         },
         
         /**
