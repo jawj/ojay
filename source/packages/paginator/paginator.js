@@ -63,7 +63,21 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
         ITEM_CLASS:         'item',
         SCROLL_TIME:        0.5,
         DIRECTION:          'horizontal',
-        EASING:             'easeBoth'
+        EASING:             'easeBoth',
+        
+        /**
+         * @param {Number} width
+         * @param {Number} height
+         * @returns {DomCollection}
+         */
+        makePageElement: function(width, height) {
+            var div = Ojay( Ojay.HTML.div({className: this.klass.PAGE_CLASS}) );
+            div.setStyle({
+                'float': 'left', width: width + 'px', height: height + 'px',
+                margin: '0 0 0 0', padding: '0 0 0 0', border: 'none'
+            });
+            return div;
+        }
     },
     
     /**
@@ -90,6 +104,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
         options.direction  = options.direction  || this.klass.DIRECTION;
         options.easing     = options.easing     || this.klass.EASING;
         options.looped     = !!options.looped;
+        options.infinite   = !!options.infinite;
         
         this.setState('CREATED');
     },
@@ -103,10 +118,12 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
     
     /**
      * @param {Object} state
+     * @param {Function} callback
+     * @param {Object} scope
      * @returns {Paginator}
      */
-    changeState: function(state) {
-        if (state.page !== undefined) this._handleSetPage(state.page);
+    changeState: function(state, callback, scope) {
+        if (state.page !== undefined) this._handleSetPage(state.page, callback, scope);
         return this;
     },
     
@@ -151,7 +168,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
      * @returns {Boolean}
      */
     isLooped: function() {
-        return !!this._options.looped;
+        return !!this._options.looped || !!this._options.infinite;
     },
     
     /**
@@ -222,18 +239,22 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
      */
     _groupItemsByPage: function() {
         var containerRegion = this.getRegion(),
-            width = containerRegion.getWidth(), height = containerRegion.getHeight(),
-            n = this._itemsPerPage, allItems = this._elements._items.toArray();
+            width           = containerRegion.getWidth(),
+            height          = containerRegion.getHeight(),
+            n               = this._itemsPerPage,
+            allItems        = this._elements._items.toArray();
+        
+        this._elements._pages = [];
+        
         this._numPages.times(function(i) {
             var items = allItems.slice(i * n, (i+1) * n);
-            var div = Ojay( Ojay.HTML.div({className: this.klass.PAGE_CLASS}) );
-            div.setStyle({
-                'float': 'left', width: width + 'px', height: height + 'px',
-                margin: '0 0 0 0', padding: '0 0 0 0', border: 'none'
-            });
+            var div = this.klass.makePageElement(width, height);
             items.forEach(div.method('insert'));
+            this._elements._pages.push(div);
             this._elements._subject.insert(div.node);
         }, this);
+        
+        this._dummyPage = this.klass.makePageElement(width, height);
     },
     
     /**
@@ -318,23 +339,27 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * element. Will fire a <tt>pagechange</tt> event if the page specified is not
              * equal to the current page.</p>
              * @param {Number} page
+             * @param {Function} callback
+             * @param {Object} scope
              * @returns {Paginator}
              */
-            setPage: function(page) {
+            setPage: function(page, callback, scope) {
                 page = Number(page);
-                if (this._options.looped && page < 1) page += this._numPages;
-                if (this._options.looped && page > this._numPages) page -= this._numPages;
+                if (this.isLooped() && page < 1) page += this._numPages;
+                if (this.isLooped() && page > this._numPages) page -= this._numPages;
                 if (page == this._currentPage || page < 1 || page > this._numPages) return this;
-                this.changeState({page: page});
+                this.changeState({page: page}, callback, scope);
                 return this;
             },
             
             /**
              * <p>Handles request to <tt>changeState()</tt>.</p>
              * @param {Number} page
+             * @param {Function} callback
+             * @param {Object} scope
              */
-            _handleSetPage: function(page) {
-                this.setScroll((page - 1) / (this._numPages - 1), {animate: true});
+            _handleSetPage: function(page, callback, scope) {
+                this.setScroll((page - 1) / (this._numPages - 1), {animate: true}, callback, scope);
             },
             
             /**
@@ -391,9 +416,11 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * set to <tt>true</tt> will prevent any <tt>scroll</tt> events from firing.</p>
              * @param {Number} amount
              * @param {Object} options
+             * @param {Function} callback
+             * @param {Object} scope
              * @returns {Paginator}
              */
-            setScroll: function(amount, options) {
+            setScroll: function(amount, options, callback, scope) {
                 var orientation = this._options.direction, settings;
                 var method = (orientation == 'vertical') ? 'getHeight' : 'getWidth';
                 var pages = this._numPages, total = this.getRegion()[method]() * (pages - 1);
@@ -412,6 +439,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                     this._elements._subject.animate(settings,
                         this._options.scrollTime, {easing: this._options.easing})._(function(self) {
                         self.setState('READY');
+                        if (callback) callback.call(scope || null);
                     }, this);
                 } else {
                     settings = (orientation == 'vertical')
