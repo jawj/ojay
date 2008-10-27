@@ -87,8 +87,9 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
         
         options = this._options = options || {};
         options.scrollTime = options.scrollTime || this.klass.SCROLL_TIME;
-        options.direction = options.direction || this.klass.DIRECTION;
-        options.easing = options.easing || this.klass.EASING;
+        options.direction  = options.direction  || this.klass.DIRECTION;
+        options.easing     = options.easing     || this.klass.EASING;
+        options.looped     = !!options.looped;
         
         this.setState('CREATED');
     },
@@ -143,6 +144,14 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
      */
     getDirection: function() {
         return this._options.direction;
+    },
+    
+    /**
+     * <p>Returns a boolean to indicate whether the paginator loops.</p>
+     * @returns {Boolean}
+     */
+    isLooped: function() {
+        return !!this._options.looped;
     },
     
     /**
@@ -313,6 +322,8 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              */
             setPage: function(page) {
                 page = Number(page);
+                if (this._options.looped && page < 1) page += this._numPages;
+                if (this._options.looped && page > this._numPages) page -= this._numPages;
                 if (page == this._currentPage || page < 1 || page > this._numPages) return this;
                 this.changeState({page: page});
                 return this;

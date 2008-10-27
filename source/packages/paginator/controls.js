@@ -76,10 +76,12 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             this._highlightPage(page);
             
             // Disable previous and next buttons at the ends of the run
-            paginator.on('firstpage')._(elements._previous).addClass('disabled');
-            paginator.on('lastpage')._(elements._next).addClass('disabled');
-            if (page == 1) elements._previous.addClass('disabled');
-            if (page == paginator.getPages()) elements._next.addClass('disabled');
+            if (!paginator.isLooped()) {
+                paginator.on('firstpage')._(elements._previous).addClass('disabled');
+                paginator.on('lastpage')._(elements._next).addClass('disabled');
+                if (page == 1) elements._previous.addClass('disabled');
+                if (page == paginator.getPages()) elements._next.addClass('disabled');
+            }
             
             elements._container.addClass(paginator.getDirection());
             return elements._container;
