@@ -71,7 +71,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
          * @returns {DomCollection}
          */
         makePageElement: function(width, height) {
-            var div = Ojay( Ojay.HTML.div({className: this.klass.PAGE_CLASS}) );
+            var div = Ojay( Ojay.HTML.div({className: this.PAGE_CLASS}) );
             div.setStyle({
                 'float': 'left', width: width + 'px', height: height + 'px',
                 margin: '0 0 0 0', padding: '0 0 0 0', border: 'none'
@@ -197,6 +197,14 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
     getRegion: function() {
         if (!this._elements._container) return undefined;
         return this._elements._container.getRegion();
+    },
+    
+    /**
+     * @returns {Number}
+     */
+    getTotalOffset: function() {
+        var method = (this._options.direction == 'vertical') ? 'getHeight' : 'getWidth';
+        return this.getRegion()[method]() * (this._numPages - 1);
     },
     
     /**
@@ -345,9 +353,9 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              */
             setPage: function(page, callback, scope) {
                 page = Number(page);
-                if (this.isLooped() && page < 1) page += this._numPages;
-                if (this.isLooped() && page > this._numPages) page -= this._numPages;
-                if (page == this._currentPage || page < 1 || page > this._numPages) return this;
+                if (this._options.looped && page < 1) page += this._numPages;
+                if (this._options.looped && page > this._numPages) page -= this._numPages;
+                if (!this.isLooped() && (page == this._currentPage || page < 1 || page > this._numPages)) return this;
                 this.changeState({page: page}, callback, scope);
                 return this;
             },
@@ -359,7 +367,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @param {Object} scope
              */
             _handleSetPage: function(page, callback, scope) {
-                this.setScroll((page - 1) / (this._numPages - 1), {animate: true}, callback, scope);
+                this.setScroll(this.getTotalOffset() * (page - 1) / (this._numPages - 1), {animate: true}, callback, scope);
             },
             
             /**
@@ -367,7 +375,20 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @returns {Paginator}
              */
             incrementPage: function() {
-                return this.setPage(this._currentPage + 1);
+                var wrapping  = this._options.infinite && (this._currentPage == this._numPages),
+                    firstPage = this._elements._pages[0];
+                
+                if (wrapping)
+                    this._elements._subject
+                      .insert(firstPage, 'bottom')
+                      .insert(this._dummyPage, 'top');
+                
+                return this.setPage(this._currentPage + 1, function() {
+                    if (!wrapping) return;
+                    this._dummyPage.remove();
+                    this._elements._subject.insert(firstPage, 'top');
+                    this.setScroll(0, {animate: false, silent: true});
+                }, this);
             },
             
             /**
@@ -375,7 +396,24 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @returns {Paginator}
              */
             decrementPage: function() {
-                return this.setPage(this._currentPage - 1);
+                var wrapping = this._options.infinite && (this._currentPage == 1),
+                    property = (this._options.direction == 'vertical') ? 'marginTop' : 'marginLeft',
+                    lastPage = this._elements._pages[this._numPages - 1],
+                    settings = {};
+                
+                if (wrapping) {
+                    this._elements._subject.insert(lastPage, 'top');
+                    settings[property] = (-this.getTotalOffset() / (this._numPages - 1)) + 'px';
+                    this._elements._subject.setStyle(settings);
+                }
+                
+                return this.setPage(this._currentPage - 1, function() {
+                    if (!wrapping) return;
+                    this._elements._subject.insert(lastPage, 'bottom');
+                    settings[property] = 0;
+                    this._elements._subject.setStyle(settings);
+                    this.setScroll(1, {animate: false, silent: true});
+                }, this);
             },
             
             /**
@@ -421,12 +459,12 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @returns {Paginator}
              */
             setScroll: function(amount, options, callback, scope) {
-                var orientation = this._options.direction, settings;
-                var method = (orientation == 'vertical') ? 'getHeight' : 'getWidth';
-                var pages = this._numPages, total = this.getRegion()[method]() * (pages - 1);
+                var orientation = this._options.direction, 
+                    pages       = this._numPages,
+                    total       = this.getTotalOffset(),
+                    settings;
                 
                 if (amount >= 0 && amount <= 1) amount = amount * total;
-                if (amount < 0 || amount > total) return this;
                 
                 this._elements._items.removeClass('focused');
                 options = options || {};
@@ -448,15 +486,19 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                     this._elements._subject.setStyle(settings);
                 }
                 
-                if (!options.silent) this.notifyObservers('scroll', amount/total, total);
+                var reportedOffset = amount/total;
+                if (reportedOffset < 0) reportedOffset = 1;
+                if (reportedOffset > 1) reportedOffset = 0;
                 
-                var page = (pages * (amount/total)).ceil() || 1;
+                if (!options.silent) this.notifyObservers('scroll', reportedOffset, total);
+                
+                var page = (pages * reportedOffset).ceil() || 1;
                 if (page != this._currentPage) {
                     this._currentPage = page;
                     this.notifyObservers('pagechange', page);
                     
                     if (page == 1) this.notifyObservers('firstpage');
-                    if (page == this._numPages) this.notifyObservers('lastpage');
+                    if (page == pages) this.notifyObservers('lastpage');
                 }
                 
                 return this;
