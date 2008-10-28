@@ -10,6 +10,9 @@
     the paginator - some page links and a @YAHOO.widget.Slider@ control - and demonstrates a simple
     use of the @Ojay@ event system to keep objects notified of each other's behaviour without
     tightly coupling their implementations.
+    
+    The @infinite@ option is used to give the appearance of an infinite loop - try clicking 'Next'
+    a few times and watch what happens.
 
 :plain
     <style id="display-style" type="text/css">
@@ -120,7 +123,8 @@
             height:     '240px',
             direction:  'vertical',
             scrollTime: 0.6,
-            easing:     'backOut'
+            easing:     'backOut',
+            infinite:   true
         });
         
         pager.setup();

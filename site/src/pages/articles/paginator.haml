@@ -132,6 +132,32 @@
   and check out "the source code":http://ojay.googlecode.com/svn/trunk/source/packages/paginator/controls.js
   for the  @Paginator.Controls@ class.
   
+  h3. Looping options
+  
+  As of version 0.3, @Paginator@ supports two options that allow the 'previous' and 'next'
+  controls (which map to the @decrementPage()@ and @incrementPage()@ methods) to cause the
+  paginator to wrap back to the start rather than stopping at the end of the list. You
+  may use *one* of the options when setting up a @Paginator@ instance:
+  
+  * @looped@: this causes the paginator to scroll back to the beginning when you try
+    to @incrementPage()@ from the last page in the list, and similarly for @decrementPage()@
+    at the beginning of the list.
+  * @infinite@: this is similar to @looped@ mode, but the paginator will scroll in the same
+    direction forever, i.e. it will pan right a single frame from the last page in the list,
+    rather than scrolling back left through all the frames. This does not mean you get
+    an infinite number of pages, it just means they appear to form an infinite loop.
+  
+  These options must be specified as part of the constructor, for example:
+  
+  <pre>
+  var pager = new Ojay.Paginator('#the-content', {
+      width:      '680px',
+      height:     '120px',
+      direction:  'horizontal',
+      looped:     true
+  });
+  pager.setup();</pre>
+  
   h3. API methods
   
   The @pager@ object we created above has an API that allows you to script its behaviour
