@@ -28,11 +28,21 @@ October [TODO] 2008
       e.g.
           
           Ojay.HTTP.GET('/search', {q: 'hello'}, function(r) { ... });
+      
+    * Better JSON-P support for calling third-party domains. You
+      can now use standard Ajax syntax rather than using a named
+      global function for talking to JSON-P services.
 
 * Additions to Overlay package:
     * ContentOverlay#fitToContent() can now animate the transition
       between sizes, and balance the change so the center of the
       overlay does not move.
+
+* Additions to Paginator package:
+    * Paginator now supports two additional options: 'looped' and
+      'infinite'. Looped mode allows the prev/next buttons to wrap
+      around the loop of pages, and infinite mode allows the paginator
+      to keep scrolling indefinitely in the same direction.
 
 * Bug fixes:
     * Ojay.HTML.input() generates inputs with the correct type in IE
