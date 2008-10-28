@@ -3,14 +3,14 @@ var pager = new Ojay.Paginator('#items', {width: '416px', rows: 2, looped: true}
 var slider = YAHOO.widget.Slider.getHorizSlider('slider-bg', 'slider-thumb', 0, 200);
 
 var pager2 = new Ojay.Paginator('#items2', {columns: 3, height: '208px',
-        direction: 'vertical', scrollTime: 1.6, easing: 'backOut', infinite: true});
+        direction: 'vertical', scrollTime: 1.6, easing: 'backOut'});
 
 var ajaxer = new Ojay.AjaxPaginator('#ajaxy', {
     urls: ['/service/lorem.html', '/service/dolor.html', '/service/consectetuer.html'],
-    width: '400px', height: '200px'
+    width: '400px', height: '200px', infinite: true
 });
 
-Ojay.History.manage(ajaxer, 'pager');
+Ojay.History.manage(pager2, 'pager');
 Ojay.History.initialize({asset: './index.html'});
 
 Ojay.onDOMReady(function() {
@@ -38,8 +38,8 @@ Ojay.onDOMReady(function() {
     });
     ajaxer.on('pageload')._('#ajax-status').wait(1).setContent('');
     
-    pager2.on('pagechange', function(o,p) { window.console && console.log('pagechange', p) });
-    pager2.on('scroll', function(o,a,t) { window.console && console.log('scroll', a, t) });
-    pager2.on('firstpage', function(o,p) { window.console && console.log('firstpage') });
-    pager2.on('lastpage', function(o,p) { window.console && console.log('lastpage') });
+    ajaxer.on('pagechange', function(o,p) { window.console && console.log('pagechange', p) });
+    ajaxer.on('scroll', function(o,a,t) { window.console && console.log('scroll', a, t) });
+    ajaxer.on('firstpage', function(o,p) { window.console && console.log('firstpage') });
+    ajaxer.on('lastpage', function(o,p) { window.console && console.log('lastpage') });
 });
