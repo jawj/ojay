@@ -30,6 +30,7 @@ Ojay.onDOMReady(function() {
     pager2.setup();
     pager2.addControls('before');
     
+    ajaxer.setPage(2);
     ajaxer.setup();
     ajaxer.addControls('before');
     

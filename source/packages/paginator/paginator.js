@@ -330,9 +330,21 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 
                 var state = this.getInitialState();
                 this.setState('READY');
-                this._currentPage = state.page;
-                this._handleSetPage(state.page);
+                if (this._currentPage === undefined) this._currentPage = state.page;
+                this._handleSetPage(this._currentPage);
                 
+                return this;
+            },
+            
+            /**
+             * <p>Sets the initial page for the paginator to start at when in the CREATED
+             * state. No scrolling takes place, and the number set will override the initial
+             * page setting and any setting pulled in by the history manager.</p>
+             * @param {Number} page
+             * @returns {Paginator}
+             */
+            setPage: function(page) {
+                this._currentPage = Number(page);
                 return this;
             }
         },
