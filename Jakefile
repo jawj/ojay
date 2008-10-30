@@ -23,7 +23,7 @@ jake :after_build do |build|
   
   FileUtils.mkdir_p 'site/site/javascripts/ojay'
   
-  all = build.bundle(:all)
+  all = build.package(:all)
   
   FileUtils.copy all.build_path(:min), 'site/site/javascripts/ojay/all-min.js'
   FileUtils.copy all.build_path(:source), 'site/site/javascripts/ojay/all.js'
