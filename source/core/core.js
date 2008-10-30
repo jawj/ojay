@@ -19,6 +19,8 @@ var Ojay = function() {
     return new Ojay.DomCollection(elements.unique());
 };
 
+Ojay.VERSION = '<%= version %>';
+
 Array.from = JS.array;
 
 Function.prototype.bind = function() {

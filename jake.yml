@@ -1,0 +1,148 @@
+---
+# Package configuration for Ojay build process
+#
+source_directory:     source
+build_directory:      build/ojay
+header:               ../COPYRIGHT
+layout:               together
+builds:
+  source:
+    suffix:           false
+    packer:           false
+  min:
+    shrink_vars:      true
+    private:          true
+packages:
+  
+  js-class:
+    directory:        external
+    header:           COPYRIGHT
+    files:
+      - class
+      - method_chain
+      - observable
+      - state
+  
+  core:
+    directory:        core
+    requires:
+      - yui
+      - ojay/js-class-min
+    files:
+      - core
+      - utils
+      - array
+      - function
+      - string
+      - number
+      - ../external/reiterate
+      - selectors
+      - event
+      - observable
+      - dom_collection
+      - dom_insertion
+      - html_builder
+      - animation
+      - region
+      - sequence
+      - method_chain
+  
+  pkg/accordion:
+    directory:        packages/accordion
+    files:
+      - accordion
+      - section
+  
+  pkg/http:
+    directory:        packages/http
+    requires:
+      - ojay/core-min
+    files:
+      - ajax
+      - cross_domain
+      - uri
+  
+  pkg/forms:
+    directory:        packages/forms
+    requires:
+      - ojay/core-min
+      - ojay/pkg/http-min
+    files:
+      - begin
+      - utils
+      - description
+      - requirement
+      - data
+      - errors
+      - dsl
+      - inputable
+      - checkable
+      - radio_buttons
+      - checkbox
+      - select
+      - end
+  
+  pkg/history:
+    directory:        packages/history
+    requires:
+      - ojay/core-min
+    files:
+      - history
+  
+  pkg/keyboard:
+    directory:        packages/keyboard
+    requires:
+      - ojay/core-min
+    files:
+      - begin
+      - utils
+      - keyboard
+      - rules
+      - monitor
+      - disabler
+      - events
+      - end
+  
+  pkg/mouse:
+    directory:        packages/mouse
+    requires:
+      - ojay/core-min
+    files:
+      - mouse
+  
+  pkg/overlay:
+    directory:        packages/overlay
+    requires:
+      - ojay/core-min
+    files:
+      - begin
+      - overlay
+      - transitions
+      - content_overlay
+      - tooltip
+      - page_mask
+      - end
+  
+  pkg/paginator:
+    directory:        packages/paginator
+    requires:
+      - ojay/core-min
+      - ojay/pkg/http-min
+    files:
+      - paginator
+      - ajax_paginator
+      - controls
+
+bundles:
+  all:
+    files:
+      - js-class
+      - core
+      - pkg/http
+      - pkg/accordion
+      - pkg/forms
+      - pkg/history
+      - pkg/keyboard
+      - pkg/mouse
+      - pkg/overlay
+      - pkg/paginator
