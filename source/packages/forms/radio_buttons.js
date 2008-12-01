@@ -17,9 +17,10 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
     
     /**
      * @param {String|HTMLElement|DomCollection} inputs
+     * @param {Object} options
      */
-    initialize: function(inputs) {
-        this._items = Ojay(inputs).map(function(input) { return new this.klass.Item(this, input); }, this);
+    initialize: function(inputs, options) {
+        this._items = Ojay(inputs).map(function(input) { return new this.klass.Item(this, input, options); }, this);
         if (this._items.map('_input.node.name').unique().length > 1)
             throw new Error('Attempt to create a RadioButtons object with radios of different names');
         this._checkedItem = this._items.filter('checked')[0] || null;
@@ -98,8 +99,10 @@ Ojay.Forms.RadioButtons = new JS.Class(/** @scope Forms.RadioButtons.prototype *
             /**
              * @param {Forms.RadioButtons} group
              * @param {DomCollection} input
+             * @param {Object} options
              */
-            initialize: function(group, input) {
+            initialize: function(group, input, options) {
+                this._options = options || {};
                 styledInputs.push(this);
                 if (!input || !input.node || input.node.type != 'radio')
                     throw new TypeError('Attempt to create a RadioButtons object with non-radio element');

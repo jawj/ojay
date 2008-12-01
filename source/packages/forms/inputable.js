@@ -9,13 +9,17 @@
 var Inputable = new JS.Module(/** @scope Inputable */{
     include: Ojay.Observable,
     
+    extend: {
+        DEFAULT_WRAPPER_POSITION: 'relative'
+    },
+    
     /**
      * <p>Called inside class constructors to set up the behaviour of the form input and
      * its associated label. Hides the input off the page, and sets up a set of events to
      * enable class names to be changed.</p>
      */
     _setupInput: function() {
-        var wrapper = Ojay( Ojay.HTML.span() ).setStyle({position: 'relative'});
+        var wrapper = Ojay( Ojay.HTML.span() ).setStyle({position: this._options.wrapperPosition || Inputable.DEFAULT_WRAPPER_POSITION});
         this._input.insert(wrapper.node, 'before');
         wrapper.insert(this._input.node, 'bottom');
         this._input.setStyle({position: 'absolute', left: '-5000px', top: 0});
