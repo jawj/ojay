@@ -18,8 +18,10 @@ Ojay.Forms.Checkbox = new JS.Class(/* @scope Forms.Checkbox.prototype */{
     
     /**
      * @param {String|HTMLElement|DomCollection} input
+     * @param {Object} options
      */
-    initialize: function(input) {
+    initialize: function(input, options) {
+        this._options = options || {};
         styledInputs.push(this);
         this._input = Ojay(input);
         if (!this._input || !this._input.node || this._input.node.type != 'checkbox')

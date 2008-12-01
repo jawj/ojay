@@ -84,8 +84,10 @@ Ojay.Forms.Select = new JS.Class(/** @scope Forms.Select.prototype */{
     
     /**
      * @param {String|HTMLElement|DomCollection} select
+     * @param {Object} options
      */
-    initialize: function(select) {
+    initialize: function(select, options) {
+        this._options = options || {};
         styledInputs.push(this);
         this._input = Ojay(select);
         if (!this._input || this._input.node.tagName.toLowerCase() != 'select')
