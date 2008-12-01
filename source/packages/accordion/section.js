@@ -42,6 +42,9 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
             this._collapser.insert(target);
             this._element.insert(this._collapser, 'after');
             
+            // Fixes some layout issues in IE
+            this._collapser.setStyle({position: 'relative', zoom: 1});
+            
             options = options || {};
             this._duration = options.duration || this.klass.DEFAULT_DURATION;
             this._easing = options.easing || this.klass.DEFAULT_EASING;
