@@ -1,3 +1,16 @@
+Version 0.3.1
+December [TODO] 2008
+================================================================
+
+* Bug fixes:
+    * Fixed some layout-related problems with Accordion in
+      Internet Explorer.
+    * Added ability to pass options to Forms constructors, with
+      an option to set the position type used to wrap form
+      inputs (wrapperPosition). See Forms documentation for
+      more information.
+
+
 Version 0.3.0
 October 31 2008
 ================================================================
