@@ -81,6 +81,24 @@
   new Ojay.Forms.RadioButtons('.radios input');
   new Ojay.Forms.Checkbox('#accept');</pre>
   
+  @Ojay@ 'hides' the original form inputs by wrapping them in a @span@ and using positioning,
+  for example:
+  
+  <pre>
+  <span style="position: relative;">
+    <input type="checkbox" name="foo"
+        style="position: absolute; left: -5000px; top: 0;" />
+  </span></pre>
+  
+  This is designed to preserve keyboard navigability by keeping the inputs at their original
+  vertical place in the document; using @display: none@ stops you from selecting the inputs
+  using the keyboard. This works well in most situations but sometimes setting @position: absolute@
+  on the span works better. To do this, pass the @wrapperPosition@ option when setting up
+  an @Ojay.Forms@ object:
+  
+  <pre>
+  new Ojay.Forms.Checkbox('#foo', {wrapperPosition: 'absolute'});</pre>
+  
   @select@ elements are similarly easy to style. Just add a @select@ with a @label@ to
   your form and make a quick JavaScript call as follows:
   
