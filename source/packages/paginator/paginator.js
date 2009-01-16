@@ -519,11 +519,12 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
             /**
              * @param {HTMLElement} element
              * @param {Number} n
+             * @returns {Paginator}
              */
             push: function(element, n) {
-                var last = (n === undefined);
-                if (last && this._elements._items.length % this._itemsPerPage == 0)
-                    this._createPage();
+                n = (n === undefined) ? this._numPages - 1 : n;
+                var last = (n === this._numPages - 1);
+                if (last) this._checkPages();
                 
                 element = Ojay(element).setStyle({margin: '0 0 0 0'});
                 var page = this._elements._pages[last ? this._numPages - 1 : n];
@@ -536,25 +537,57 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 return this;
             },
             
+            /**
+             * @param {Number} n
+             * @returns {DomCollection}
+             */
             pop: function(n) {
-                var last = (n === undefined);
                 n = (n === undefined) ? this._numPages - 1 : n;
+                var last = (n === this._numPages - 1);
+                
                 var page = this._elements._pages[n],
                     item = Ojay(page.children().toArray().pop());
                 
-                item.remove();
+                if (!last) return item.remove();
+                
                 this._elements._items = this._elements._items.filter(function(member) {
                     return member.node !== item.node;
                 });
-                if (last && this._elements._items.length % this._itemsPerPage == 0)
-                    this._destroyPage();
+                if (last) this._checkPages();
                 
-                return item;
+                return item.remove();
             },
             
-            shift: function(n) {},
+            shift: function(n) {
+                n = (n === undefined) ? 0 : n;
+                var first = (n === 0);
+                var page = this._elements._pages[n],
+                    item = page.children().at(0);
+                
+                if (!first) return item.remove();
+                
+                for (var i = 1; i < this._numPages; i++)
+                    this.push(this.shift(i), i-1);
+                
+                this._elements._items = this._elements._items.filter(function(member) {
+                    return member.node !== item.node;
+                });
+                this._checkPages();
+                
+                return item.remove();
+            },
             
             unshift: function(element, n) {},
+            
+            _checkPages: function() {
+                var items   = this._elements._items.length,
+                    pages   = this._numPages,
+                    perPage = this._itemsPerPage,
+                    total   = pages * perPage;
+                
+                if (items == total) this._createPage();
+                if (items == total - perPage) this._destroyPage();
+            },
             
             _createPage: function() {
                 var region = this.getRegion(),
