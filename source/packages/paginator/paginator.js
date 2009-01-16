@@ -514,6 +514,49 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 }
                 
                 return this;
+            },
+            
+            /**
+             * @param {HTMLElement} element
+             * @param {Number} n
+             */
+            push: function(element, n) {
+                if (n === undefined &&
+                        this._elements._items.length % this._itemsPerPage == 0)
+                    this._createPage();
+                
+                element = Ojay(element).setStyle({margin: '0 0 0 0'});
+                var page = this._elements._pages[
+                    (n === undefined) ? this._numPages - 1 : n];
+                
+                page.insert(element, 'bottom');
+                var items = this._elements._items;
+                items[items.length] = element.node;
+                items.length += 1;
+                
+                return this;
+            },
+            
+            pop: function(n) {},
+            
+            shift: function(n) {},
+            
+            unshift: function(element, n) {},
+            
+            _createPage: function() {
+                var region = this.getRegion(),
+                    page = this.klass.makePageElement(region.getWidth(), region.getHeight());
+                this._elements._subject.insert(page, 'bottom');
+                this._elements._pages.push(page);
+                
+                this._numPages += 1;
+                var offset = (this._currentPage - 1) / (this._numPages - 1);
+                this.notifyObservers('pagecreate');
+                this.notifyObservers('scroll', offset, this.getTotalOffset());
+            },
+            
+            _destroyPage: function() {
+                
             }
         },
         
