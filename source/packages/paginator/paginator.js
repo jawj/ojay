@@ -521,13 +521,12 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @param {Number} n
              */
             push: function(element, n) {
-                if (n === undefined &&
-                        this._elements._items.length % this._itemsPerPage == 0)
+                var last = (n === undefined);
+                if (last && this._elements._items.length % this._itemsPerPage == 0)
                     this._createPage();
                 
                 element = Ojay(element).setStyle({margin: '0 0 0 0'});
-                var page = this._elements._pages[
-                    (n === undefined) ? this._numPages - 1 : n];
+                var page = this._elements._pages[last ? this._numPages - 1 : n];
                 
                 page.insert(element, 'bottom');
                 var items = this._elements._items;
@@ -537,7 +536,21 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 return this;
             },
             
-            pop: function(n) {},
+            pop: function(n) {
+                var last = (n === undefined);
+                n = (n === undefined) ? this._numPages - 1 : n;
+                var page = this._elements._pages[n],
+                    item = Ojay(page.children().toArray().pop());
+                
+                item.remove();
+                this._elements._items = this._elements._items.filter(function(member) {
+                    return member.node !== item.node;
+                });
+                if (last && this._elements._items.length % this._itemsPerPage == 0)
+                    this._destroyPage();
+                
+                return item;
+            },
             
             shift: function(n) {},
             
@@ -556,7 +569,15 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
             },
             
             _destroyPage: function() {
-                
+                this._elements._pages.pop().remove();
+                if (this._currentPage == this._numPages) {
+                    this._currentPage -= 1;
+                }
+                this._numPages -= 1;
+                var offset = (this._currentPage - 1) / (this._numPages - 1);
+                if (offset == 1) this.setScroll(1, {animate: true, silent: true});
+                this.notifyObservers('pagedestroy');
+                this.notifyObservers('scroll', offset, this.getTotalOffset());
             }
         },
         
