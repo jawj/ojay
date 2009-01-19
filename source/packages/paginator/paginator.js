@@ -531,8 +531,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 
                 page.insert(element, 'bottom');
                 var items = this._elements._items;
-                items[items.length] = element.node;
-                items.length += 1;
+                [].push.call(items, element.node);
                 
                 return this;
             },
@@ -577,7 +576,25 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 return item.remove();
             },
             
-            unshift: function(element, n) {},
+            unshift: function(element, n) {
+                n = (n === undefined) ? 0 : n;
+                var first = (n === 0);
+                if (first) this._checkPages();
+                
+                element = Ojay(element).setStyle({margin: '0 0 0 0'});
+                var page = this._elements._pages[n];
+                
+                page.insert(element, 'top');
+                if (!first) return this;
+                
+                for (var i = 1; i < this._numPages; i++)
+                    this.unshift(this.pop(i-1), i);
+                
+                var items = this._elements._items;
+                [].unshift.call(items, element.node);
+                
+                return this;
+            },
             
             _checkPages: function() {
                 var items   = this._elements._items.length,
