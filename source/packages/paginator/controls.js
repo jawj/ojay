@@ -23,6 +23,8 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
         initialize: function(paginator) {
             this._paginator = paginator;
             this._elements = {};
+            this._paginator.on('pagecreate')._(this)._addPage();
+            this._paginator.on('pagedestroy')._(this)._removePage();
         },
         
         /**
@@ -35,21 +37,30 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             if (this._paginator.inState('CREATED')) return null;
             var elements = this._elements, klass = this.klass, paginator = this._paginator;
             if (elements._container) return elements._container;
+            var self = this;
             
-            elements._container = Ojay( Ojay.HTML.div({className: klass.CONTAINER_CLASS}, function(HTML) {
+            elements._container = Ojay( Ojay.HTML.div(
+                {className: klass.CONTAINER_CLASS}, function(HTML) {
+            
                 // Previous button - decrements page
-                elements._previous = Ojay( HTML.div({className: klass.PREVIOUS_CLASS}, 'Previous') );
+                elements._previous = Ojay( HTML.div(
+                        {className: klass.PREVIOUS_CLASS},
+                        'Previous') );
+                
                 // Page buttons - skip to individual pages
-                elements._pageLinks = Ojay( HTML.div({className: klass.PAGE_LINKS_CLASS}, function(HTML) {
+                elements._pageLinks = Ojay( HTML.div(
+                    {className: klass.PAGE_LINKS_CLASS}, function(HTML) {
                     elements._pages = [];
                     paginator.getPages().times(function(page) {
-                        var span = elements._pages[page] = Ojay( HTML.span(String(page + 1)) );
-                        span.on('mouseover').addClass('hovered');
-                        span.on('mouseout').removeClass('hovered');
+                        var span = elements._pages[page] = self._makeLink(page+1);
+                        HTML.concat(span.node);
                     });
                 }) );
+                
                 // Next button - increments page
-                elements._next = Ojay( HTML.div({className: klass.NEXT_CLASS}, 'Next') );
+                elements._next = Ojay( HTML.div(
+                        {className: klass.NEXT_CLASS},
+                        'Next') );
             }) );
             
             elements._previous.on('click')._(paginator).decrementPage();
@@ -85,6 +96,23 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             
             elements._container.addClass(paginator.getDirection());
             return elements._container;
+        },
+        
+        _makeLink: function(page) {
+            var link = Ojay( Ojay.HTML.span(String(page)) );
+            link.on('mouseover').addClass('hovered');
+            link.on('mouseout').removeClass('hovered');
+            return link;
+        },
+        
+        _addPage: function() {
+            var link = this._makeLink(this._paginator.getPages());
+            this._elements._pages.push(link);
+            this._elements._pageLinks.insert(link, 'bottom');
+        },
+        
+        _removePage: function() {
+            this._elements._pages.pop().remove();
         },
         
         /**

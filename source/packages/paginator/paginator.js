@@ -605,6 +605,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 this._elements._pages.pop().remove();
                 if (this._currentPage == this._numPages) {
                     this._currentPage -= 1;
+                    this.notifyObservers('pagechange', this._currentPage);
                 }
                 this._numPages -= 1;
                 var offset = (this._currentPage - 1) / (this._numPages - 1);
