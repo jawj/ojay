@@ -109,10 +109,15 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             var link = this._makeLink(this._paginator.getPages());
             this._elements._pages.push(link);
             this._elements._pageLinks.insert(link, 'bottom');
+            this._elements._next.removeClass('disabled');
         },
         
         _removePage: function() {
             this._elements._pages.pop().remove();
+            var pager = this._paginator;
+            if (pager.isLooped()) return;
+            if (pager.getCurrentPage() == pager.getPages())
+                this._elements._next.addClass('disabled');
         },
         
         /**
