@@ -205,6 +205,25 @@
   
   // Scrolls to 50px with no 'scroll' event
   pager.setScroll(50, {silent: true});</pre>
+  
+  h3. Adding and removing content from the paginator
+  
+  You can add/remove items from the paginator after it's been set up, using methods
+  similar to those you find on arrays: @push()@, @pop()@, @shift()@ and @unshift()@.
+  
+  @push()@ pushes another item onto the final page of the paginator, creating a new
+  page to hold it if necessary. For example, to add a new image to our example
+  above:
+  
+  <pre>
+  pager.push(Ojay.HTML.div({className: 'item'}, 'A new div'));</pre>
+  
+  @unshift()@ works the same way, except it pushes the new item onto the start of the
+  first page, shuffling all subsquent items on all pages along one place.
+  
+  As you'd expect, @pop()@ removes and returns the last item in the paginator, while
+  @shift()@ remove and returns the first item. All of these methods fire various events:
+  see below for information.
 
   h3. Events
   
@@ -230,6 +249,11 @@
     page as the second argument to your callback.
   * @firstpage@ - fires when the first pages becomes focused.
   * @lastpage@ - fires when the list page receives focus.
+  * @pagecreate@ - fires when a @push()@ or @unshift()@ call causes a new page to be
+    added to the paginator.
+  * @pagedestroy@ - fires when a @pop()@ or @shift()@ causes the last page to be removed.
+  * @itemadd@ - fires when a new item is added using @push()@ or @unshift()@.
+  * @itemremove@ - fires when a new item is removed using @pop()@ or @shift()@.
   * @scroll@ - fires whenever any scrolling takes place. Passes the scroll offset
     (between 0 and 1) as the second callback argument, and the total scroll range in
     pixels as the third.

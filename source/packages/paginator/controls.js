@@ -98,6 +98,11 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             return elements._container;
         },
         
+        /**
+         * <p>Creates and returns an element to use as a numbered page link.</p>
+         * @param {Number} page
+         * @returns {DomCollection}
+         */
         _makeLink: function(page) {
             var link = Ojay( Ojay.HTML.span(String(page)) );
             link.on('mouseover').addClass('hovered');
@@ -105,6 +110,10 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             return link;
         },
         
+        /**
+         * <p>Responds to the <tt>pagecreate</tt> event on the associated <tt>Paginator</tt>
+         * instance by adding a new page link to the list.</p>
+         */
         _addPage: function() {
             var link = this._makeLink(this._paginator.getPages());
             this._elements._pages.push(link);
@@ -112,6 +121,10 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
             this._elements._next.removeClass('disabled');
         },
         
+        /**
+         * <p>Responds to the <tt>pagedestroy</tt> event on the associated <tt>Paginator</tt>
+         * instance removing the final page link from the list.</p>
+         */
         _removePage: function() {
             this._elements._pages.pop().remove();
             var pager = this._paginator;
