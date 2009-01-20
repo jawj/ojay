@@ -514,6 +514,168 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 }
                 
                 return this;
+            },
+            
+            /**
+             * <p>Pushes a new element onto the end of the list of elements contained in the
+             * <tt>Paginator</tt>, creating a new page and firing the <tt>pagecreate</tt>
+             * event if necessary. The <tt>n</tt> parameter is for internal use only, for when
+             * items need to be moved across page boundaries by <tt>shift</tt>/<tt>unshift</tt>
+             * operations.</p>
+             * @param {HTMLElement} element
+             * @param {Number} n
+             * @returns {Paginator}
+             */
+            push: function(element, n) {
+                n = (n === undefined) ? this._numPages - 1 : n;
+                var last = (n === this._numPages - 1);
+                if (last) this._checkPages();
+                
+                element = Ojay(element).setStyle({margin: '0 0 0 0'});
+                var page = this._elements._pages[last ? this._numPages - 1 : n];
+                
+                page.insert(element, 'bottom');
+                this.notifyObservers('itemadd');
+                
+                var items = this._elements._items;
+                if (last) [].push.call(items, element.node);
+                
+                return this;
+            },
+            
+            /**
+             * <p>Removes the final item from the final page of the <tt>Paginator</tt>. If
+             * the final page subsequently contains no items, it is removed and a
+             * <tt>pagedestroy</tt> event is fired. The <tt>n</tt> parameter is for internal
+             * use only, for when items need to be moved across page boundaries by
+             * <tt>shift</tt>/<tt>unshift</tt> operations.</p>
+             * @param {Number} n
+             * @returns {DomCollection}
+             */
+            pop: function(n) {
+                n = (n === undefined) ? this._numPages - 1 : n;
+                var last = (n === this._numPages - 1);
+                
+                var page = this._elements._pages[n],
+                    item = Ojay(page.children().toArray().pop());
+                
+                this.notifyObservers('itemremove');
+                if (!last) return item.remove();
+                
+                this._elements._items = this._elements._items.filter(function(member) {
+                    return member.node !== item.node;
+                });
+                if (last) this._checkPages();
+                
+                return item.remove();
+            },
+            
+            /**
+             * <p>Removes the first item from the first page of the <tt>Paginator</tt>. If
+             * the final page subsequently contains no items, it is removed and a
+             * <tt>pagedestroy</tt> event is fired. The <tt>n</tt> parameter is for internal
+             * use only, for when items need to be moved across page boundaries by
+             * <tt>shift</tt>/<tt>unshift</tt> operations.</p>
+             * @param {Number} n
+             * @returns {DomCollection}
+             */
+            shift: function(n) {
+                n = (n === undefined) ? 0 : n;
+                var first = (n === 0);
+                var page = this._elements._pages[n],
+                    item = page.children().at(0);
+                
+                this.notifyObservers('itemremove');
+                if (!first) return item.remove();
+                
+                for (var i = 1; i < this._numPages; i++)
+                    this.push(this.shift(i), i-1);
+                
+                this._elements._items = this._elements._items.filter(function(member) {
+                    return member.node !== item.node;
+                });
+                this._checkPages();
+                
+                return item.remove();
+            },
+            
+            /**
+             * <p>Pushes a new element onto the start of the list of elements contained in the
+             * <tt>Paginator</tt>, creating a new page and firing the <tt>pagecreate</tt>
+             * event if necessary. The <tt>n</tt> parameter is for internal use only, for when
+             * items need to be moved across page boundaries by <tt>shift</tt>/<tt>unshift</tt>
+             * operations.</p>
+             * @param {HTMLElement} element
+             * @param {Number} n
+             * @returns {Paginator}
+             */
+            unshift: function(element, n) {
+                n = (n === undefined) ? 0 : n;
+                var first = (n === 0);
+                if (first) this._checkPages();
+                
+                element = Ojay(element).setStyle({margin: '0 0 0 0'});
+                var page = this._elements._pages[n];
+                
+                page.insert(element, 'top');
+                this.notifyObservers('itemadd');
+                if (!first) return this;
+                
+                for (var i = 1; i < this._numPages; i++)
+                    this.unshift(this.pop(i-1), i);
+                
+                var items = this._elements._items;
+                [].unshift.call(items, element.node);
+                
+                return this;
+            },
+            
+            /**
+             * <p>Used by the <tt>push</tt>, <tt>pop</tt>, <tt>shift</tt> and <tt>unshift</tt>
+             * operations to decide whether pages need to be created or destroyed.</p>
+             */
+            _checkPages: function() {
+                var items   = this._elements._items.length,
+                    pages   = this._numPages,
+                    perPage = this._itemsPerPage,
+                    total   = pages * perPage;
+                
+                if (items == total) this._createPage();
+                if (items == total - perPage) this._destroyPage();
+            },
+            
+            /**
+             * <p>Adds a new page at the end of the <tt>Paginator</tt>, firing the
+             * <tt>pagecreate</tt> and <tt>scroll</tt> events.</p>
+             */
+            _createPage: function() {
+                var region = this.getRegion(),
+                    page = this.klass.makePageElement(region.getWidth(), region.getHeight());
+                this._elements._subject.insert(page, 'bottom');
+                this._elements._pages.push(page);
+                
+                this._numPages += 1;
+                var offset = (this._currentPage - 1) / (this._numPages - 1);
+                this.notifyObservers('pagecreate');
+                this.notifyObservers('scroll', offset, this.getTotalOffset());
+            },
+            
+            /**
+             * <p>Removes the final page of the <tt>Paginator</tt>, firing the
+             * <tt>pagedestroy</tt>, <tt>scroll</tt> and (if needed) the
+             * <tt>pagechange</tt> events.
+             */
+            _destroyPage: function() {
+                this._elements._pages.pop().remove();
+                if (this._currentPage == this._numPages) {
+                    this._currentPage -= 1;
+                    this.notifyObservers('pagechange', this._currentPage);
+                }
+                this._numPages -= 1;
+                var offset = (this._currentPage - 1) / (this._numPages - 1);
+                if (offset == 1) this.setScroll(1, {animate: true, silent: true});
+                this.notifyObservers('pagedestroy');
+                this.notifyObservers('scroll', offset, this.getTotalOffset());
             }
         },
         
