@@ -1,0 +1,170 @@
+=javascripts *%w(dragdrop slider).map { |s| "http://yui.yahooapis.com/2.6.0/build/#{s}/#{s}-min.js" }
+:plain
+  <style id="display-style" type="text/css">
+    .container {
+        width:          680px;
+        margin:         24px auto;
+        position:       relative;
+    }
+    
+    .item {
+        width:          158px;
+        height:         108px;
+        background:     #ccc;
+        border:         4px solid #fff;
+        padding:        2px;
+        display:        inline;
+        float:          left;
+    }
+    
+    .item img {
+        border:         4px solid #fff;
+    }
+    
+    .paginator-controls {
+        width:          510px;
+        margin:         20px 0;
+        text-align:     center;
+    }
+    
+    .paginator-controls .previous,
+    .paginator-controls .next,
+    .paginator-controls .pages {
+        display:        inline;
+    }
+    
+    .paginator-controls .previous,
+    .paginator-controls .next,
+    .paginator-controls .pages span {
+        border:         1px solid #ccc;
+        cursor:         pointer;
+        font:           bold 12px Arial, sans-serif;
+        margin:         0 4px;
+        padding:        2px 4px;
+    }
+    
+    .paginator-controls .disabled {
+        color:          #ccc;
+        cursor:         default;
+    }
+    
+    .paginator-controls .hovered {
+        background:     #cef;
+    }
+    
+    .paginator-controls .pages .selected {
+        background:     #f30;
+        border-color:   #000;
+        color:          #fff;
+    }
+    
+    .slider {
+        position:       absolute;
+        right:          60px;
+        top:            0;
+        background:     url(/images/gallery/slider-bg.gif) 9px 0 no-repeat;
+        width:          30px;
+        height:         240px;
+    }
+    
+    .slider div {
+        width:          29px;
+        height:         28px;
+        /* Fix slider image in IE6 */
+        _filter:        progid:DXImageTransform.Microsoft.AlphaImageLoader(
+                            src='/images/gallery/slider-thumb.png', sizingMethod='image');
+    }
+    
+    /* IE6 only */
+    .slider img { _display: none; }
+  </style>
+
+  <div class="container">
+      <div id="thumbnails">
+          <div class="item"><img alt="" src="/images/gallery/01.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/02.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/03.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/07.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/08.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/09.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/10.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/11.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/12.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/01.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/02.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/03.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/04.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/05.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/06.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/10.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/11.jpg" /></div>
+          <div class="item"><img alt="" src="/images/gallery/12.jpg" /></div>
+      </div>
+  </div>
+  
+  <ul>
+      <li><a id="push" href="#">Push</a></li>
+      <li><a id="pop" href="#">Pop</a></li>
+      <li><a id="shift" href="#">Shift</a></li>
+      <li><a id="unshift" href="#">Unshift</a></li>
+  </ul>
+
+  <script id="display-script" type="text/javascript">
+      var pager = new Ojay.Paginator('#thumbnails', {
+          width:      '510px',
+          height:     '240px',
+          direction:  'vertical',
+          scrollTime: 0.6,
+          easing:     'backOut',
+          infinite:   true
+      });
+      
+      pager.setup();
+      pager.addControls('after');
+      
+      // Add elements for a YUI slider
+      
+      var slider, thumb;
+      slider = Ojay.HTML.div({className: 'slider'}, function(HTML) {
+          thumb = HTML.div(function(HTML) {
+              HTML.img({src: '/images/gallery/slider-thumb.png'});
+          });
+      });
+      Ojay('.container').insert(slider, 'bottom');
+      
+      // Create slider
+      
+      var sliderControl = YAHOO.widget.Slider.getVertSlider(slider, thumb, 0, 212);
+      
+      // Allow slider to control the gallery
+      
+      sliderControl.subscribe('change', function(amount) {
+          pager.setScroll(amount / 212, {animate: false, silent: true});
+      });
+      
+      // Get gallery to notify slider so the two are always in agreement
+      
+      pager.on('scroll', function(paginator, amount) {
+          sliderControl.setValue(amount * 212, false, true, false);
+      });
+      
+      var sources = Ojay('#thumbnails img').map(function(img) { return img.node.src });
+      var source = function() {
+          return sources[Math.floor( Math.random() * (sources.length - 0.001) )];
+      };
+      
+      Ojay('#push').on('click', function() {
+          pager.push(
+              Ojay.HTML.div({className: 'item'},
+                  Ojay.HTML.img({src: source()})));
+      });
+      
+      Ojay('#unshift').on('click', function() {
+          pager.unshift(
+              Ojay.HTML.div({className: 'item'},
+                  Ojay.HTML.img({src: source()})));
+      });
+      
+      Ojay('#pop').on('click')._(pager).pop();
+      Ojay('#shift').on('click')._(pager).shift();
+  </script>
