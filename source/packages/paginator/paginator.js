@@ -208,6 +208,13 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
     },
     
     /**
+     * @returns {Number}
+     */
+    getCurrentOffset: function() {
+        return this._reportedOffset;
+    },
+    
+    /**
      * <p>Returns an Ojay collection wrapping the child elements of the subject.</p>
      * @returns {DomCollection}
      */
@@ -474,6 +481,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 var orientation = this._options.direction, 
                     pages       = this._numPages,
                     total       = this.getTotalOffset(),
+                    chain       = new JS.MethodChain(),
                     settings;
                 
                 if (amount >= 0 && amount <= 1) amount = amount * total;
@@ -489,6 +497,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                     this._elements._subject.animate(settings,
                         this._options.scrollTime, {easing: this._options.easing})._(function(self) {
                         self.setState('READY');
+                        chain.fire(scope || self);
                         if (callback) callback.call(scope || null);
                     }, this);
                 } else {
@@ -501,6 +510,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 var reportedOffset = amount/total;
                 if (reportedOffset < 0) reportedOffset = 1;
                 if (reportedOffset > 1) reportedOffset = 0;
+                this._reportedOffset = amount;
                 
                 if (!options.silent) this.notifyObservers('scroll', reportedOffset, total);
                 
@@ -513,7 +523,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                     if (page == pages) this.notifyObservers('lastpage');
                 }
                 
-                return this;
+                return (options.animate && YAHOO.util.Anim) ? chain : this;
             },
             
             /**

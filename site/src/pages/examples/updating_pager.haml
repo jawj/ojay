@@ -1,0 +1,136 @@
+- @title = 'Paginated auto-updating news feed'
+=javascripts *%w(dragdrop slider).map { |s| "http://yui.yahooapis.com/2.6.0/build/#{s}/#{s}-min.js" }
+
+#summary
+  :textile
+    h2. Paginated auto-updating news feed
+    
+    This example shows how to use @Paginator@'s array-like @unshift@ method to create
+    a paginated news feed where new items appear at the top of the list, fading in and
+    pushing other content down. To achieve this, we make an HTTP request for the new
+    content and wrap it an a @<div class="item">@. We slide the paginator down temporarily
+    to make room for the new item, then @unshift@ the item into the paginator and snap
+    the scroll offset back to where it should be.
+
+:plain
+    <style id="display-style" type="text/css">
+        .container {
+            width:          680px;
+            margin:         24px auto;
+            position:       relative;
+        }
+        
+        .item {
+            padding:        18px 24px;
+            border-top:     4px solid #fff;
+            border-bottom:  1px solid #ccc;
+        }
+        
+        .item h3 {
+            color:          #444;
+            font:           bold 24px Times New Roman, serif;
+            margin:         0 0 4px;
+        }
+        
+        .item p {
+            color:          #555;
+            font:           15px/1.5 Times New Roman, Verdana, Arial, sans-serif;
+            margin:         0;
+        }
+        
+        .paginator-controls {
+            margin:         20px 0;
+            text-align:     center;
+        }
+        
+        .paginator-controls .previous,
+        .paginator-controls .next,
+        .paginator-controls .pages {
+            display:        inline;
+        }
+        
+        .paginator-controls .previous,
+        .paginator-controls .next,
+        .paginator-controls .pages span {
+            border:         1px solid #ccc;
+            cursor:         pointer;
+            font:           bold 12px Arial, sans-serif;
+            margin:         0 4px;
+            padding:        2px 4px;
+        }
+        
+        .paginator-controls .disabled {
+            color:          #ccc;
+            cursor:         default;
+        }
+        
+        .paginator-controls .hovered {
+            background:     #cef;
+        }
+        
+        .paginator-controls .pages .selected {
+            background:     #f30;
+            border-color:   #000;
+            color:          #fff;
+        }
+    </style>
+    
+    <div class="container">
+        <div id="thumbnails">
+            <div class="item">
+                <h3>Brown backs down in expenses row</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc dui. Donec consequat cursus nisl. Pellentesque at dolor vitae urna feugiat ornare. Nam gravida. Nam congue felis nec massa. In ac mi. Donec dolor neque, consectetur et, imperdiet at, convallis id, pede.</p>
+            </div>
+            <div class="item">
+                <h3>Israel to probe phosphorus claims</h3>
+                <p>Morbi lectus augue, tristique in, iaculis sit amet, aliquet quis, lectus. Nam id dui. Aenean in lacus eget magna scelerisque viverra. Donec varius commodo est. Sed vitae augue. Maecenas dapibus nulla eu dui sodales tincidunt. Aliquam tincidunt eleifend arcu.</p>
+            </div>
+            <div class="item">
+                <h3>Animal rights campaigners jailed</h3>
+                <p>Morbi at tellus. Suspendisse potenti. Nullam auctor tempor turpis. Nunc vel nisi. Ut rutrum massa vel quam auctor cursus. Quisque faucibus, sapien in condimentum convallis, neque dui malesuada mauris, eget aliquet felis tellus mollis velit.</p>
+            </div>
+            <div class="item">
+                <h3>Channel 4 &lsquo;must form partnership&rsquo;</h3>
+                <p>Proin ornare urna non mauris. Mauris eget elit eu neque sollicitudin pulvinar. Sed elit pede, convallis vel, mollis ac, gravida vitae, erat. Fusce elit. Praesent id leo. Nunc in nisl non pede venenatis pharetra. Integer tristique suscipit lorem. Praesent nec tortor.</p>
+            </div>
+            <div class="item">
+                <h3>Ex-KGB spy buys UK paper for £1</h3>
+                <p>Phasellus dapibus purus id diam. Fusce blandit aliquam purus. Pellentesque ut magna. Donec posuere. Etiam hendrerit luctus arcu. Praesent interdum. Maecenas augue mauris, mattis non, condimentum nec, commodo sed, mauris. Integer at magna ut neque luctus blandit.</p>
+            </div>
+            <div class="item">
+                <h3>Report rejects Omagh bomb claims</h3>
+                <p>Nam pellentesque mauris id metus. Phasellus mi eros, tincidunt non, imperdiet at, iaculis eu, mi. Donec sodales orci et ipsum. Quisque metus. Donec erat. Aliquam mattis mollis tellus. Donec tristique diam at nunc. In eget urna. Vivamus accumsan nibh ac neque.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script id="display-script" type="text/javascript">
+        var pager = new Ojay.Paginator('#thumbnails', {
+            rows:       3,
+            columns:    1,
+            direction:  'vertical',
+            scrollTime: 1.2,
+            easing:     'easeOut'
+        });
+        
+        pager.setup();
+        pager.addControls('after');
+        
+        [1,2,3,4,5,6].sequence(function(i) {
+            Ojay.HTTP.GET('/service/news/' + i + '.html', {}, function(response) {
+                
+                var item = Ojay( Ojay.HTML.div({className: 'item'}) );
+                response.insertInto(item);
+                item.setStyle({opacity: 0});
+                
+                var current = pager.getCurrentOffset(),
+                    offset  = current - pager.getTotalOffset() /
+                              (3 * (pager.getPages() - 1));
+                
+                pager.setScroll(offset, {animate: true})
+                     .unshift(item)
+                     .setScroll(current)
+                     ._(item).animate({opacity: {to: 1}}, 0.7);
+            });
+        }).wait(5).loop(15);
+    </script>
