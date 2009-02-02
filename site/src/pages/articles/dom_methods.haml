@@ -34,14 +34,14 @@
   In Ojay, all getter methods return data about the first member of the collection.
   If you want information about some other member, grab it using @at()@.
   
-  <pre>    style = Ojay('p').getStyle('fontSize');
+  <pre class="prettyprint">    style = Ojay('p').getStyle('fontSize');
       style = Ojay('p').at(7).getStyle('fontSize');</pre>
   
   All setter methods perform some action, like setting a style or animating the
   collection, and return the collection. This means that setter methods are
   chainable, so you can write:
   
-  <pre>    Ojay('p').setStyle({color: 'red'}).addClass('anim')
+  <pre class="prettyprint">    Ojay('p').setStyle({color: 'red'}).addClass('anim')
           .animate({left: {by: 200}}, 5);</pre>
   
   A handful of methods - @on()@, @animate()@ and @wait()@ - actually return
@@ -72,7 +72,7 @@
   
   All except @hasClass@ are chainable. Examples:
   
-  <pre>    Ojay('a').addClass('popup').removeClass('foo');
+  <pre class="prettyprint">    Ojay('a').addClass('popup').removeClass('foo');
       Ojay('#widget').hasClass('bar')   // -> true or false</pre>
   
   h3. Attribute methods
@@ -81,15 +81,15 @@
   Ojay collection. To make all forms on the page perform GET requests when
   submitted, you could write:
     
-  <pre>    Ojay('form').set({method: 'get'});</pre>
+  <pre class="prettyprint">    Ojay('form').set({method: 'get'});</pre>
   
   While to change the value of an input field, you could write:
     
-  <pre>    Ojay('input#first-name').set({value: 'John Smith'});</pre>
+  <pre class="prettyprint">    Ojay('input#first-name').set({value: 'John Smith'});</pre>
   
   You can specify multiple attributes together to save you lots of lines of DOM code:
   
-  <pre>    Ojay('form.contact').set({
+  <pre class="prettyprint">    Ojay('form.contact').set({
           method:   'post',
           target:   'someFrame',
           action:   '/path/to/action.html'
@@ -108,7 +108,7 @@
   
   Examples:
   
-  <pre>    Ojay('h1).setStyle({margin: '16px 0', fontSize: '24px'});
+  <pre class="prettyprint">    Ojay('h1).setStyle({margin: '16px 0', fontSize: '24px'});
       var color = Ojay('#widget').getStyle('color');</pre>
   
   h3. Document traversal methods
@@ -128,7 +128,7 @@
   
   Examples:
   
-  <pre>    // Get all elements containing links as children
+  <pre class="prettyprint">    // Get all elements containing links as children
       Ojay('a').parents()
       
       // Get all an element's descendants with a given class
@@ -147,7 +147,7 @@
   can be specified as a number of seconds, or as a function that returns a
   number based on the position of an element in the collection.
   
-  <pre>    Ojay('h1').wait(3).animate({
+  <pre class="prettyprint">    Ojay('h1').wait(3).animate({
         fontSize: {to: 200, unit: 'px'}
       }, 4.5);
       
@@ -161,7 +161,7 @@
   a little easier to work with. To get the region of the first element in a collection
   just call:
   
-  <pre>    var region = Ojay('#some-element').getRegion();</pre>
+  <pre class="prettyprint">    var region = Ojay('#some-element').getRegion();</pre>
   
   This returns an @Ojay.Region@ object, with various methods for getting properties
   of the region. See "the region documentation":/articles/regions.html for more info.

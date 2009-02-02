@@ -23,7 +23,7 @@
   If you want to be notified whenever the mouse moves, all you need to do is @subscribe()@. For
   example, to get an element to follow the mouse around:
   
-  <pre>    someElement.setStyle({position: 'absolute'});
+  <pre class="prettyprint">    someElement.setStyle({position: 'absolute'});
       
       Ojay.Mouse.subscribe(function(position) {
         someElement.setStyle({
@@ -34,7 +34,7 @@
   
   An optional second parameter specifies the execution context for your callback function:
   
-  <pre>    var firstPara = Ojay('p').at(0);
+  <pre class="prettyprint">    var firstPara = Ojay('p').at(0);
       
       var callback = function(position) {
         this.setStyle({ ... });
@@ -45,18 +45,18 @@
   To stop observing the mouse, you @unsubscribe()@ the callback function _and the execution context_
   you used to subscribe:
   
-  <pre>    Ojay.Mouse.unsubscribe(callback, firstPara);</pre>
+  <pre class="prettyprint">    Ojay.Mouse.unsubscribe(callback, firstPara);</pre>
   
   h3. @mouseenter@ and @mouseleave@
   
   @mouseover@ and @mouseout@ can cause problems with moving over child elements. For this reason,
   @Ojay.Mouse@ adds support for @mouseenter@ and @mouseleave@ events on Ojay collections:
   
-  <pre>    Ojay('p').on('mouseleave').children().hide();</pre>
+  <pre class="prettyprint">    Ojay('p').on('mouseleave').children().hide();</pre>
   
   If you use a callback function, it is passed the element that triggered the event (as a single-
   element Ojay collection) and the position of the mouse at the time of event:
   
-  <pre>    Ojay('h3').on('mouseenter', function(element, position) {
+  <pre class="prettyprint">    Ojay('h3').on('mouseenter', function(element, position) {
         // console.log(position);
       });</pre>

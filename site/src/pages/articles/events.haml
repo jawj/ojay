@@ -21,7 +21,7 @@
   Ojay makes this really simple, using the @on@ method. You can use this method to listen for any event on an Ojay
   collection as follows:
   
-  <pre>    Ojay('h3').on('click', function(element, e) {
+  <pre class="prettyprint">    Ojay('h3').on('click', function(element, e) {
           alert('You clicked on: ' + element.node.innerHTML);
       });</pre>
   
@@ -40,7 +40,7 @@
   becomes more useful when using classes and object oriented programming, but the following example should illustrate
   the idea:
   
-  <pre>    var firstPara = Ojay('p').at(0);
+  <pre class="prettyprint">    var firstPara = Ojay('p').at(0);
       
       Ojay('h1').on('click', function(element, e) {
           this.setStyle({color: 'red'});
@@ -53,7 +53,7 @@
   While @element@ in your callback function refers to the member of the collection that triggered the event, that
   element may not be the event's target. For example, consider the following situation:
   
-  <pre>    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing
+  <pre class="prettyprint">    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing
       elit. Integer vehicula scelerisque est. <em>Vestibulum ante</em>
       ipsum primis in faucibus orci luctus et ultrices posuere
       cubilia Curae; Etiam tincidunt erat lobortis urna. Nam
@@ -83,7 +83,7 @@
   
   An example:
   
-  <pre>    Ojay('#someLink').on('click', function(element, e) {
+  <pre class="prettyprint">    Ojay('#someLink').on('click', function(element, e) {
         e.stopDefault();
         Ojay.HTTP.GET(element.node.href).insertInto('#foo');
         // etc...
@@ -92,7 +92,7 @@
   If all your callback does is stop the event, use one of Ojay's pre-stored callback functions to improve readability
   and avoid wasting memory on new functions. They have the same names as the event methods:
   
-  <pre>    Ojay('#someLink').on('click', Ojay.stopEvent)
+  <pre class="prettyprint">    Ojay('#someLink').on('click', Ojay.stopEvent)
           .setStyle({fontSize: '12px'})</pre>
   
   h3. Using @MethodChain@
@@ -100,13 +100,13 @@
   @on()@ is one of a few special methods in Ojay that return a "@MethodChain@":/articles/method_chain.html object.
   This means you can chain methods after the @on()@ call rather than using callback functions explicitly:
   
-  <pre>    // change H1 children's style when they are clicked
+  <pre class="prettyprint">    // change H1 children's style when they are clicked
       Ojay('h1').on('click').children().setStyle({fontWeight: 'normal'})</pre>
   
   If you pass an object as the last argument to @on()@ in this situation, that object is used as the base of the
   chain:
   
-  <pre>    Ojay('a').on('click', Ojay.stopEvent, Ojay.HTTP)
+  <pre class="prettyprint">    Ojay('a').on('click', Ojay.stopEvent, Ojay.HTTP)
           .GET('/index.html', {ajaxLayout: true})
           .insertInto('h1');</pre>
   
@@ -124,13 +124,13 @@
   with a little added help for nested elements. To catch any clicks on a certain class of
   links, for example, you could do this:
   
-  <pre>    Ojay('a.external').on('click', ...)</pre>
+  <pre class="prettyprint">    Ojay('a.external').on('click', ...)</pre>
   
   but having a separate listener on every element (as this example creates) wastes memory, and
   won't help you if any @a.external@ elements are added to the page after this JavaScript call.
   A better approach, using event delegation:
   
-  <pre>    Ojay('body').on('click', Ojay.delegateEvent({
+  <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
         'a.external': function(link, evnt) {
           // ...
         }
@@ -142,7 +142,7 @@
   
   You can specify more selectors to be handled by a single delegator by simply listing them:
   
-  <pre>    Ojay('body').on('click', Ojay.delegateEvent({
+  <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
         'a.external': function(link, evnt) {
           // ...
         },
@@ -154,14 +154,14 @@
   
   For most purposes this works fine but say you have something like this:
   
-  <pre>    <a href="http://example.com" class="external">
+  <pre class="prettyprint">    <a href="http://example.com" class="external">
           <img src="some-picture.png" />
       </a></pre>
   
   If someone clicks the link, the image will (more than likely) be the event target, not the
   anchor element. You could work around this by doing this:
   
-  <pre>    Ojay('body').on('click', Ojay.delegateEvent({
+  <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
         'a.external, a.external *': function(element, evnt) {
           // ...
         }
@@ -172,7 +172,7 @@
   you're interested in. To make it easier, you can pass @true@ as a second parameter to
   @delegateEvent()@ and it will crawl back up the DOM tree until it finds a matching element.
   
-  <pre>    Ojay('body').on('click', Ojay.delegateEvent({
+  <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
         'a.external': function(link, evnt) {
           // ...
         }

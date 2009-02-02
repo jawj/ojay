@@ -45,7 +45,7 @@
   @Paginator@ assumes you have several items of content, each of which has the same dimensions.
   For example:
   
-  <pre>    <div id="the-content">
+  <pre class="prettyprint">    <div id="the-content">
           <div class="item"><!-- content here --></div>
           <div class="item"><!-- content here --></div>
           <div class="item"><!-- content here --></div>
@@ -73,7 +73,7 @@
   you like) and the scrolling direction (@horizontal@ or @vertical@). You may also specify the
   @scrollTime@ in seconds and the name of an @easing@ function - see the examples.
   
-  <pre>    var pager = new Ojay.Paginator('#the-content', {
+  <pre class="prettyprint">    var pager = new Ojay.Paginator('#the-content', {
           width:      '680px',
           height:     '120px',
           direction:  'horizontal'
@@ -87,7 +87,7 @@
   @Ojay.Paginator@. Also, all the child elements will be grouped by page into containers
   so that the final state of the markup will be as follows:
   
-  <pre>    <div class="paginator">
+  <pre class="prettyprint">    <div class="paginator">
           <div id="the-content">
               <div class="page">
                   <div class="item"><!-- content here --></div>
@@ -118,7 +118,7 @@
   'previous' and 'next' buttons and numbered links to all the pages. To use one of these,
   just call:
   
-  <pre>    // You can specify 'before' or 'after'
+  <pre class="prettyprint">    // You can specify 'before' or 'after'
       pager.addControls('after');</pre>
   
   This will insert the HTML for the UI after the HTML for the paginated content. The links
@@ -146,7 +146,7 @@
   
   These options must be specified as part of the constructor, for example:
   
-  <pre>    var pager = new Ojay.Paginator('#the-content', {
+  <pre class="prettyprint">    var pager = new Ojay.Paginator('#the-content', {
           width:      '680px',
           height:     '120px',
           direction:  'horizontal',
@@ -189,7 +189,7 @@
     should be an object with two optional properties: @animate@ says whether the scroll
     should be animated or not, and @silent@ tells it whether to fire a @scroll@ event.
   
-  <pre>    // Scrolls halfway along
+  <pre class="prettyprint">    // Scrolls halfway along
       pager.setScroll(0.5);
       
       // Scrolls all the way along
@@ -210,7 +210,7 @@
   page to hold it if necessary. For example, to add a new image to our example
   above:
   
-  <pre>    pager.push(Ojay.HTML.div({className: 'item'}, 'A new div'));</pre>
+  <pre class="prettyprint">    pager.push(Ojay.HTML.div({className: 'item'}, 'A new div'));</pre>
   
   @unshift()@ works the same way, except it pushes the new item onto the start of the
   first page, shuffling all subsquent items on all pages along one place.
@@ -225,14 +225,14 @@
   respond to their actions. To listen to an event, use a similar syntax to that for DOM
   events:
   
-  <pre>    pager.on(eventName, callback, scope);</pre>
+  <pre class="prettyprint">    pager.on(eventName, callback, scope);</pre>
   
   @eventName@ is the name of the event, @callback@ is a function, and @scope@ is an optional
   argument that specifies @callback@'s execution context. All event callbacks receive the
   @Paginator@ instance that fired the event as their first argument, and some events pass
   additional arguments as detailed below. Here's an example of handling a @pagechange@:
   
-  <pre>    pager.on('pagechange', function(paginator, page) {
+  <pre class="prettyprint">    pager.on('pagechange', function(paginator, page) {
           console.log(page);
       });</pre>
   
@@ -260,7 +260,7 @@
   to a paginator, you need to tell @Ojay.History@ to manage it _before_ calling its
   @setup()@ method:
   
-  <pre>    var pager = new Ojay.Paginator('#my-id', options);
+  <pre class="prettyprint">    var pager = new Ojay.Paginator('#my-id', options);
       Ojay.History.manage(pager, 'gallery');
       pager.setup();</pre>
   
@@ -283,7 +283,7 @@
   First, creating an @AjaxPaginator@ is just like creating a @Paginator@, except you
   need to pass in a list of URLs from which content should be requested. For example:
   
-  <pre>    var pager = new Ojay.AjaxPaginator('#container', {
+  <pre class="prettyprint">    var pager = new Ojay.AjaxPaginator('#container', {
           width:    '680px',
           height:   '360px',
           urls:     ['/info.html', '/features.html', ...]
@@ -307,6 +307,6 @@
     URL and the @HTTP.Response@ object in case, say, you have script in the response that
     you want to execute:
   
-  <pre>    pager.on('pageload', function(paginator, url, response) {
+  <pre class="prettyprint">    pager.on('pageload', function(paginator, url, response) {
           response.evalScripts();
       });</pre>

@@ -16,7 +16,7 @@
   
   Here's an example of a class that uses the module:</p>
  
-  <pre>    var Player = new JS.Class({
+  <pre class="prettyprint">    var Player = new JS.Class({
           include: Ojay.Observable,
           
           play: function() {
@@ -41,7 +41,7 @@
  
   Some client code to listen to one of these objects might look like this:
  
-  <pre>    var p = new Player();
+  <pre class="prettyprint">    var p = new Player();
       
       p.on('start', function(player) {
           alert(player.startTime);
@@ -56,14 +56,14 @@
   third argument to @on()@ specifies the execution context of the listener function,
   so for example:
  
-  <pre>    p.on('start', function() {
+  <pre class="prettyprint">    p.on('start', function() {
           // this === someObject
       }, someObject);</pre>
  
   All calls to @on()@ return a "@MethodChain@":/articles/method_chain.html object that, by
   default, will fire on the object publishing the event, so the following:
  
-  <pre>    p.on('start').pause();</pre>
+  <pre class="prettyprint">    p.on('start').pause();</pre>
  
   Will cause @p@ to call its @pause()@ method whenever its @start@ event is fired.
   
@@ -73,7 +73,7 @@
   itself, allowing you to listen to all instances of the class with a single call. The callback
   is sent a reference to the instance that fired the event:
   
-  <pre>    Player.on('pause', function(p) {
+  <pre class="prettyprint">    Player.on('pause', function(p) {
           // p is an instance of class Player
       });</pre>
   

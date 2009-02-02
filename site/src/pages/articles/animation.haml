@@ -5,7 +5,7 @@
   Animation is one of the core things Ojay is designed to facilitate. Take a look at
   the example on the "@MethodChain@":/articles/method_chain.html page:
   
-  <pre>    Ojay('#animator').on('click')._('#animated li').animate(
+  <pre class="prettyprint">    Ojay('#animator').on('click')._('#animated li').animate(
         
         { marginLeft: {to: function(i) { return 40*i }} },
         
@@ -20,7 +20,7 @@
   
   To perform the same animation in YUI, you need to do this:
   
-  <pre>    (function() {
+  <pre class="prettyprint">    (function() {
         var trigger = YAHOO.util.Selector.query('#animator')[0];
         YAHOO.util.Event.addListener(trigger, 'click', function() {
           
@@ -81,7 +81,7 @@
   to supply to YUI's animation layer, and its second argument should be the number of
   seconds the animation should take.
   
-  <pre>    Ojay('li').animate({marginTop: {to: 40}}, 2.5);</pre>
+  <pre class="prettyprint">    Ojay('li').animate({marginTop: {to: 40}}, 2.5);</pre>
   
   That's the bare minimum you need to get an animation going - a collection of elements,
   some animation parameters and a duration. The parameters and duration can also be supplied
@@ -89,7 +89,7 @@
   - see the first example on this page. For the parameters object, you can supply functions
   at any level. For example these are all equivalent:
   
-  <pre>    Ojay('li').animate({
+  <pre class="prettyprint">    Ojay('li').animate({
         marginTop: {
           to: function(i) { return 40*i; }
         }
@@ -123,7 +123,7 @@
   
   To make each element animation perform the same animation over a different time period:
   
-  <pre>    Ojay('li').animate({marginTop: {to: 40}},
+  <pre class="prettyprint">    Ojay('li').animate({marginTop: {to: 40}},
           function(i) { return 0.5 * (i+1); });</pre>
   
   Your functions can contain whatever logic you like, as long as they return an appropriate
@@ -136,7 +136,7 @@
   the @YAHOO.util.Easing@ object, which can be used to alter the animation's progression.
   To use one of these, just pass its name into the options hash:
   
-  <pre>    Ojay('li').animate({marginTop: {to: 40}}, 2.5,
+  <pre class="prettyprint">    Ojay('li').animate({marginTop: {to: 40}}, 2.5,
           {easing: 'elasticOut'});</pre>
   
   The default easing used is @easeBoth@. The list of available easings can be seen "in
@@ -149,7 +149,7 @@
   hook, specify it in the options hash. Your callback gets passed the element and its
   position in the collection:
   
-  <pre>    Ojay('li').animate({
+  <pre class="prettyprint">    Ojay('li').animate({
         marginTop: {to: 40}
       },
       
@@ -167,7 +167,7 @@
   You can also use a bit of "@MethodChain@":/articles/method_chain.html magic to call
   a chain on each member of the collection:
   
-  <pre>    Ojay('li').animate({
+  <pre class="prettyprint">    Ojay('li').animate({
         marginTop: {to: 40}
       },
       
@@ -185,7 +185,7 @@
   when all its members have finished animating. @animate@ always returns a
   "@MethodChain@":/articles/method_chain.html object, so you can chain behaviour after it:
   
-  <pre>    // Turn all elements red when all animations stop
+  <pre class="prettyprint">    // Turn all elements red when all animations stop
       Ojay('li').animate({marginTop: {to: 40}}, 2.5)
           .setStyle({color: 'red'});</pre>
   
@@ -193,7 +193,7 @@
   you want to chain more methods onto the collection, make sure your function returns
   @this@ for subsequent methods to be called on.
   
-  <pre>    // Turn all elements red when all animations stop
+  <pre class="prettyprint">    // Turn all elements red when all animations stop
       Ojay('li').animate({marginTop: {to: 40}}, 2.5)
           ._(function() {
             if (someCondition) {

@@ -21,7 +21,7 @@
   key names, use the constants defined in @YAHOO.util.KeyListener.KEY@. For letters and
   numbers, just type the character, not the keycode. For example:
   
-  <pre>    var rule = Ojay.Keyboard.listen(document, 'ALT J', function() {
+  <pre class="prettyprint">    var rule = Ojay.Keyboard.listen(document, 'ALT J', function() {
         alert('Keys pressed!');
       });</pre>
   
@@ -30,13 +30,13 @@
   are used, the rule will fire when _any one of them_ is pressed with all the required
   modifiers. For example, the following rule fires on @SHIFT ALT L@ and @SHIFT ALT P@:
   
-  <pre>    Ojay.Keyboard.listen(document, 'SHIFT ALT L P', function() {
+  <pre class="prettyprint">    Ojay.Keyboard.listen(document, 'SHIFT ALT L P', function() {
         window.console && console.log('pressed');
       });</pre>
   
   An optional fourth parameter specifies the execution scope for the callback:
   
-  <pre>    var rule = Ojay.Keyboard.listen(document, 'CONTROL UP', function() {
+  <pre class="prettyprint">    var rule = Ojay.Keyboard.listen(document, 'CONTROL UP', function() {
         // this === someObject
       }, someObject);</pre>
   
@@ -60,7 +60,7 @@
   When developing an application, you may have a great many keyboard shortcuts that are
   context-dependant. To help manage these rules, we have the @Keyboard.RuleSet@ class:
   
-  <pre>    var rulesA = new Ojay.Keyboard.RuleSet({
+  <pre class="prettyprint">    var rulesA = new Ojay.Keyboard.RuleSet({
         'SHIFT S':    function() { alert('S') },
         'CONTROL Y':  function() { alert('Y') }
       });
@@ -74,12 +74,12 @@
   * @rules.disable()@ - disables all the rules in the set.
   * @rules.get(keys)@ - returns a single rule from the set, for example:
   
-  <pre>    rulesA.get('SHIFT S').preventDefault();</pre>
+  <pre class="prettyprint">    rulesA.get('SHIFT S').preventDefault();</pre>
   
   * @rules.merge(others)@ returns a new @RuleSet@ containing all the rules from @rules@
     and @others@. For example:
   
-  <pre>    var rulesB = new Ojay.Keyboard.RuleSet({
+  <pre class="prettyprint">    var rulesB = new Ojay.Keyboard.RuleSet({
         'SHIFT G':    function() { alert('G') },
         'ALT N':      function() { alert('N') }
       });
@@ -98,6 +98,6 @@
   pressed. You can call this method anywhere in your code - not just in key event handlers - 
   to query the current state of the keyboard.
   
-  <pre>    Ojay('p').on('click', function() {
+  <pre class="prettyprint">    Ojay('p').on('click', function() {
         alert(Ojay.Keyboard.isPressed('SHIFT Z'));
       });</pre>

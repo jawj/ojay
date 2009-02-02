@@ -51,7 +51,7 @@
   of JavaScript calls and have your inputs transformed. See the "example implementation":/examples/forms.html
   for more details on CSS class names and the like.
   
-  <pre>    <form action="/" method="post" id="the-form">
+  <pre class="prettyprint">    <form action="/" method="post" id="the-form">
         <div class="radios">
           <input type="radio" name="cc" value="visa"
               id="cc_visa" />
@@ -76,13 +76,13 @@
   
   And the script:
   
-  <pre>    new Ojay.Forms.RadioButtons('.radios input');
+  <pre class="prettyprint">    new Ojay.Forms.RadioButtons('.radios input');
       new Ojay.Forms.Checkbox('#accept');</pre>
   
   @Ojay@ 'hides' the original form inputs by wrapping them in a @span@ and using positioning,
   for example:
   
-  <pre>    <span style="position: relative;">
+  <pre class="prettyprint">    <span style="position: relative;">
         <input type="checkbox" name="foo"
             style="position: absolute; left: -5000px; top: 0;" />
       </span></pre>
@@ -93,12 +93,12 @@
   on the span works better. To do this, pass the @wrapperPosition@ option when setting up
   an @Ojay.Forms@ object:
   
-  <pre>    new Ojay.Forms.Checkbox('#foo', {wrapperPosition: 'absolute'});</pre>
+  <pre class="prettyprint">    new Ojay.Forms.Checkbox('#foo', {wrapperPosition: 'absolute'});</pre>
   
   @select@ elements are similarly easy to style. Just add a @select@ with a @label@ to
   your form and make a quick JavaScript call as follows:
   
-  <pre>    <label for="my-select">Delivery method</label>
+  <pre class="prettyprint">    <label for="my-select">Delivery method</label>
       <select id="my-select">
         <option value="null">Choose...</option>
         <option value="first-class">First class post</option>
@@ -108,12 +108,12 @@
   
   with this script:
   
-  <pre>
+  <pre class="prettyprint">
       var selector = new Ojay.Forms.Select('#my-select');</pre>
   
   This will insert the following markup after the @select@ tag in your document:
   
-  <pre>    <div class="select-container">
+  <pre class="prettyprint">    <div class="select-container">
         <div class="select-display">Choose...</div>
         <div class="select-button"></div>
         <div class="select-list">
@@ -150,7 +150,7 @@
   All types of input publish a @change@ event when their value is changed, and you
   can listen to such events and respond to them:
   
-  <pre>    // formInput is a Checkbox, RadioButtons or Select instance
+  <pre class="prettyprint">    // formInput is a Checkbox, RadioButtons or Select instance
       formInput.on('change', function(input) {
         var currentValue = input.getValue();
         // do something with value
@@ -163,7 +163,7 @@
   if such an option exists. For checkboxes, pass @true@ or @false@ to set the state
   of the box.
   
-  <pre>    // for radio button groups and select boxes...
+  <pre class="prettyprint">    // for radio button groups and select boxes...
       group.setValue('some-value');
       
       // for checkboxes...
@@ -173,7 +173,7 @@
   changes the value of the input. To suppress the event from firing, pass @false@
   as the second argument to @setValue()@.
   
-  <pre>    // don't alert listeners to the change in value
+  <pre class="prettyprint">    // don't alert listeners to the change in value
       radioButtons.setValue('the-value', false);</pre>
   
   Finally, @Checkbox@, @RadioButtons@ and @Select@ instances have two methods for
@@ -209,7 +209,7 @@
   as @expects()@. This statement says that a field with the given @name@, in a form with
   the @id@ passed to @form()@, must be filled in before the form is allowed to submit.
   
-  <pre>    Ojay.Forms(function() { with(this) {
+  <pre class="prettyprint">    Ojay.Forms(function() { with(this) {
           form('login')
               .requires('username')
               .requires('password');
@@ -224,7 +224,7 @@
   that implement some common validation requirements. To use them, you just call
   them after the appropriate @requires()@ or @expects()@ statement.
   
-  <pre>    Ojay.Forms(function() { with(this) {
+  <pre class="prettyprint">    Ojay.Forms(function() { with(this) {
           form('signup')
               .requires('username')   .toHaveLength({minimum: 6})
               .requires('email')      .toMatch(EMAIL_FORMAT)
@@ -259,7 +259,7 @@
   
   Some examples to illustrate:
   
-  <pre>    Ojay.Forms(function() { with(this) {
+  <pre class="prettyprint">    Ojay.Forms(function() { with(this) {
           
           // Gives message "User email is not valid"
           form('signup')
@@ -281,7 +281,7 @@
   @validates()@ statement. Within your callback, you can @get()@ data from the form and
   @add()@ errors by field name as in the "example":/examples/validation.html:
   
-  <pre>    form('signup').validates(function(data, errors) {
+  <pre class="prettyprint">    form('signup').validates(function(data, errors) {
           if (/admin/i.test(data.get('username')))
               errors.add('username', 'cannot contain the phrase "admin"');
       });</pre>
@@ -293,7 +293,7 @@
   the errors to the user. The "example":/examples/validation.html provides this snippet
   (remember, this should all go inside an @Ojay.Forms( ... )@ block):
   
-  <pre>    when('signup').isValidated(function(errors) {
+  <pre class="prettyprint">    when('signup').isValidated(function(errors) {
           Ojay('#signup .error-message').remove();
           errors.forEach(function(error) {
               var field = Ojay('#signup input[name=' + error.field + ']');
@@ -313,11 +313,11 @@
   that too: just specify a CSS selector or element reference for where you want the
   errors to be listed:
   
-  <pre>    when('signup').isValidated(displayErrorsIn('#errors'));</pre>
+  <pre class="prettyprint">    when('signup').isValidated(displayErrorsIn('#errors'));</pre>
   
   This will produce markup similar to the following:
   
-  <pre>    <div class="error-explanation">
+  <pre class="prettyprint">    <div class="error-explanation">
           <p>There were 3 errors with the form:</p>
           <ul>
               <li>Username must contain at least 6 characters</li>
@@ -334,7 +334,7 @@
   to. To handle the server response, use @when(id).responseArrives()@, which passes
   you an @HTTP.Response@ object just like all our @HTTP@ methods.
   
-  <pre>    Ojay.Forms(function() { with(this) {
+  <pre class="prettyprint">    Ojay.Forms(function() { with(this) {
           
           form('signup').submitsUsingAjax();
           when('signup').responseArrives(function(response) {
@@ -346,7 +346,7 @@
   If all you want to do is insert the response into the page, use the @displayResponseIn()@
   helper:
   
-  <pre>
+  <pre class="prettyprint">
       when('signup').responseArrives(displayResponseIn('#results'));</pre>
   
   If you want to style your form inputs, we reccommend using the styling classes detailed
