@@ -12,18 +12,18 @@
   <div id="example">
   <a id="run-this-code">Run this code!</a>
   <pre id="front-example">
-  $('a#run-this-code').on('click', $.stopEvent)
-      .setContent('Running...')
-      ._('#example').animate({
-          height:   {to: 0},
-          opacity:  {from: 1, to: 0}
-          }, 0.5)
-      ._($.HTTP).GET('/service/hello.html')
-      .insertInto('#example')
-      ._('#example').animate({
-          height:   {to: 80},
-          opacity:  {from: 0, to: 1}
-          }, 0.7);</pre>
+      $('a#run-this-code').on('click', $.stopEvent)
+          .setContent('Running...')
+          ._('#example').animate({
+              height:   {to: 0},
+              opacity:  {from: 1, to: 0}
+              }, 0.5)
+          ._($.HTTP).GET('/service/hello.html')
+          .insertInto('#example')
+          ._('#example').animate({
+              height:   {to: 80},
+              opacity:  {from: 0, to: 1}
+              }, 0.7);</pre>
   </div>
   
   h3. Download version 0.3.1

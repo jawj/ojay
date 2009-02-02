@@ -30,50 +30,47 @@
   Creating an accordion is straightforward. Start with a list of elements, each of which
   should contain an element that you want to collapse. For example:
  
-  <pre>
-  <div class="section">
-      <h3>Section 1</h3>
-      <p>Lorem ipsum...</p>
-  </div>
-  <div class="section">
-      <h3>Section 2</h3>
-      <p>Dolor sit amet...</p>
-  </div>
-  <div class="section">
-      <h3>Section 3</h3>
-      <p>Quaniam omnes...</p>
-  </div></pre>
+  <pre>    <div class="section">
+          <h3>Section 1</h3>
+          <p>Lorem ipsum...</p>
+      </div>
+      <div class="section">
+          <h3>Section 2</h3>
+          <p>Dolor sit amet...</p>
+      </div>
+      <div class="section">
+          <h3>Section 3</h3>
+          <p>Quaniam omnes...</p>
+      </div></pre>
  
   In this example, the paragraphs will collapse and the headings will be the menu tabs.
   The following script sets up the menu:
  
-  <pre>
-  var acc = new Ojay.Accordion('horizontal',
-          '.section', 'p');
-  acc.setup();</pre>
+  <pre>    var acc = new Ojay.Accordion('horizontal',
+              '.section', 'p');
+      acc.setup();</pre>
  
   This will make a few changes to the markup, which you'll need to be aware of in order
   to apply CSS. After the script runs, the document will look like this:
  
-  <pre>
-  <div class="section accordion-section">
-      <h3>Section 1</h3>
-  </div>
-  <div class="accordion-collapsible">
-      <p>Lorem ipsum...</p>
-  </div>
-  <div class="section accordion-section">
-      <h3>Section 2</h3>
-  </div>
-  <div class="accordion-collapsible">
-      <p>Dolor sit amet...</p>
-  </div>
-  <div class="section accordion-section">
-      <h3>Section 3</h3>
-  </div>
-  <div class="accordion-collapsible">
-      <p>Quaniam omnes...</p>
-  </div></pre>
+  <pre>    <div class="section accordion-section">
+          <h3>Section 1</h3>
+      </div>
+      <div class="accordion-collapsible">
+          <p>Lorem ipsum...</p>
+      </div>
+      <div class="section accordion-section">
+          <h3>Section 2</h3>
+      </div>
+      <div class="accordion-collapsible">
+          <p>Dolor sit amet...</p>
+      </div>
+      <div class="section accordion-section">
+          <h3>Section 3</h3>
+      </div>
+      <div class="accordion-collapsible">
+          <p>Quaniam omnes...</p>
+      </div></pre>
  
   The original sections get an additional class to indicate that they're part of an
   @Accordion@ instance, and the collapsible elements get placed inside a new wrapper
@@ -89,10 +86,9 @@
   add extra effects to the collapse/expand transition. For example, to cause the section to
   fade in when it expands, you can do the following:
   
-  <pre>
-  acc.on('sectionexpand', function(acc, i, section) {
-      section.getCollapser().animate({opacity: {from: 0, to: 1}}, 0.3);
-  });</pre>
+  <pre>    acc.on('sectionexpand', function(acc, i, section) {
+          section.getCollapser().animate({opacity: {from: 0, to: 1}}, 0.3);
+      });</pre>
   
   See "the example":/examples/extended_accordion.html to see this code in action. The
   variable @section@ is an instance of @Ojay.Accordion.Section@, which has the following
@@ -123,12 +119,11 @@
   using the browser's back/forward buttons. To add history management to an accordion,
   make sure to call @Ojay.History@ before you call @setup()@:
   
-  <pre>
-  var acc = new Ojay.Accordion('horizontal',
-          '.section', 'p');
-  
-  Ojay.History.manage(acc, 'menu');
-  acc.setup();</pre>
+  <pre>    var acc = new Ojay.Accordion('horizontal',
+              '.section', 'p');
+      
+      Ojay.History.manage(acc, 'menu');
+      acc.setup();</pre>
   
   Remember to call @Ojay.History.initialize()@ once all your objects are registered.
   See the "history documentation":/articles/history.html for more info.

@@ -45,14 +45,13 @@
   @Paginator@ assumes you have several items of content, each of which has the same dimensions.
   For example:
   
-  <pre>
-  <div id="the-content">
-      <div class="item"><!-- content here --></div>
-      <div class="item"><!-- content here --></div>
-      <div class="item"><!-- content here --></div>
-      <div class="item"><!-- content here --></div>
-      <!-- more items ... -->
-  </div></pre>
+  <pre>    <div id="the-content">
+          <div class="item"><!-- content here --></div>
+          <div class="item"><!-- content here --></div>
+          <div class="item"><!-- content here --></div>
+          <div class="item"><!-- content here --></div>
+          <!-- more items ... -->
+      </div></pre>
   
   The class @item@ used here is not required - @Paginator@ will just look for the child elements
   of @the-content@ when we set it up. You can style your content using CSS, but keep the following
@@ -74,13 +73,12 @@
   you like) and the scrolling direction (@horizontal@ or @vertical@). You may also specify the
   @scrollTime@ in seconds and the name of an @easing@ function - see the examples.
   
-  <pre>
-  var pager = new Ojay.Paginator('#the-content', {
-      width:      '680px',
-      height:     '120px',
-      direction:  'horizontal'
-  });
-  pager.setup();</pre>
+  <pre>    var pager = new Ojay.Paginator('#the-content', {
+          width:      '680px',
+          height:     '120px',
+          direction:  'horizontal'
+      });
+      pager.setup();</pre>
   
   The reason for the extra @setup()@ call will be explained when we get to history management.
   This script will wrap your @#the-content@ element in a @div@ with a class of @paginator@,
@@ -89,22 +87,21 @@
   @Ojay.Paginator@. Also, all the child elements will be grouped by page into containers
   so that the final state of the markup will be as follows:
   
-  <pre>
-  <div class="paginator">
-      <div id="the-content">
-          <div class="page">
-              <div class="item"><!-- content here --></div>
-              <div class="item"><!-- content here --></div>
-              <div class="item"><!-- content here --></div>
+  <pre>    <div class="paginator">
+          <div id="the-content">
+              <div class="page">
+                  <div class="item"><!-- content here --></div>
+                  <div class="item"><!-- content here --></div>
+                  <div class="item"><!-- content here --></div>
+              </div>
+              <div class="page">
+                  <div class="item"><!-- content here --></div>
+                  <div class="item"><!-- content here --></div>
+                  <div class="item"><!-- content here --></div>
+              </div>
+              <!-- more pages ... -->
           </div>
-          <div class="page">
-              <div class="item"><!-- content here --></div>
-              <div class="item"><!-- content here --></div>
-              <div class="item"><!-- content here --></div>
-          </div>
-          <!-- more pages ... -->
-      </div>
-  </div></pre>
+      </div></pre>
   
   Each @<div class="page">@ element is set up to completely fill the paginator's visible space
   to ensure items don't break across neighbouring pages. They also allow for horizontally
@@ -121,9 +118,8 @@
   'previous' and 'next' buttons and numbered links to all the pages. To use one of these,
   just call:
   
-  <pre>
-  // You can specify 'before' or 'after'
-  pager.addControls('after');</pre>
+  <pre>    // You can specify 'before' or 'after'
+      pager.addControls('after');</pre>
   
   This will insert the HTML for the UI after the HTML for the paginated content. The links
   are setup to monitor the @pager@ object for page changes so you can use class names to
@@ -150,14 +146,13 @@
   
   These options must be specified as part of the constructor, for example:
   
-  <pre>
-  var pager = new Ojay.Paginator('#the-content', {
-      width:      '680px',
-      height:     '120px',
-      direction:  'horizontal',
-      looped:     true
-  });
-  pager.setup();</pre>
+  <pre>    var pager = new Ojay.Paginator('#the-content', {
+          width:      '680px',
+          height:     '120px',
+          direction:  'horizontal',
+          looped:     true
+      });
+      pager.setup();</pre>
   
   h3. API methods
   
@@ -194,18 +189,17 @@
     should be an object with two optional properties: @animate@ says whether the scroll
     should be animated or not, and @silent@ tells it whether to fire a @scroll@ event.
   
-  <pre>
-  // Scrolls halfway along
-  pager.setScroll(0.5);
-  
-  // Scrolls all the way along
-  pager.setScroll(1);
-  
-  // Scrolls to 2px without animation
-  pager.setScroll(2, {animate: false});
-  
-  // Scrolls to 50px with no 'scroll' event
-  pager.setScroll(50, {silent: true});</pre>
+  <pre>    // Scrolls halfway along
+      pager.setScroll(0.5);
+      
+      // Scrolls all the way along
+      pager.setScroll(1);
+      
+      // Scrolls to 2px without animation
+      pager.setScroll(2, {animate: false});
+      
+      // Scrolls to 50px with no 'scroll' event
+      pager.setScroll(50, {silent: true});</pre>
   
   h3. Adding and removing content from the paginator
   
@@ -216,8 +210,7 @@
   page to hold it if necessary. For example, to add a new image to our example
   above:
   
-  <pre>
-  pager.push(Ojay.HTML.div({className: 'item'}, 'A new div'));</pre>
+  <pre>    pager.push(Ojay.HTML.div({className: 'item'}, 'A new div'));</pre>
   
   @unshift()@ works the same way, except it pushes the new item onto the start of the
   first page, shuffling all subsquent items on all pages along one place.
@@ -232,18 +225,16 @@
   respond to their actions. To listen to an event, use a similar syntax to that for DOM
   events:
   
-  <pre>
-  pager.on(eventName, callback, scope);</pre>
+  <pre>    pager.on(eventName, callback, scope);</pre>
   
   @eventName@ is the name of the event, @callback@ is a function, and @scope@ is an optional
   argument that specifies @callback@'s execution context. All event callbacks receive the
   @Paginator@ instance that fired the event as their first argument, and some events pass
   additional arguments as detailed below. Here's an example of handling a @pagechange@:
   
-  <pre>
-  pager.on('pagechange', function(paginator, page) {
-      console.log(page);
-  });</pre>
+  <pre>    pager.on('pagechange', function(paginator, page) {
+          console.log(page);
+      });</pre>
   
   * @pagechange@ - fires whenever the paginator's current page changes. This even fires
     if you set the scroll offset manually using @setScroll()@. Passes the new current
@@ -269,10 +260,9 @@
   to a paginator, you need to tell @Ojay.History@ to manage it _before_ calling its
   @setup()@ method:
   
-  <pre>
-  var pager = new Ojay.Paginator('#my-id', options);
-  Ojay.History.manage(pager, 'gallery');
-  pager.setup();</pre>
+  <pre>    var pager = new Ojay.Paginator('#my-id', options);
+      Ojay.History.manage(pager, 'gallery');
+      pager.setup();</pre>
   
   Remember to call @Ojay.History.initialize()@ once all your objects are registered.
   See the "history documentation":/articles/history.html for more info.
@@ -293,13 +283,12 @@
   First, creating an @AjaxPaginator@ is just like creating a @Paginator@, except you
   need to pass in a list of URLs from which content should be requested. For example:
   
-  <pre>
-  var pager = new Ojay.AjaxPaginator('#container', {
-    width:    '680px',
-    height:   '360px',
-    urls:     ['/info.html', '/features.html', ...]
-  });
-  pager.setup();</pre>
+  <pre>    var pager = new Ojay.AjaxPaginator('#container', {
+          width:    '680px',
+          height:   '360px',
+          urls:     ['/info.html', '/features.html', ...]
+      });
+      pager.setup();</pre>
   
   Ajax paginators have the following API methods in addition to all the @Paginator@ ones
   listed above:
@@ -318,7 +307,6 @@
     URL and the @HTTP.Response@ object in case, say, you have script in the response that
     you want to execute:
   
-  <pre>
-  pager.on('pageload', function(paginator, url, response) {
-      response.evalScripts();
-  });</pre>
+  <pre>    pager.on('pageload', function(paginator, url, response) {
+          response.evalScripts();
+      });</pre>
