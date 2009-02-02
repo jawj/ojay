@@ -32,21 +32,19 @@
   To create an overlay, you pass in a set of options - the available options are listed
   in this example:
   
-  <pre>
-  var overlay = new Ojay.Overlay({
-    width:      400,
-    height:     300,
-    left:       450,
-    top:        1350,
-    className:  'example',
-    layer:      10,
-    opacity:    0.7
-  });</pre>
+  <pre>    var overlay = new Ojay.Overlay({
+          width:      400,
+          height:     300,
+          left:       450,
+          top:        1350,
+          className:  'example',
+          layer:      10,
+          opacity:    0.7
+      });</pre>
   
   This will add the following markup to the top of the @body@ element:
   
-  <pre>
-  <div class="overlay-container example"></div></pre>
+  <pre>    <div class="overlay-container example"></div></pre>
   
   The element will be absolutely positioned and have the position and dimensions you
   specify. All the options are just that - optional; if you omit an option it's given
@@ -58,20 +56,18 @@
   with the name of a transition effect. Available transitions are @fade@ and @zoom@; if
   you don't specify a transition, the overlay shows/hides instantaneously.
   
-  <pre>
-  overlay.show('fade');</pre>
+  <pre>    overlay.show('fade');</pre>
   <div class="showme" id="sm1">Show me</div>
   
   That's probably getting in your way a bit there, so let's hide it again:
   
   <pre>
-  overlay.hide('zoom');</pre>
+      overlay.hide('zoom');</pre>
   <div class="showme" id="sm2">Show me</div>
   
   They are even chainable using @MethodChain@:
   
-  <pre>
-  overlay.show('zoom').wait(3).hide('fade');</pre>
+  <pre>    overlay.show('zoom').wait(3).hide('fade');</pre>
   <div class="showme" id="sm3">Show me</div>
   
   h3. Positioning methods
@@ -79,12 +75,10 @@
   To set the position of an overlay, you can use its @setPosition()@ method, if you want
   to center the overlay on the screen call @center()@:
   
-  <pre>
-  overlay.setPosition(600, 1500);</pre>
+  <pre>    overlay.setPosition(600, 1500);</pre>
   <div class="showme" id="sm4">Show me</div>
   
-  <pre>
-  overlay.center();</pre>
+  <pre>    overlay.center();</pre>
   <div class="showme" id="sm5">Show me</div>
   
   As well as horizontal/vertical positioning, @Overlay@ makes z-positioning easy. The following
@@ -99,14 +93,12 @@
   To set the size of an overlay, just pass in the width and height values. These can be numbers,
   or strings containing units. If numbers are used, we assume the units are pixels:
   
-  <pre>
-  overlay.setSize('25%', '10%');
-  overlay.center();</pre>
+  <pre>    overlay.setSize('25%', '10%');
+      overlay.center();</pre>
   <div class="showme" id="sm6">Show me</div>
   
-  <pre>
-  overlay.setSize(400, 200);
-  overlay.center();</pre>
+  <pre>    overlay.setSize(400, 200);
+      overlay.center();</pre>
   <div class="showme" id="sm7">Show me</div>
   
   h3. Getting size and position information
@@ -114,11 +106,10 @@
   There are a number of methods for getting information about the size and position of an
   overlay. These are @getSize()@, @getPosition()@ and @getRegion()@.
   
-  <pre>
-  var pos = overlay.getPosition(), size = overlay.getSize();
-  alert('Left: ' + pos.left + ', top: ' + pos.top);
-  alert('Width: ' + size.width + ', height: ' + size.height);
-  alert(overlay.getRegion().toString());</pre>
+  <pre>    var pos = overlay.getPosition(), size = overlay.getSize();
+      alert('Left: ' + pos.left + ', top: ' + pos.top);
+      alert('Width: ' + size.width + ', height: ' + size.height);
+      alert(overlay.getRegion().toString());</pre>
   <div class="showme" id="sm8">Show me</div>
   
   If you want to know the z-index of an overlay, just call @overlay.getLayer()@.
@@ -127,10 +118,9 @@
   
   Setting and getting the opacity of an overlay is straightforward with the following methods:
   
-  <pre>
-  overlay.center();
-  alert(overlay.getOpacity());
-  overlay.setOpacity(0.3);</pre>
+  <pre>    overlay.center();
+      alert(overlay.getOpacity());
+      overlay.setOpacity(0.3);</pre>
   <div class="showme" id="sm9">Show me</div>
   
   h3. Listening to events
@@ -145,13 +135,12 @@
   To listen to one of these events, just use the @on()@ method. The overlay instance is
   passed as the first argument to your callback.
   
-  <pre>
-  var overlay = new Ojay.Overlay();
-  
-  overlay.on('show', function(overlay) {
-    // do other stuff with overlay,
-    // call other parts of your codebase
-  });</pre>
+  <pre>    var overlay = new Ojay.Overlay();
+      
+      overlay.on('show', function(overlay) {
+          // do other stuff with overlay,
+          // call other parts of your codebase
+      });</pre>
   
   h3. Using @ContentOverlay@
   
@@ -160,22 +149,20 @@
   create a content overlay in much the same way as above, but you can pass an extra option,
   @content@ to set the initial content.
   
-  <pre>
-  var overlay = new Ojay.ContentOverlay({
-    /* standard options here */
-    content: '<h1>The title</h1><p>The content</p>'
-  });</pre>
+  <pre>    var overlay = new Ojay.ContentOverlay({
+          /* standard options here */
+          content: '<h1>The title</h1><p>The content</p>'
+      });</pre>
   
   The markup generated is slightly different to that of basic @Overlay@ instances, and looks
   like the following:
   
-  <pre>
-  <div class="overlay-container">
-      <div class="overlay-content">
-          <h1>The title</h1>
-          <p>The content</p>
-      </div>
-  </div></pre>
+  <pre>    <div class="overlay-container">
+          <div class="overlay-content">
+              <h1>The title</h1>
+              <p>The content</p>
+          </div>
+      </div></pre>
   
   @ContentOverlay@ instances have two extra methods on top of those provided by @Overlay@:
   @setContent()@ and @insert()@. These work in exactly the same way as the methods of the
@@ -189,19 +176,18 @@
   content to create a 'lightbox' effect. As an example, let's fetch some content using Ajax
   and display it in a lightbox above the page (push ESC to close the overlay):
   
-  <pre>
-  var mask = new Ojay.PageMask({color: '#807065', opacity: 0.8});
-  var overlay = new Ojay.ContentOverlay({className: 'ex1'});
-  mask.positionBehind(overlay);
-  
-  Ojay.HTTP.GET('/service/paginator/01.html')
-  .insertInto(overlay)
-  ._(mask).show('fade')
-  ._(overlay).fitToContent().center().show('zoom');
-  
-  Ojay.Keyboard.listen(document, 'ESCAPE', function() {
-    overlay.hide('zoom')._(mask).hide('fade');
-  });</pre>
+  <pre>    var mask = new Ojay.PageMask({color: '#807065', opacity: 0.8});
+      var overlay = new Ojay.ContentOverlay({className: 'ex1'});
+      mask.positionBehind(overlay);
+      
+      Ojay.HTTP.GET('/service/paginator/01.html')
+      .insertInto(overlay)
+      ._(mask).show('fade')
+      ._(overlay).fitToContent().center().show('zoom');
+      
+      Ojay.Keyboard.listen(document, 'ESCAPE', function() {
+          overlay.hide('zoom')._(mask).hide('fade');
+      });</pre>
   <div class="showme" id="sm10">Show me</div>
   
 :plain

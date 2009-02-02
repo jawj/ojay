@@ -22,8 +22,7 @@
     to @element@. @from@ is an optional argument that specifies the index at which to
     start searching the array.
     
-    <pre>
-    [9,1,6,3,6,4].indexOf(6)    // -> 2</pre>
+    <pre>      [9,1,6,3,6,4].indexOf(6)    // -> 2</pre>
   
   * @array.lastIndexOf(element, from)@ - the same as @indexOf()@, except the array is searched
     in reverse.
@@ -32,11 +31,10 @@
     each iteration, the function receives the current element, its index, and the array
     itself. The optional @scope@ specifies the meaning of the keyword @this@ inside @func@.
     
-    <pre>
-    // alerts: "0: 9", "1: 12", "2: 2", "3: 15"
-    [9,12,2,15].forEach(function(element, i) {
-      alert(i + ': ' + element);
-    });</pre>
+    <pre>      // alerts: "0: 9", "1: 12", "2: 2", "3: 15"
+        [9,12,2,15].forEach(function(element, i) {
+          alert(i + ': ' + element);
+        });</pre>
   
   * @array.filter(func, scope)@ - returns a new array containing all the members of the original
     array for which @func@ returns a @true@-like value.
@@ -53,12 +51,11 @@
   * @array.map(func, scope)@ - returns a new array containing the values returns by @func@ for each
     member of the array.
     
-    <pre>
-    ['foo', 'bar'].map(function(s) {
-      return s.toUpperCase().replace(/[aeiou]/ig, '_');
-    });
-    
-    // -> ["F__", "B_R"]</pre>
+    <pre>      ['foo', 'bar'].map(function(s) {
+          return s.toUpperCase().replace(/[aeiou]/ig, '_');
+        });
+        
+        // -> ["F__", "B_R"]</pre>
   
   * @array.reduce(func, initial)@ - reduces the array down to a single value using an iterator
     function. @func@ receives the current 'memo' value, the next member of the array, its
@@ -66,13 +63,12 @@
     received on the next iteration. @initial@ specifies the starting value of the memo
     value; if it is omitted the array's first member is taken as the initial value.
     
-    <pre>
-    // find the maximum number
-    [9,1,7,3,78,23,56,34].reduce(function(memo, value) {
-      return value > memo ? value : memo;
-    });
-    
-    // -> 78</pre>
+    <pre>      // find the maximum number
+        [9,1,7,3,78,23,56,34].reduce(function(memo, value) {
+          return value > memo ? value : memo;
+        });
+        
+        // -> 78</pre>
   
   * @array.reduceRight(func, initial)@ - performs the same job as @reduce()@, except the array
     is iterated over from right to left.
@@ -87,84 +83,78 @@
   * @func.bind(object)@ - returns a new function that calls the original function with @this@
     set to refer to @object@.
     
-    <pre>
-    var getTitle = function() {
-      return this.title;
-    };
-    
-    var getDocumentTitle = getTitle.bind(document);
-    
-    getDocumentTitle()    // -> "Core extensions"</pre>
+    <pre>      var getTitle = function() {
+          return this.title;
+        };
+        
+        var getDocumentTitle = getTitle.bind(document);
+        
+        getDocumentTitle()    // -> "Core extensions"</pre>
   
   * @func.partial(arg1 [, arg2 [, arg3 ... ]])@ - returns a copy of the function with some arguments
     pre-set.
     
-    <pre>
-    var add = function(a,b) { return a + b; };
-    var add4 = add.partial(4);
-    
-    add4(9)   // -> 13</pre>
+    <pre>      var add = function(a,b) { return a + b; };
+        var add4 = add.partial(4);
+        
+        add4(9)   // -> 13</pre>
   
   * @func.curry()@ - returns a curried version of the function.
     
-    <pre>
-    var add = function(a,b,c) {
-      return a + b + c;
-    }.curry();
-    
-    add(1,2,3)    // -> 6
-    add(1,8)(14)  // -> 23
-    add(9)(2)(4)  // -> 15</pre>
+    <pre>      var add = function(a,b,c) {
+          return a + b + c;
+        }.curry();
+        
+        add(1,2,3)    // -> 6
+        add(1,8)(14)  // -> 23
+        add(9)(2)(4)  // -> 15</pre>
   
   * @func.wrap(func)@ - provides aspect-oriented programming facilities by allowing you to wrap functions
     in other functions that manipulate their input and output. An example from James Coglan's site:
     
-    <pre>
-    var whizzBang = {
-      name: 'Fizz buzz',
-    
-      say: function(thing) {
-        alert(this.name + ' likes ' + thing);
-      }
-    };
-    
-    whizzBang.say('apples');
-    // -> alerts "Fizz buzz likes apples"
-    
-    whizzBang.say = whizzBang.say.wrap(
-      function(originalSay, stuff) {
-        originalSay(stuff);
-        if (!this.n) this.n = 0;
-        alert(this.name + ' has ' + this.n + ' ' + stuff);
-        this.n++;
-      }
-    );
-    
-    whizzBang.say('oranges');
-    // -> alerts "Fizz buzz likes oranges",
-    //    then "Fizz buzz has 0 oranges"
-    
-    whizzBang.say('kiwis');
-    // -> alerts "Fizz buzz likes kiwis",
-    //    then "Fizz buzz has 1 kiwis"</pre>
+    <pre>      var whizzBang = {
+          name: 'Fizz buzz',
+        
+          say: function(thing) {
+            alert(this.name + ' likes ' + thing);
+          }
+        };
+        
+        whizzBang.say('apples');
+        // -> alerts "Fizz buzz likes apples"
+        
+        whizzBang.say = whizzBang.say.wrap(
+          function(originalSay, stuff) {
+            originalSay(stuff);
+            if (!this.n) this.n = 0;
+            alert(this.name + ' has ' + this.n + ' ' + stuff);
+            this.n++;
+          }
+        );
+        
+        whizzBang.say('oranges');
+        // -> alerts "Fizz buzz likes oranges",
+        //    then "Fizz buzz has 0 oranges"
+        
+        whizzBang.say('kiwis');
+        // -> alerts "Fizz buzz likes kiwis",
+        //    then "Fizz buzz has 1 kiwis"</pre>
   
   * @func.methodize()@ - returns a version of the function that, instead of taking an object as its
     first argument, becomes a method of that object
     
-    <pre>
-    parseInt('A', 16)   // -> 10
-    
-    String.prototype.parseInt = parseInt.methodize();
-    'A'.parseInt(16)    // -> 10</pre>
+    <pre>      parseInt('A', 16)   // -> 10
+        
+        String.prototype.parseInt = parseInt.methodize();
+        'A'.parseInt(16)    // -> 10</pre>
   
   * @func.functionize()@ - returns a version of an object method that is called as a function with
     the object passed in as an argument.
     
-    <pre>
-    'foo'.toUpperCase()   // -> "FOO"
-    
-    var upcase = String.prototype.toUpperCase.functionize();
-    upcase('foo')         // -> "FOO"</pre>
+    <pre>      'foo'.toUpperCase()   // -> "FOO"
+        
+        var upcase = String.prototype.toUpperCase.functionize();
+        upcase('foo')         // -> "FOO"</pre>
   
   * @func.traced()@ - returns a copy of @func@ that logs its input and output to the Firebug
     console if you have Firebug enabled.
@@ -173,10 +163,9 @@
     example if you want a function that will only run once, no matter how many times it's
     called:
     
-    <pre>
-    var addIframe = function() {
-      Ojay('body').insert('<iframe name="foo"></iframe>', 'top');
-    }.runs(1);</pre>
+    <pre>      var addIframe = function() {
+          Ojay('body').insert('<iframe name="foo"></iframe>', 'top');
+        }.runs(1);</pre>
   
   h3. Number methods
   

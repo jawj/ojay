@@ -33,14 +33,12 @@
   @Ojay.History@ intercepts these two methods and allows your object to be history managed
   with one simple method call:
   
-  <pre>
-  Ojay.History.manage(myObject, 'its_name');</pre>
+  <pre>    Ojay.History.manage(myObject, 'its_name');</pre>
   
   After telling @Ojay.History@ to manage all the things you want managed, you need to call its
   @initialize()@ method.
   
-  <pre>
-  Ojay.History.initialize()</pre>
+  <pre>    Ojay.History.initialize()</pre>
   
   This takes care of setting up various hidden elements required by YUI for you. Once the history
   manager has been initialized, you cannot ask it to manage any more objects.
@@ -61,109 +59,106 @@
   This is all the information we need to describe the state of the gallery at any point in time.
   So, our @getInitialState()@ method is going to look like this:
   
-  <pre>
-  getInitialState: function() { return {
-    page:             1,
-    overlayVisible:   false,
-    overlayImage:     'foo.jpg'
-  }}</pre>
+  <pre>    getInitialState: function() { return {
+        page:             1,
+        overlayVisible:   false,
+        overlayImage:     'foo.jpg'
+      }}</pre>
   
   When the object is history managed, this method will return the bookmarked state of the object
   instead - you don't need to alter your code to get this information, it happens automatically.
   
   Second, we need a method for responding to changes in these parameters:
   
-  <pre>
-  changeState: function(state) {
-    if (state.page !== undefined)
-      this.scrollToPage(state.page);
-    
-    if (state.overlayVisible !== undefined) {
-      if (state.overlayVisible)
-        this.showOverlay();
-      else
-        this.hideOverlay();
-    }
-    
-    if (state.overlayImage !== undefined)
-      this.setOverlayImage(state.overlayImage);
-  }</pre>
+  <pre>    changeState: function(state) {
+        if (state.page !== undefined)
+          this.scrollToPage(state.page);
+        
+        if (state.overlayVisible !== undefined) {
+          if (state.overlayVisible)
+            this.showOverlay();
+          else
+            this.hideOverlay();
+        }
+        
+        if (state.overlayImage !== undefined)
+          this.setOverlayImage(state.overlayImage);
+      }</pre>
   
   Let's put all this together into a skeleton @Gallery@ class. Since we need to initialize the history
   manager at the top of the page, the class just takes an element ID to instantiate it. When the page
   is done loading, we call its @setup()@ method to set up all DOM requirements and event listeners.
   
-  <pre>
-  var Gallery = new JS.Class({
-      
-      // Instantiation - just store an element ID
-      initialize: function(id) {
-          this.elementID = id;
-      },
-      
-      // State parameters and default values
-      getInitialState: function() { return {
-          page:             1,
-          overlayVisible:   false,
-          overlayImage:     'foo.jpg'
-      }},
-      
-      // Respond to state changes
-      changeState: function(state) {
-          if (state.page !== undefined)
-              this.scrollToPage(state.page);
-          if (state.overlayVisible !== undefined) {
-              if (state.overlayVisible)
-                  this.showOverlay();
-              else
-                  this.hideOverlay();
-          }
-          if (state.overlayImage !== undefined)
-              this.setOverlayImage(state.overlayImage);
-      },
-      
-      setup: function() {
-          this.element = Ojay('#' + this.elementID);
+  <pre>    var Gallery = new JS.Class({
           
-          // setup DOM stuff...
+          // Instantiation - just store an element ID
+          initialize: function(id) {
+              this.elementID = id;
+          },
           
-          this.addEventListeners();
-          this.state = this.getInitialState();
-          this.scrollToPage(this.state.page);
+          // State parameters and default values
+          getInitialState: function() { return {
+              page:             1,
+              overlayVisible:   false,
+              overlayImage:     'foo.jpg'
+          }},
           
-          // deal with overlay using this.state...
-      },
-      
-      // Set up event listeners
-      addEventListeners: function() {
-          this.prevButton.on('click', this.method('decrementPage'));
-          this.nextButton.on('click', this.method('incrementPage'));
-          this.images.on('click', function(element) {
-              this.openOverlay(element.node.src);
-          }, this);
-      },
-      
-      // Use changeState() to ask for changes to the UI
-      decrementPage: function() {
-          this.changeState({page: this.state.page - 1});
-      },
-      incrementPage: function() {
-          this.changeState({page: this.state.page + 1});
-      },
-      openOverlay: function(src) {
-          this.changeState({overlayVisible: true,
-                  overlayImage: src});
-      },
-      
-      // Methods for changing the UI - called via changeState()
-      scrollToPage: function(page) {
-          this.state.page = page;
-          // do scrolling...
-      },
-      showOverlay: function() { ... },
-      hideOverlay: function() { ... },
-      setOverlayImage: function(image) { ... }
-  });</pre>
+          // Respond to state changes
+          changeState: function(state) {
+              if (state.page !== undefined)
+                  this.scrollToPage(state.page);
+              if (state.overlayVisible !== undefined) {
+                  if (state.overlayVisible)
+                      this.showOverlay();
+                  else
+                      this.hideOverlay();
+              }
+              if (state.overlayImage !== undefined)
+                  this.setOverlayImage(state.overlayImage);
+          },
+          
+          setup: function() {
+              this.element = Ojay('#' + this.elementID);
+              
+              // setup DOM stuff...
+              
+              this.addEventListeners();
+              this.state = this.getInitialState();
+              this.scrollToPage(this.state.page);
+              
+              // deal with overlay using this.state...
+          },
+          
+          // Set up event listeners
+          addEventListeners: function() {
+              this.prevButton.on('click', this.method('decrementPage'));
+              this.nextButton.on('click', this.method('incrementPage'));
+              this.images.on('click', function(element) {
+                  this.openOverlay(element.node.src);
+              }, this);
+          },
+          
+          // Use changeState() to ask for changes to the UI
+          decrementPage: function() {
+              this.changeState({page: this.state.page - 1});
+          },
+          incrementPage: function() {
+              this.changeState({page: this.state.page + 1});
+          },
+          openOverlay: function(src) {
+              this.changeState({overlayVisible: true,
+                      overlayImage: src});
+          },
+          
+          // Methods for changing the UI - called via changeState()
+          scrollToPage: function(page) {
+              this.state.page = page;
+              // do scrolling...
+          },
+          showOverlay: function() { ... },
+          hideOverlay: function() { ... },
+          setOverlayImage: function(image) { ... }
+      });</pre>
   
   This may look slightly involved, but notice the pattern - the event listeners are set up to
   call @decrementPage()@, @incrementPage()@ and @openOverlay()@. These methods all call
@@ -173,14 +168,13 @@
   
   When you want a gallery on the page, all you do is this:
   
-  <pre>
-  // at the top of the page
-  var gallery = new Gallery('galleryDiv');
-  Ojay.History.manage(gallery, 'galleryName');
-  Ojay.History.initialize();
-  
-  // when the page has loaded...
-  gallery.setup();</pre>
+  <pre>    // at the top of the page
+      var gallery = new Gallery('galleryDiv');
+      Ojay.History.manage(gallery, 'galleryName');
+      Ojay.History.initialize();
+      
+      // when the page has loaded...
+      gallery.setup();</pre>
   
   The key advantage of this approach is that you now have an object that works without
   knowing anything about history management, but that has hooks that allow a history manager
@@ -196,9 +190,8 @@
   the @iframe@ is @yui-history-iframe@, and for the @input@ it is @yui-history-field@. If
   you want to change any of these defaults, pass options to the @initialize()@ method.
   
-  <pre>
-  Ojay.History.initialize({
-    asset: '/index.html',
-    iframeID: 'myIframe',
-    inputID: 'myInput'
-  });</pre>
+  <pre>    Ojay.History.initialize({
+        asset: '/index.html',
+        iframeID: 'myIframe',
+        inputID: 'myInput'
+      });</pre>

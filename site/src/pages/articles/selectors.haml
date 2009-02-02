@@ -17,21 +17,20 @@
   capable browsers will use @YAHOO.util.Selector@ by default. You can set which engine you
   want to use using the following commands:
   
-  <pre>
-  // document.querySelectorAll
-  Ojay.cssEngine = Ojay.Selectors.Native;
-  
-  // YAHOO.util.Selector
-  Ojay.cssEngine = Ojay.Selectors.Yahoo;
-  
-  // Ext.DomQuery
-  Ojay.cssEngine = Ojay.Selectors.Ext;
-  
-  // Sizzle
-  Ojay.cssEngine = Ojay.Selectors.Sizzle;
-  
-  // Peppy
-  Ojay.cssEngine = Ojay.Selectors.Peppy;</pre>
+  <pre>    // document.querySelectorAll
+      Ojay.cssEngine = Ojay.Selectors.Native;
+      
+      // YAHOO.util.Selector
+      Ojay.cssEngine = Ojay.Selectors.Yahoo;
+      
+      // Ext.DomQuery
+      Ojay.cssEngine = Ojay.Selectors.Ext;
+      
+      // Sizzle
+      Ojay.cssEngine = Ojay.Selectors.Sizzle;
+      
+      // Peppy
+      Ojay.cssEngine = Ojay.Selectors.Peppy;</pre>
   
   Note that @Ojay.Selectors.Native@ only works in browsers that support the W3C Selectors API.
   If you want to use another library not listed above, adding support for it is trivial.
@@ -44,22 +43,21 @@
   
   So, your engine needs to have the following outline:
   
-  <pre>
-  Ojay.cssEngine = {
-      /**
-       * @param {String} selector
-       * @param {HTMLElement} root
-       * @returns {Array}
-       */
-      query: function(selector, root) {},
-      
-      /**
-       * @param {HTMLElement} node
-       * @param {String} selector
-       * @returns {Boolean}
-       */
-      test: function(node, selector) {}
-  };</pre>
+  <pre>    Ojay.cssEngine = {
+          /**
+           * @param {String} selector
+           * @param {HTMLElement} root
+           * @returns {Array}
+           */
+          query: function(selector, root) {},
+          
+          /**
+           * @param {HTMLElement} node
+           * @param {String} selector
+           * @returns {Boolean}
+           */
+          test: function(node, selector) {}
+      };</pre>
   
   These two functions will need to call methods in your chosen CSS selector library and return
   results as expected by Ojay.

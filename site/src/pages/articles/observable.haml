@@ -16,24 +16,23 @@
   
   Here's an example of a class that uses the module:</p>
  
-  <pre>
-  var Player = new JS.Class({
-      include: Ojay.Observable,
-      
-      play: function() {
-          this.startTime = this.getTime();
-          this.notifyObservers('start');
-      },
-      
-      pause: function() {
-          var elapsed = this.getTime() - this.startTime;
-          this.notifyObservers('pause', elapsed);
-      },
-      
-      getTime: function() {
-          return Number(new Date()) / 1000;
-      }
-  });</pre>
+  <pre>    var Player = new JS.Class({
+          include: Ojay.Observable,
+          
+          play: function() {
+              this.startTime = this.getTime();
+              this.notifyObservers('start');
+          },
+          
+          pause: function() {
+              var elapsed = this.getTime() - this.startTime;
+              this.notifyObservers('pause', elapsed);
+          },
+          
+          getTime: function() {
+              return Number(new Date()) / 1000;
+          }
+      });</pre>
  
   The @getTime()@ method simply returns the current timestamp in seconds. The @play()@
   method records the current time and fires the @start@ event by using @notifyObservers()@
@@ -42,32 +41,29 @@
  
   Some client code to listen to one of these objects might look like this:
  
-  <pre>
-  var p = new Player();
-  
-  p.on('start', function(player) {
-      alert(player.startTime);
-  });
-  
-  p.on('pause', function(player, timeElapsed) {
-      alert(timeElapsed);
-  });</pre>
+  <pre>    var p = new Player();
+      
+      p.on('start', function(player) {
+          alert(player.startTime);
+      });
+      
+      p.on('pause', function(player, timeElapsed) {
+          alert(timeElapsed);
+      });</pre>
  
   All listeners receive the object that fired the event as their first argument, and
   any data published by said object with the event as the subsequent arguments. An optional
   third argument to @on()@ specifies the execution context of the listener function,
   so for example:
  
-  <pre>
-  p.on('start', function() {
-      // this === someObject
-  }, someObject);</pre>
+  <pre>    p.on('start', function() {
+          // this === someObject
+      }, someObject);</pre>
  
   All calls to @on()@ return a "@MethodChain@":/articles/method_chain.html object that, by
   default, will fire on the object publishing the event, so the following:
  
-  <pre>
-  p.on('start').pause();</pre>
+  <pre>    p.on('start').pause();</pre>
  
   Will cause @p@ to call its @pause()@ method whenever its @start@ event is fired.
   
@@ -77,10 +73,9 @@
   itself, allowing you to listen to all instances of the class with a single call. The callback
   is sent a reference to the instance that fired the event:
   
-  <pre>
-  Player.on('pause', function(p) {
-      // p is an instance of class Player
-  });</pre>
+  <pre>    Player.on('pause', function(p) {
+          // p is an instance of class Player
+      });</pre>
   
   In general, calling @notifyObservers()@ on an object will also find the object's class,
   the class' ancestor classes and included modules, and call @notifyObservers()@ on all
