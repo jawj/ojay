@@ -218,6 +218,30 @@
   As you'd expect, @pop()@ removes and returns the last item in the paginator, while
   @shift()@ remove and returns the first item. All of these methods fire various events:
   see below for information.
+  
+  The final thing to mention in this section is that @unshift()@ is special in that
+  you can tell it to perform animation while adding the new item. Say you have an HTML
+  element stored in the variable @element@, calling
+  
+  <pre class="prettyprint">    pager.unshift(element, {animate: true});</pre>
+  
+  will slide the existing items along just enough to hold the new element (which
+  should have the same dimensions as the existing items), then fade the new element
+  in. Note that this only works on vertical paginators with one column, and
+  horizontal paginators with one row. When setting up the paginator, you can specify
+  the time taken to perform these actions using the @pushSlide@ and @pushFade@ options:
+  
+  <pre class="prettyprint">    var pager = new Ojay.Paginator('#stories', {
+          rows:       3,
+          columns:    1,
+          direction:  'vertical',
+          scrollTime: 1.2,
+          pushFade:   2.0,
+          pushSlide:  0.8,
+          easing:     'easeOut'
+      });</pre>
+  
+  See "the example":/examples/updating_pager.html for more information.
 
   h3. Events
   
