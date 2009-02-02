@@ -76,7 +76,7 @@
     </style>
     
     <div class="container">
-        <div id="thumbnails">
+        <div id="stories">
             <div class="item">
                 <h3>Brown backs down in expenses row</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc dui. Donec consequat cursus nisl. Pellentesque at dolor vitae urna feugiat ornare. Nam gravida. Nam congue felis nec massa. In ac mi. Donec dolor neque, consectetur et, imperdiet at, convallis id, pede.</p>
@@ -105,11 +105,13 @@
     </div>
     
     <script id="display-script" type="text/javascript">
-        var pager = new Ojay.Paginator('#thumbnails', {
+        var pager = new Ojay.Paginator('#stories', {
             rows:       3,
             columns:    1,
             direction:  'vertical',
             scrollTime: 1.2,
+            pushFade:   2.0,
+            pushSlide:  0.8,
             easing:     'easeOut'
         });
         
@@ -121,16 +123,7 @@
                 
                 var item = Ojay( Ojay.HTML.div({className: 'item'}) );
                 response.insertInto(item);
-                item.setStyle({opacity: 0});
-                
-                var current = pager.getCurrentOffset(),
-                    offset  = current - pager.getTotalOffset() /
-                              (3 * (pager.getPages() - 1));
-                
-                pager.setScroll(offset, {animate: true})
-                     .unshift(item)
-                     .setScroll(current)
-                     ._(item).animate({opacity: {to: 1}}, 0.7);
+                pager.unshift(item, {animate: true});
             });
         }).wait(5).loop(15);
     </script>

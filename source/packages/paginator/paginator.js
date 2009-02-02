@@ -62,6 +62,8 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
         PAGE_CLASS:         'page',
         ITEM_CLASS:         'item',
         SCROLL_TIME:        0.5,
+        PUSH_FADE_TIME:     0.7,
+        PUSH_SLIDE_TIME:    0.3,
         DIRECTION:          'horizontal',
         EASING:             'easeBoth',
         
@@ -101,6 +103,8 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
         
         options = this._options = options || {};
         options.scrollTime = options.scrollTime || this.klass.SCROLL_TIME;
+        options.pushFade   = options.pushFade   || this.klass.PUSH_FADE_TIME;
+        options.pushSlide  = options.pushSlide  || this.klass.PUSH_SLIDE_TIME;
         options.direction  = options.direction  || this.klass.DIRECTION;
         options.easing     = options.easing     || this.klass.EASING;
         options.looped     = !!options.looped;
@@ -239,8 +243,8 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
         var containerRegion = this.getRegion(), itemRegion = items.at(0).getRegion();
         this._itemWidth     = itemRegion.getWidth();
         this._itemHeight    = itemRegion.getHeight();
-        this._itemsPerCol   = (containerRegion.getWidth() / this._itemWidth).floor() || 1;
-        this._itemsPerRow   = (containerRegion.getHeight() / this._itemHeight).floor() || 1;
+        this._itemsPerCol   = (containerRegion.getHeight() / this._itemHeight).floor() || 1;
+        this._itemsPerRow   = (containerRegion.getWidth() / this._itemWidth).floor() || 1;
         this._itemsPerPage  = this._itemsPerRow * this._itemsPerCol;
         this._numPages = (items.length / this._itemsPerPage).ceil();
         if (this._options.grouping !== false) this._groupItemsByPage();
@@ -478,7 +482,9 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @returns {Paginator}
              */
             setScroll: function(amount, options, callback, scope) {
-                var orientation = this._options.direction, 
+                var options     = options || {},
+                    orientation = this._options.direction,
+                    scrollTime  = options._scrollTime || this._options.scrollTime,
                     pages       = this._numPages,
                     total       = this.getTotalOffset(),
                     chain       = new JS.MethodChain(),
@@ -495,7 +501,7 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                             ? { top: {to: -amount} }
                             : { left: {to: -amount} };
                     this._elements._subject.animate(settings,
-                        this._options.scrollTime, {easing: this._options.easing})._(function(self) {
+                        scrollTime, {easing: this._options.easing})._(function(self) {
                         self.setState('READY');
                         chain.fire(scope || self);
                         if (callback) callback.call(scope || null);
@@ -620,6 +626,8 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
              * @returns {Paginator}
              */
             unshift: function(element, n) {
+                if (typeof n == 'object' && n.animate) return this._animatedUnshift(element);
+                
                 n = (n === undefined) ? 0 : n;
                 var first = (n === 0);
                 if (first) this._checkPages();
@@ -638,6 +646,33 @@ Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
                 [].unshift.call(items, element.node);
                 
                 return this;
+            },
+            
+            /**
+             * @returns {MethodChain}
+             */
+            _animatedUnshift: function(element) {
+                if ((this._options.direction == 'vertical' && this._itemsPerRow > 1) ||
+                    (this._options.direction == 'horizontal' && this._itemsPerCol > 1))
+                    throw new Error('Cannot perform animated push/unshift ' +
+                                    'onto a Paginator with more than one ' +
+                                    'column and row');
+                
+                var item = Ojay(element).setStyle({opacity: 0});
+                
+                var current = this.getCurrentOffset(),
+                    
+                    nItems  = (this._options.direction == 'vertical') ?
+                              this._itemsPerCol : this._itemsPerRow,
+                    
+                    offset  = current - this.getTotalOffset() /
+                              (nItems * (this.getPages() - 1));
+                
+                return this.setScroll(offset, {animate: true, _scrollTime: this._options.pushSlide})
+                     .unshift(item)
+                     .setScroll(current)
+                     ._(item).animate({opacity: {to: 1}}, this._options.pushFade)
+                     ._(this);
             },
             
             /**
