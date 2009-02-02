@@ -6,12 +6,12 @@
   of elements from the page, then carry out actions on that collection. To grab a collection of elements, just use the @Ojay@
   function:
   
-  <pre>    var links = Ojay('a');</pre>
+  <pre class="prettyprint">    var links = Ojay('a');</pre>
   
   The @Ojay@ function is aliased as @$@, so anywhere you see @Ojay@ in the code examples here, you can use @$@ instead. You can
   change the alias used as follows:
   
-  <pre>    Ojay.changeAlias('_');
+  <pre class="prettyprint">    Ojay.changeAlias('_');
       // Now you can grab elements with _('div.section')</pre>
   
   @Ojay.changeAlias@ returns the current alias to its original meaning, so you can use Ojay with Prototype et al and still use
@@ -19,20 +19,20 @@
   
   You can also pass an @HTMLElement@ to @Ojay@ so you can use Ojay's API with it. You'll see why this is useful later on.
   
-  <pre>    var extendedBody = Ojay(document.body);</pre>
+  <pre class="prettyprint">    var extendedBody = Ojay(document.body);</pre>
   
   h3. What's a collection?
   
   The @Ojay@ function *always* returns an @Array@-like object containing zero or more elements that match your CSS query. The
   collection is not strictly an @Array@, but it has a @length@ property and you can access its elements by numeric indexes:
   
-  <pre>    var link = Ojay('a')[0];
+  <pre class="prettyprint">    var link = Ojay('a')[0];
       // link is an HTMLElement reference</pre>
   
   The variable @link@ in this example will be a raw @HTMLElement@ object, without any of Ojay's helpful extensions. If you want
   an Ojay collection wrapping the element, use the @at@ method:
   
-  <pre>    var links = Ojay('a');
+  <pre class="prettyprint">    var links = Ojay('a');
       var betterLink = links.at(4);</pre>
   
   So @betterLink@ will be an Ojay collection with one element - the 5th element in the @links@ collection.
@@ -41,11 +41,11 @@
   collections will frequently contain one element (e.g. if you refer to it by ID - @Ojay('#container')@) and @node@ is a convenient
   way to get at the raw element.
   
-  <pre>    var h1 = Ojay('h1#title').node;
+  <pre class="prettyprint">    var h1 = Ojay('h1#title').node;
       var tagName = h1.tagName.toLowerCase();</pre>
   
   If you want a proper @Array@ object, you can use the @toArray@ method to return an @Array@ of raw @HTMLElement@ references.
   
-  <pre>    var array = links.toArray();</pre>
+  <pre class="prettyprint">    var array = links.toArray();</pre>
   
   The members of @array@ will be regular @HTMLElement@ objects with no Ojay helper methods.

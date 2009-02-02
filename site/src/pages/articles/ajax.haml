@@ -22,14 +22,14 @@
   
   This is trivially simple - you just use HTTP verbs to GET from/POST to URLs.
   
-  <pre>    Ojay.HTTP.GET('/index.html')</pre>
+  <pre class="prettyprint">    Ojay.HTTP.GET('/index.html')</pre>
   
   The above code won't do anything interesting since we don't handle the response -
   we'll get to that in a minute. The second argument is a parameter list, used to
   build the query string or POST message for the request. Properties in the parameter
   list override those in the URL:
   
-  <pre>    Ojay.HTTP.GET('/index.html', {foo: 'bar', ajaxLayout: true})
+  <pre class="prettyprint">    Ojay.HTTP.GET('/index.html', {foo: 'bar', ajaxLayout: true})
       // -> GET /index.html?foo=bar&ajaxLayout=true
       
       Ojay.HTTP.GET('/index.html?foo=45', {foo: 23})
@@ -60,7 +60,7 @@
   
   Some examples:
   
-  <pre>    Ojay.HTTP.GET('/index.html', {}, {
+  <pre class="prettyprint">    Ojay.HTTP.GET('/index.html', {}, {
         onSuccess: function(response) {
           response.insertInto('#myDiv');
           // ... other logic
@@ -87,7 +87,7 @@
   whose chain will fire on the @response@ object when it arrives from the server.
   That means you can do stuff like this:
   
-  <pre>    Ojay.HTTP.GET('/index.html').insertInto('div').evalScripts();
+  <pre class="prettyprint">    Ojay.HTTP.GET('/index.html').insertInto('div').evalScripts();
       
       // Make an Ajax call on click
       
@@ -97,7 +97,7 @@
   
   (Just for comparison, here's how to write the previous example in YUI:)
   
-  <pre>    (function() {
+  <pre class="prettyprint">    (function() {
         var links = YAHOO.util.Selector.query('a');
         YAHOO.util.Event.addListener(links, 'click', function(e) {
           YAHOO.util.Event.preventDefault(e);
@@ -113,7 +113,7 @@
   
   You need to remember that these chains are asynchronous, though:
   
-  <pre>    var h1 = Ojay('h1#header');
+  <pre class="prettyprint">    var h1 = Ojay('h1#header');
       h1.setContent('Title');
       
       Ojay.HTTP.GET('/index.html').insertInto(h1);
@@ -136,7 +136,7 @@
   publish JSON. If a web service allows you to specify a callback to pass data to, you
   can use the service like this:
   
-  <pre>    Ojay.HTTP.GET('http://example.com/posts/45.json', {
+  <pre class="prettyprint">    Ojay.HTTP.GET('http://example.com/posts/45.json', {
         user: 'your_username',
         api_key: '4567rthdtyue566w34',
         callback: 'handleJSON'
@@ -153,7 +153,7 @@
   restrictions mean there is no way to access the response from a cross-domain POST request.
   Still, you can send data to other sites easily:
   
-  <pre>    Ojay.HTTP.POST('http://example.com/posts/create', {
+  <pre class="prettyprint">    Ojay.HTTP.POST('http://example.com/posts/create', {
         user: 'your_username',
         api_key: '4567rthdtyue566w34',
         title: 'A new blog post',
@@ -169,7 +169,7 @@
   callback parameter used by the third-party JSON-P API. For example, the following
   service calls the JSON-P callback param @callback@:
   
-  <pre>    Ojay.HTTP.GET('http://json-time.appspot.com/time.json', {
+  <pre class="prettyprint">    Ojay.HTTP.GET('http://json-time.appspot.com/time.json', {
         tz: 'America/Chicago',
         jsonp: 'callback'
       }, {
@@ -188,7 +188,7 @@
   redirects to other pages (on your domain or anywhere else), using the same parameter
   object syntax as you'd use for Ajax calls. Simply use them like this:
   
-  <pre>    Ojay.HTTP.GET.redirectTo('http://google.com/search', {
+  <pre class="prettyprint">    Ojay.HTTP.GET.redirectTo('http://google.com/search', {
         q: 'javascript redirects'
       });
       
@@ -205,7 +205,7 @@
   activity initiated through Ojay. To listen to an event, you just need to specify the
   name of the event and a callback function, for example:
   
-  <pre>    Ojay.HTTP.on('request', function(req) {
+  <pre class="prettyprint">    Ojay.HTTP.on('request', function(req) {
           console.log(req.getURI().params);
       });</pre>
   
@@ -222,7 +222,7 @@
   
   You can also listen out for specific status codes as follows:
   
-  <pre>    // Listen for status-200 responses
+  <pre class="prettyprint">    // Listen for status-200 responses
       Ojay.HTTP.on(200, function(response) {
           alert('Successful request');
       });</pre>

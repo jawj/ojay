@@ -33,12 +33,12 @@
   @Ojay.History@ intercepts these two methods and allows your object to be history managed
   with one simple method call:
   
-  <pre>    Ojay.History.manage(myObject, 'its_name');</pre>
+  <pre class="prettyprint">    Ojay.History.manage(myObject, 'its_name');</pre>
   
   After telling @Ojay.History@ to manage all the things you want managed, you need to call its
   @initialize()@ method.
   
-  <pre>    Ojay.History.initialize()</pre>
+  <pre class="prettyprint">    Ojay.History.initialize()</pre>
   
   This takes care of setting up various hidden elements required by YUI for you. Once the history
   manager has been initialized, you cannot ask it to manage any more objects.
@@ -59,7 +59,7 @@
   This is all the information we need to describe the state of the gallery at any point in time.
   So, our @getInitialState()@ method is going to look like this:
   
-  <pre>    getInitialState: function() { return {
+  <pre class="prettyprint">    getInitialState: function() { return {
         page:             1,
         overlayVisible:   false,
         overlayImage:     'foo.jpg'
@@ -70,7 +70,7 @@
   
   Second, we need a method for responding to changes in these parameters:
   
-  <pre>    changeState: function(state) {
+  <pre class="prettyprint">    changeState: function(state) {
         if (state.page !== undefined)
           this.scrollToPage(state.page);
         
@@ -89,7 +89,7 @@
   manager at the top of the page, the class just takes an element ID to instantiate it. When the page
   is done loading, we call its @setup()@ method to set up all DOM requirements and event listeners.
   
-  <pre>    var Gallery = new JS.Class({
+  <pre class="prettyprint">    var Gallery = new JS.Class({
           
           // Instantiation - just store an element ID
           initialize: function(id) {
@@ -168,7 +168,7 @@
   
   When you want a gallery on the page, all you do is this:
   
-  <pre>    // at the top of the page
+  <pre class="prettyprint">    // at the top of the page
       var gallery = new Gallery('galleryDiv');
       Ojay.History.manage(gallery, 'galleryName');
       Ojay.History.initialize();
@@ -190,8 +190,8 @@
   the @iframe@ is @yui-history-iframe@, and for the @input@ it is @yui-history-field@. If
   you want to change any of these defaults, pass options to the @initialize()@ method.
   
-  <pre>    Ojay.History.initialize({
-        asset: '/index.html',
-        iframeID: 'myIframe',
-        inputID: 'myInput'
+  <pre class="prettyprint">    Ojay.History.initialize({
+          asset: '/index.html',
+          iframeID: 'myIframe',
+          inputID: 'myInput'
       });</pre>

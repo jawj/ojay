@@ -4,9 +4,9 @@
     %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
     %title
       = 'Ojay: ' + (@title || 'YUI development made easy')
-    =javascripts 'yui/2.6.0', 'ojay/all-min'
-    =stylesheets 'application'
-  %body
+    =javascripts 'yui/2.6.0', 'ojay/all-min', 'prettify'
+    =stylesheets 'application', 'syntax'
+  %body{:onload => 'prettyPrint()'}
     #container
       #header
         .sub

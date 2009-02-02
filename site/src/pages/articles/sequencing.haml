@@ -16,7 +16,7 @@
   For example, let's say you want to rotate the source of some image on your page. You have
   a list of images:
   
-  <pre>    var sources = [
+  <pre class="prettyprint">    var sources = [
           'header-1.jpg', 'header-2.jpg',
           'some-other-file.jpg', 'ad-banners.jpg'
       ];</pre>
@@ -24,27 +24,27 @@
   and an action that can be applied to an item in the list to change the source of your
   image:
   
-  <pre>    function(source) {
+  <pre class="prettyprint">    function(source) {
           Ojay('#my-image').set({src: source});
       }</pre>
   
   You create a sequence to perform this action like so:
   
-  <pre>    var seq = sources.sequence(function(source) {
+  <pre class="prettyprint">    var seq = sources.sequence(function(source) {
           Ojay('#my-image').set({src: source});
       });</pre>
   
   You can then tell the sequence to loop, pausing by some number of seconds between each
   member:
   
-  <pre>    seq.loop(10);</pre>
+  <pre class="prettyprint">    seq.loop(10);</pre>
   
   You can tell the loop to pause whenever you like:
   
-  <pre>    seq.pause();</pre>
+  <pre class="prettyprint">    seq.pause();</pre>
   
   or you can tell it to pause when it next reaches the end of the list:
   
-  <pre>    seq.finish();</pre>
+  <pre class="prettyprint">    seq.finish();</pre>
   
   You can start the loop again by calling @seq.loop()@.

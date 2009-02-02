@@ -19,7 +19,7 @@
   when initially called. All they do is add their name and arguments to a list
   inside a @MethodChain@ object, and return that same chain object. For example:
   
-  <pre>    var chain = new JS.MethodChain();
+  <pre class="prettyprint">    var chain = new JS.MethodChain();
       
       chain.map(function(s) {
         return s.toUpperCase();
@@ -39,7 +39,7 @@
   add itself to the list. Instead, it accepts one argument, @base@, and returns the
   result of executing the stored chain with @base@ as the first receiving object. e.g.:
   
-  <pre>    chain.fire(['foo', 'bar']);
+  <pre class="prettyprint">    chain.fire(['foo', 'bar']);
       // -> "F__, B_R"
       
       // the same as calling
@@ -50,7 +50,7 @@
   Every time you call methods on an existing chain, they get added to the existing
   list. For example:
   
-  <pre>    chain.toLowerCase().match(/[a-z]/g);
+  <pre class="prettyprint">    chain.toLowerCase().match(/[a-z]/g);
       
       chain.fire(['foo', 'bar']);
       // -> ["f", "b", "r"]</pre>
@@ -61,7 +61,7 @@
   produce really expressive code. For example, the event handler method @on()@ returns
   a chain:
   
-  <pre>    Ojay('p').on('mouseover').setStyle({color: 'red'});</pre>
+  <pre class="prettyprint">    Ojay('p').on('mouseover').setStyle({color: 'red'});</pre>
   
   @setStyle@ is being called on a chain set up inside the @on()@ function. When you
   mouse over a paragraph, Ojay will fire the chain against the paragraph that triggered
@@ -70,14 +70,14 @@
   Other DOM methods that return chains like this are @wait()@ and @animate()@. @wait()@
   fires the chain on its receiving object after the given number of seconds:
   
-  <pre>    // Make links' parent elements green after 4 seconds
+  <pre class="prettyprint">    // Make links' parent elements green after 4 seconds
       Ojay('a').wait(4).parents().setStyle({color: '#00ff00'});</pre>
   
   @animate()@ fires its chain against the whole collection after it has finished all
   its animations. It also lets you use a chain to indicate what should happen to each
   member of the collection when it stops animating:
   
-  <pre>    Ojay('#animated li').animate(
+  <pre class="prettyprint">    Ojay('#animated li').animate(
         
         // style properties
         { marginLeft: {to: function(i) { return 40*i }} },
@@ -114,7 +114,7 @@
   @toFunction()@ returns a function that fires the chain on the argument it's
   given, i.e.:
   
-  <pre>    chain.toFunction()
+  <pre class="prettyprint">    chain.toFunction()
       
       // returns this function...
       // function(object) { return chain.fire(object); }</pre>
@@ -126,7 +126,7 @@
   @GET()@, @POST()@ et al fire their chain against the response object when it receives
   a response from the server. For example:
   
-  <pre>    Ojay.HTTP.GET('/index.html').insertInto('div#status');</pre>
+  <pre class="prettyprint">    Ojay.HTTP.GET('/index.html').insertInto('div#status');</pre>
   
   It's important to remember that code like this will run asynchronously. It might look
   synchronous on the surface, but don't be fooled.
@@ -137,7 +137,7 @@
   method in the chain. All chains have a special method called @_()@ that allows you
   to insert objects and functions into the chain to change its scope.
   
-  <pre>    // Hide paragraphs when links are clicked
+  <pre class="prettyprint">    // Hide paragraphs when links are clicked
       Ojay('a').on('click')._('p').hide();
       
       // Call an Ajax method when a paragraph is clicked
@@ -148,7 +148,7 @@
   refers to the return value of the previous chain method, and its return value is
   used as the receiver for the next method:
   
-  <pre>    Ojay('p').on('click')._(Ojay.HTTP)._(function() {
+  <pre class="prettyprint">    Ojay('p').on('click')._(Ojay.HTTP)._(function() {
         // this === Ojay.HTTP
         return this.GET('/index.html');
       }).insertInto('h1');</pre>
@@ -156,7 +156,7 @@
   You can pass arguments after the function and they will be used when the function
   is called. This a contrived example, but it illustrates the pattern:
   
-  <pre>    // Get a method bound to its receiver
+  <pre class="prettyprint">    // Get a method bound to its receiver
       // setStyle will be a function
       var setStyle = Ojay('h1').method('setStyle');
       
@@ -174,7 +174,7 @@
   the most useful methods for DOM and Ajax work for you, but if you want to add more method
   names to it, just do this:
   
-  <pre>    // add methods explicitly
+  <pre class="prettyprint">    // add methods explicitly
       JS.MethodChain.addMethods(['map', 'toUpperCase', 'replace']);
       
       // add methods from some object or class

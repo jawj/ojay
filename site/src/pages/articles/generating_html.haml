@@ -18,7 +18,7 @@
   @Ojay.HTML@ is an object that allows you to generate HTML objects. It has methods named
   after all the tags in the HTML 4 spec, and you use these to generate objects. Some examples:
   
-  <pre>    Ojay.HTML.div('Some text')
+  <pre class="prettyprint">    Ojay.HTML.div('Some text')
       // <div>Some text</div>
       
       Ojay.HTML.p({id: 'foo', className: 'bar'}, 'This is a paragraph')
@@ -31,19 +31,19 @@
   
   You can nest tags within each other using functions:
   
-  <pre>    Ojay.HTML.ul({id: 'list'}, function(H) {
+  <pre class="prettyprint">    Ojay.HTML.ul({id: 'list'}, function(H) {
         H.li('Item one');
         H.li('Item two');
         ['Cats', 'Dogs', 'Pets'].forEach(H.method('li'));
       })
       
-      // -> <ul id="list">
-              <li>Item one</li>
-              <li>Item two</li>
-              <li>Cats</li>
-              <li>Dogs</li>
-              <li>Pets</li>
-            </ul></pre>
+      /* -> <ul id="list">
+                <li>Item one</li>
+                <li>Item two</li>
+                <li>Cats</li>
+                <li>Dogs</li>
+                <li>Pets</li>
+            </ul> */</pre>
   
   Using functions like this means you can use whatever logic you like to customise
   the HTML generated.
@@ -62,21 +62,21 @@
   @setContent()@ simply replaces the contents of the element with the given argument,
   using either a string or HTML. These are equivalent:
   
-  <pre>    Ojay('h1').setContent('<strong>Title</strong>');
+  <pre class="prettyprint">    Ojay('h1').setContent('<strong>Title</strong>');
       Ojay('h1').setContent(Ojay.HTML.strong('Title'));</pre>
   
   If you use a string, the content will be inserted into all the members of the collection.
   If you use an @HTMLElement@, it will only be inserted into the first member, and
   any event listeners attached to it will be preserved. For example:
   
-  <pre>    var stuff = Ojay.HTML.strong('Title');
+  <pre class="prettyprint">    var stuff = Ojay.HTML.strong('Title');
       Ojay(stuff).on('click').setStyle({color: 'red'});
       Ojay('h1').setContent(stuff);</pre>
   
   The other method, @insert()@, takes two arguments: some HTML (a string or an object)
   and a position - either @"top"@, @"bottom"@, @"before"@ or @"after"@.
   
-  <pre>    Ojay('#foo').insert('New content', 'top');</pre>
+  <pre class="prettyprint">    Ojay('#foo').insert('New content', 'top');</pre>
   
   The positions are interpreted as follows:
   

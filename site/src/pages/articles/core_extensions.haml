@@ -22,7 +22,7 @@
     to @element@. @from@ is an optional argument that specifies the index at which to
     start searching the array.
     
-    <pre>      [9,1,6,3,6,4].indexOf(6)    // -> 2</pre>
+    <pre class="prettyprint">      [9,1,6,3,6,4].indexOf(6)    // -> 2</pre>
   
   * @array.lastIndexOf(element, from)@ - the same as @indexOf()@, except the array is searched
     in reverse.
@@ -31,7 +31,7 @@
     each iteration, the function receives the current element, its index, and the array
     itself. The optional @scope@ specifies the meaning of the keyword @this@ inside @func@.
     
-    <pre>      // alerts: "0: 9", "1: 12", "2: 2", "3: 15"
+    <pre class="prettyprint">      // alerts: "0: 9", "1: 12", "2: 2", "3: 15"
         [9,12,2,15].forEach(function(element, i) {
           alert(i + ': ' + element);
         });</pre>
@@ -51,7 +51,7 @@
   * @array.map(func, scope)@ - returns a new array containing the values returns by @func@ for each
     member of the array.
     
-    <pre>      ['foo', 'bar'].map(function(s) {
+    <pre class="prettyprint">      ['foo', 'bar'].map(function(s) {
           return s.toUpperCase().replace(/[aeiou]/ig, '_');
         });
         
@@ -63,7 +63,7 @@
     received on the next iteration. @initial@ specifies the starting value of the memo
     value; if it is omitted the array's first member is taken as the initial value.
     
-    <pre>      // find the maximum number
+    <pre class="prettyprint">      // find the maximum number
         [9,1,7,3,78,23,56,34].reduce(function(memo, value) {
           return value > memo ? value : memo;
         });
@@ -83,7 +83,7 @@
   * @func.bind(object)@ - returns a new function that calls the original function with @this@
     set to refer to @object@.
     
-    <pre>      var getTitle = function() {
+    <pre class="prettyprint">      var getTitle = function() {
           return this.title;
         };
         
@@ -94,14 +94,14 @@
   * @func.partial(arg1 [, arg2 [, arg3 ... ]])@ - returns a copy of the function with some arguments
     pre-set.
     
-    <pre>      var add = function(a,b) { return a + b; };
+    <pre class="prettyprint">      var add = function(a,b) { return a + b; };
         var add4 = add.partial(4);
         
         add4(9)   // -> 13</pre>
   
   * @func.curry()@ - returns a curried version of the function.
     
-    <pre>      var add = function(a,b,c) {
+    <pre class="prettyprint">      var add = function(a,b,c) {
           return a + b + c;
         }.curry();
         
@@ -112,7 +112,7 @@
   * @func.wrap(func)@ - provides aspect-oriented programming facilities by allowing you to wrap functions
     in other functions that manipulate their input and output. An example from James Coglan's site:
     
-    <pre>      var whizzBang = {
+    <pre class="prettyprint">      var whizzBang = {
           name: 'Fizz buzz',
         
           say: function(thing) {
@@ -143,7 +143,7 @@
   * @func.methodize()@ - returns a version of the function that, instead of taking an object as its
     first argument, becomes a method of that object
     
-    <pre>      parseInt('A', 16)   // -> 10
+    <pre class="prettyprint">      parseInt('A', 16)   // -> 10
         
         String.prototype.parseInt = parseInt.methodize();
         'A'.parseInt(16)    // -> 10</pre>
@@ -151,7 +151,7 @@
   * @func.functionize()@ - returns a version of an object method that is called as a function with
     the object passed in as an argument.
     
-    <pre>      'foo'.toUpperCase()   // -> "FOO"
+    <pre class="prettyprint">      'foo'.toUpperCase()   // -> "FOO"
         
         var upcase = String.prototype.toUpperCase.functionize();
         upcase('foo')         // -> "FOO"</pre>
@@ -163,7 +163,7 @@
     example if you want a function that will only run once, no matter how many times it's
     called:
     
-    <pre>      var addIframe = function() {
+    <pre class="prettyprint">      var addIframe = function() {
           Ojay('body').insert('<iframe name="foo"></iframe>', 'top');
         }.runs(1);</pre>
   
