@@ -1,18 +1,18 @@
 require 'fileutils'
 
+spec = Oyster.spec do
+  string :version
+end
+
 jake :version do
   begin
-    svn_info = `svn info`.split("\n")
-    url = svn_info.find { |info| info =~ /^URL/i }
-    revision = svn_info.find { |info| info =~ /^Revision/i }
-    if url and revision
-      return url.scan(/[^\/]+/).last if url =~ /\/tags\/[^\/]+\/?$/
-      return 'rev.' + revision.scan(/\d+/).first
-    else
-      return ""
-    end
+    opts = spec.parse(options[:unclaimed])
+    return opts[:version] if opts[:version]
+    branch = `git branch`.split(/\n/).find { |line| line =~ /^\*/ }[2..-1]
+    commit = `git log`.split(/\n/).first.scan(/[0-9a-f]{40}/).flatten.first
+    return "#{branch}-#{commit}"
   rescue
-    return ""
+    return "not-under-version-control"
   end
 end
 
