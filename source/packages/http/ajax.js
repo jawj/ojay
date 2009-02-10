@@ -107,7 +107,8 @@ Ojay.HTTP.Request = new JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
     /**
      * @param {String} verb         One of 'GET', 'POST', 'PUT', 'DELETE', or 'HEAD'
      * @param {String} url          The URL to request
-     * @param {Object} parameters   Key-value pairs to be used as a query string or POST message
+     * @param {Object} parameters   Key-value pairs to be used as a query string or POST message;
+     *                              alternatively, a string to be used as a POST request body.
      * @param {Object} callbacks    Object containing callback functions
      */
     initialize: function(verb, url, parameters, callbacks) {
@@ -125,16 +126,19 @@ Ojay.HTTP.Request = new JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
      */
     getURI: function() {
         if (this.uri) return this.uri;
-        return this.uri = Ojay.URI.build(this._url, this._parameters);
+        var params = (typeof this._parameters == 'string') ? {} : this._parameters;
+        return this.uri = Ojay.URI.build(this._url, params);
     },
     
     /**
      * <p>Makes the HTTP request and sets up all the callbacks.</p>
      */
     _begin: function() {
-        var uri         = this.getURI();
-        var url         = (this.verb == 'POST') ? uri._getPathWithHost() : uri.toString();
-        var postData    = (this.verb == 'POST') ? uri.getQueryString() : undefined;
+        var post        = (this.verb == 'POST'),
+            uri         = this.getURI(),
+            url         = post ? uri._getPathWithHost() : uri.toString(),
+            postData    = post ? this._getPostData(uri) : undefined;
+        
         Ojay.HTTP.notifyObservers('request', {receiver: this});
         
         YAHOO.util.Connect.asyncRequest(this.verb, url, {
@@ -170,6 +174,16 @@ Ojay.HTTP.Request = new JS.Class(/** @scope Ojay.HTTP.Request.prototype */{
             }
             
         }, postData);
+    },
+    
+    /**
+     * @param {URI} uri
+     * @returns {String}
+     */
+    _getPostData: function(uri) {
+        return (typeof this._parameters == 'string')
+                ? this._parameters
+                : uri.getQueryString();
     }
 });
 
