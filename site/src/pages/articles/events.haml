@@ -112,6 +112,31 @@
   
   See the "@MethodChain@":/articles/method_chain.html page for more information on how to use it.
   
+  h3. Detecting load events
+  
+  Oftentimes one wants to execute a piece of code only once the page has completely loaded, or when the DOM is
+  ready to use. Ojay borrows three methods from YUI for these purposes: @onAvailable@, @onContentReady@ and
+  @onDOMReady@.
+  
+  @onAvailable@ allows one to add event handlers which are executed as soon as the element
+  on which it's defined is detected in the DOM. For more information, see
+  "the YUI documentation":http://developer.yahoo.com/yui/event/#onavailable.
+  
+  <pre class="prettyprint">    Ojay.onAvailable('header', function() {
+        // ...
+      });</pre>
+  
+  @onContentReady@ is broadly similar, and has the same syntax as @onAvailable@, but waits until the element's siblings
+  are also ready, so as to ensure it's safe to modify the element's content.
+  
+  @onDOMReady@, in contrast, waits for the entire DOM tree to be usable before executing. The main advantage of
+  @onDOMReady@ over the traditional @window.onload@ is that it will execute faster; external content such as images
+  can take a while to load, and it's useful to be able to run complex DOM queries without having to wait for them.
+  
+  <pre class="prettyprint">    Ojay.onDOMReady(function() {
+        // ...
+      });</pre>
+  
   h3. How to delegate events
   
   Event delegation is the practise of getting a single DOM element to catch and handle events
