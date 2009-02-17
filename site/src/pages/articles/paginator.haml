@@ -129,6 +129,18 @@
   and check out "the source code":http://ojay.googlecode.com/svn/trunk/source/packages/paginator/controls.js
   for the  @Paginator.Controls@ class.
   
+  There are a number of useful methods on the @Paginator.Controls@ class, such as
+  @getPreviousButton@, @getNextButton@ and @getPageButtons@, all of which return the elements
+  you'd expect.
+  
+  However, as paginators can have multiple sets of controls, if you want to call
+  methods on the controls you've just added you'll have to store a reference to them.
+  For example, changing the style of the 'next' button is as easy as this:
+  
+  <pre class="prettyprint">    var controls = pager.addControls();
+      controls.getNextButton().setStyle({
+        color: 'red', backgroundColor: 'white'});</pre>
+  
   h3. Looping options
   
   As of version 0.3, @Paginator@ supports two options that allow the 'previous' and 'next'
