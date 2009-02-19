@@ -1,14 +1,14 @@
 /**
- * <p>The <tt>Tabs</tt> class is used to...</p>
- *
- * <p>See the website for further documentation and graphical examples.</p> 
- *
  * @constructor
- * @class Tab
+ * @class Tabs
  */
 Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
   include: Ojay.Observable,
     
+  /**
+   * @param {String} tabs
+   * @param {Object} options
+   */
   initialize: function(tabs, options) {
     options = this._options = options || {};
     
@@ -32,10 +32,13 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     this.toggle(0);
   },
   
-  addToggles: function(tabs) {
-    var self = this;
+  /**
+   * <p>Insert the toggle control group before or after the tabs' containing
+   * element.</p>
+   */
+  addToggles: function() {
     this._toggles = [];
-    
+    var self = this;
     var toggles = Ojay(Ojay.HTML.ul({className: this._options.togglesClass},
     function (H) {
       self._tabGroup.children(self._options.toggleSelector)
@@ -55,6 +58,10 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     this._tabGroup.parents().at(0).insert(toggles, this._options.tabsPosition);
   },
   
+  /**
+   * @param {Number} index
+   * @param {Object} options
+   */
   toggle: function(index, options) {
     options = options || {};
     
@@ -79,13 +86,20 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     }
   },
   
-  extend: {
+  extend: /** @scope Ojay.Tabs */{
     TOGGLE_SELECTOR: '.toggle',
     TOGGLES_CLASS:   'toggles',
     SWITCH_TIME: 0.2,
     
-    Tab: new JS.Class({
-      
+    /**
+     * @constructor
+     * @class Tab
+     */
+    Tab: new JS.Class(/** @scope Ojay.Tabs.Tab.prototype */{
+      /**
+       * @param {Ojay.Tab} group
+       * @param {HTMLElement} container
+       */
       initialize: function(group, container) {
         this._container = container, this._group = group;
         
@@ -95,6 +109,9 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
           this._container.setStyle({position: 'absolute', top: 0, left: 0});
       },
       
+      /**
+       * @returns {JS.MethodChain}
+       */
       hide: function() {
         var chain = new JS.MethodChain;
         this._container.animate({opacity: {to: 0}},
@@ -103,6 +120,9 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
         return chain;
       },
       
+      /**
+       * @returns {JS.MethodChain}
+       */
       show: function() {
         var chain = new JS.MethodChain;
         this._container.show().animate({opacity: {to: 1}},
