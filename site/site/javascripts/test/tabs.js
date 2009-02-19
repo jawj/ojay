@@ -1,1 +1,1 @@
-var tabs = new Ojay.Tabs('.tab');
+var tabs = new Ojay.Tabs('#container1 .tab');
