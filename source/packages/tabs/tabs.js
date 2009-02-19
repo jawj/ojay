@@ -80,7 +80,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
   
   extend: {
     TOGGLE_SELECTOR: '.toggle',
-    TOGGLES_CLASS:   'tab-toggles',
+    TOGGLES_CLASS:   'toggles',
     SWITCH_TIME: 0.2,
     
     Tab: new JS.Class({
