@@ -17,11 +17,12 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     options.switchTime     = options.switchTime     || this.klass.SWITCH_TIME;
     options.tabsPosition   = options.tabsPosition   || 'before';
     
-    this._container = Ojay(tabs).parents().at(0);
+    this._tabGroup  = Ojay(tabs);
+    this._container = this._tabGroup.parents().at(0);
     
-    this.addToggles(tabs);
+    this.addToggles();
     
-    this._tabs = Ojay(tabs).map(function(container) {
+    this._tabs = this._tabGroup.map(function(container) {
       return new this.klass.Tab(this, Ojay(container));
     }.bind(this));
     
@@ -37,12 +38,12 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     
     var toggles = Ojay(Ojay.HTML.ul({className: this._options.togglesClass},
     function (H) {
-      Ojay(tabs).children(self._options.toggleSelector)
+      self._tabGroup.children(self._options.toggleSelector)
       .forEach(function(header, i) {
         header.hide();
         var toggle = Ojay(H.li(header.node.innerHTML)).addClass('toggle-' + i);
         if (i === 0) toggle.addClass('first');
-        if (i === tabs.length - 1) toggle.addClass('last');
+        if (i === self._tabGroup.length - 1) toggle.addClass('last');
         self._toggles.push(toggle);
         toggle.on('click', function() { self.toggle(i); });
       });
@@ -51,7 +52,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     if (typeof this._options.width != 'undefined')
       toggles.setStyle({width: this._options.width});
     
-    Ojay(tabs).parents().at(0).insert(toggles, this._options.tabsPosition);
+    this._tabGroup.parents().at(0).insert(toggles, this._options.tabsPosition);
   },
   
   toggle: function(index, options) {
