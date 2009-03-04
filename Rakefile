@@ -74,18 +74,7 @@ task :build => [:destroy, :create_directory] do
 end
 
 def get_version
-  svn_info = `svn info`.split("\n")
-  url = svn_info.find { |info| info =~ /^URL/i }
-  revision = svn_info.find { |info| info =~ /^Revision/i }
-  if url and revision
-    puts "Building #{url}, #{revision}"
-    return url.scan(/[^\/]+/).last if url =~ /\/tags\/[^\/]+\/?$/
-    return 'rev.' + revision.scan(/\d+/).first
-  else
-    return ""
-  end
-rescue
-  return ""
+  '0.2.2'
 end
 
 task :create_directory do
