@@ -3,7 +3,7 @@
   h3. The @Tabs@ class
   
   @Ojay.Tabs@ is a class designed to allow you to easily create tabbed
-  interfaces
+  interfaces, compressing larger blocks of related content into a smaller area.
   
   h3. Required files
   
@@ -61,7 +61,7 @@
           tabsPosition: 'below'});
   </pre>
   
-  Here are the options currently supported.
+  Here are the options currently supported:
   
   * @switchTime@: the duration of the transition between one tab and another.
     Defaults to 0.2 seconds. Note that this is half the total time for the
@@ -75,9 +75,8 @@
   * @tabsPosition@: controls where the toggles will be inserted, relative to
     the parent of the elements picked out by the selector passed in as the
     first argument to the @Tabs@ constructor. Any string accepted by the
-    @insert@ function will do (which is to say @"top"@, @"bottom"@,
-    @"before"@ or @"after"@; see the "Generating HTML":/articles/generating_html.html
-    article for more).
+    @insert@ function will work; see the "Generating HTML":/articles/generating_html.html
+    article for more.
   
   h3. API methods & events
   
