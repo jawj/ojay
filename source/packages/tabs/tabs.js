@@ -20,7 +20,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     this._tabGroup  = Ojay(tabs);
     this._container = this._tabGroup.parents().at(0);
     
-    this.addToggles();
+    this._addToggles();
     
     this._tabs = this._tabGroup.map(function(container) {
       return new this.klass.Tab(this, Ojay(container));
@@ -36,7 +36,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
    * <p>Insert the toggle control group before or after the tabs' containing
    * element.</p>
    */
-  addToggles: function() {
+  _addToggles: function() {
     this._toggles = [];
     var self = this;
     var toggles = Ojay(Ojay.HTML.ul({className: this._options.togglesClass},
@@ -59,6 +59,10 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
   },
   
   /**
+   * <p>Switch to the tab with the index provided as the first argument.
+   * Passing in the <tt>silent</tt> option will stop the <tt>tabchange</tt>
+   * event from being published.</p>
+   *
    * @param {Number} index
    * @param {Object} options
    */
