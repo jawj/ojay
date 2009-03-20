@@ -1,0 +1,111 @@
+- @title = 'Tabs'
+:textile
+  h3. The @Tabs@ class
+  
+  @Ojay.Tabs@ is a class designed to allow you to easily create tabbed
+  interfaces
+  
+  h3. Required files
+  
+  * @http://yui.yahooapis.com/2.6.0/build/yahoo-dom-event/yahoo-dom-event.js@
+  * @http://yui.yahooapis.com/2.6.0/build/selector/selector-beta.js@
+  * @http://yui.yahooapis.com/2.6.0/build/animation/animation.js@
+  * @http://yoursite.com/ojay/js-class.js@
+  * @http://yoursite.com/ojay/core.js@
+  * @http://yoursite.com/ojay/pkg/tabs.js@
+  
+  h3. Examples
+  
+  * "Simple tabs example":/examples/tabs.html
+  
+  h3. Creating a group of @Tabs@
+  
+  New tab groups require a specific markup structure: a set of sibling
+  elements, each of which must contain an element whose content will be used as
+  the content of the corresponding toggle. Semantically, headers will usually
+  be a good match. By default the @Ojay.Tabs@ constructor will look for
+  elements with a class of @toggle@, as in the example below:
+  
+  <pre class="prettyprint">
+      <div class="tab-group">
+          <div class="tab">
+                <h3 class="toggle">First</h3>
+                <!-- content goes here -->
+          </div>
+      
+          <div class="tab">
+                <h3 class="toggle">Second</h3>
+                <!-- content goes here -->
+          </div>
+      
+          <div class="tab">
+              <h3 class="toggle">Third</h3>
+              <!-- content goes here -->
+          </div>
+      </div>
+  </pre>
+  
+  Given that markup structure, we can set things in motion by creating a new
+  @Ojay.Tabs@ object.
+  
+  <pre class="prettyprint">
+      var tabs = new Ojay.Tabs('.tab-group .tab');
+  </pre>
+  
+  This will add the toggles above the tabs, and apply various classes and
+  layout properties to the tab group. You can add the tabs below the tab group,
+  rather than above it, by passing in a @tabsPosition@ option:
+  
+  <pre class="prettyprint">
+      var tabs = new Ojay.Tabs('.tab-group .tab', {
+          tabsPosition: 'below'});
+  </pre>
+  
+  Here are the options currently supported.
+  
+  * @switchTime@: the duration of the transition between one tab and another.
+    Defaults to 0.2 seconds. Note that this is half the total time for the
+    transition, which consists of both the time for the current tab to fade
+    out _plus_ the time for the new tab to fade in, so under the default
+    settings the entire transition will take 0.4 seconds.
+  * @togglesClass@: the class applied to the toggles generated when the
+    @Tabs@ object is created. Defaults to @toggles@.
+  * @toggleSelector@: the CSS selector string used to find the elements whose
+    contents will be used in the toggles. Defaults to @".toggle"@.
+  * @tabsPosition@: controls where the toggles will be inserted, relative to
+    the parent of the elements picked out by the selector passed in as the
+    first argument to the @Tabs@ constructor. Any string accepted by the
+    @insert@ function will do (which is to say @"top"@, @"bottom"@,
+    @"before"@ or @"after"@; see the "Generating HTML":/articles/generating_html.html
+    article for more).
+  
+  h3. API methods & events
+  
+  The only current API method that @Tabs@ instance have is @tabs.toggle(n)@.
+  This switches to the tab with the index @n@, e.g. @tabs.toggle(0)@ will
+  switch to the first tab.
+  
+  @Tabs@ instances publish a @tabchange@ event each time they switch to a new
+  tab. To listen for them, just add a new event handler in the usual manner:
+  
+  <pre class="prettyprint">
+      tabs.on('tabchange', callback, scope);
+  </pre>
+  
+  Here @callback@ is the function you wish to be executed when the event is
+  published, and @scope@ specifies its execution context. For example, to alert
+  the user when they switch to a different tab, you could use the following
+  code:
+  
+  <pre class="prettyprint">
+      tabs.on('tabchange', function(index) {
+          alert('You are now viewing tab number ' + index);
+      });
+  </pre>
+  
+  If you want to switch to a new tab but don't want to alert listeners that the
+  event has occurred, you can pass in the @silent@ option:
+  
+  <pre class="prettyprint">
+      tabs.toggle(1, {silent: true});
+  </pre>
