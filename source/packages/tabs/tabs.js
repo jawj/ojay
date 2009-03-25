@@ -23,8 +23,8 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
         this._addToggles();
         
         this._tabs = this._tabGroup.map(function(container) {
-            return new this.klass.Tab(this, Ojay(container));
-        }.bind(this));
+            return new this.klass.Tab(this, container);
+        }, this);
         
         if (options.width && options.height)
             this._container.setStyle({height: options.height});
@@ -91,10 +91,10 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     },
     
     extend: /** @scope Ojay.Tabs */{
-        TOGGLE_SELECTOR: '.toggle',
-        TOGGLES_CLASS:   'toggles',
-        SWITCH_TIME: 0.2,
-        INSERT_POSITION: 'before',
+        TOGGLE_SELECTOR:  '.toggle',
+        TOGGLES_CLASS:    'toggles',
+        SWITCH_TIME:      0.2,
+        INSERT_POSITION:  'before',
         
         /**
          * @constructor

@@ -26,8 +26,7 @@
   be a good match. By default the @Ojay.Tabs@ constructor will look for
   elements with a class of @toggle@, as in the example below:
   
-  <pre class="prettyprint">
-      <div class="tab-group">
+  <pre class="prettyprint">    <div class="tab-group">
           <div class="tab">
                 <h3 class="toggle">First</h3>
                 <!-- content goes here -->
@@ -48,17 +47,16 @@
   Given that markup structure, we can set things in motion by creating a new
   @Ojay.Tabs@ object.
   
-  <pre class="prettyprint">
-      var tabs = new Ojay.Tabs('.tab-group .tab');
+  <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab');
   </pre>
   
   This will add the toggles above the tabs, and apply various classes and
   layout properties to the tab group. You can add the tabs below the tab group,
   rather than above it, by passing in a @tabsPosition@ option:
   
-  <pre class="prettyprint">
-      var tabs = new Ojay.Tabs('.tab-group .tab', {
-          tabsPosition: 'below'});
+  <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab', {
+          tabsPosition: 'after'
+      });
   </pre>
   
   Here are the options currently supported:
@@ -78,7 +76,7 @@
     @insert@ function will work; see the "Generating HTML":/articles/generating_html.html
     article for more.
   
-  h3. API methods & events
+  h3. API methods and events
   
   The only current API method that @Tabs@ instance have is @tabs.toggle(n)@.
   This switches to the tab with the index @n@, e.g. @tabs.toggle(0)@ will
@@ -87,8 +85,7 @@
   @Tabs@ instances publish a @tabchange@ event each time they switch to a new
   tab. To listen for them, just add a new event handler in the usual manner:
   
-  <pre class="prettyprint">
-      tabs.on('tabchange', callback, scope);
+  <pre class="prettyprint">    tabs.on('tabchange', callback, scope);
   </pre>
   
   Here @callback@ is the function you wish to be executed when the event is
@@ -96,8 +93,7 @@
   the user when they switch to a different tab, you could use the following
   code:
   
-  <pre class="prettyprint">
-      tabs.on('tabchange', function(index) {
+  <pre class="prettyprint">    tabs.on('tabchange', function(tagGroup, index) {
           alert('You are now viewing tab number ' + index);
       });
   </pre>
@@ -105,6 +101,5 @@
   If you want to switch to a new tab but don't want to alert listeners that the
   event has occurred, you can pass in the @silent@ option:
   
-  <pre class="prettyprint">
-      tabs.toggle(1, {silent: true});
+  <pre class="prettyprint">    tabs.toggle(1, {silent: true});
   </pre>
