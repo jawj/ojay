@@ -102,14 +102,14 @@
   
   h3. API methods and events
   
-  The only current API method that @Tabs@ instance have is @tabs.toggle(n)@.
-  This switches to the tab with the index @n@, e.g. @tabs.toggle(1)@ will
+  The only current API method that @Tabs@ instance have is @tabs.setPage(n)@.
+  This switches to the tab with the index @n@, e.g. @tabs.setPage(1)@ will
   switch to the first tab.
   
-  @Tabs@ instances publish a @tabchange@ event each time they switch to a new
+  @Tabs@ instances publish a @pagechange@ event each time they switch to a new
   tab. To listen for them, just add a new event handler in the usual manner:
   
-  <pre class="prettyprint">    tabs.on('tabchange', callback, scope);
+  <pre class="prettyprint">    tabs.on('pagechange', callback, scope);
   </pre>
   
   Here @callback@ is the function you wish to be executed when the event is
@@ -117,7 +117,7 @@
   the user when they switch to a different tab, you could use the following
   code:
   
-  <pre class="prettyprint">    tabs.on('tabchange', function(tagGroup, index) {
+  <pre class="prettyprint">    tabs.on('pagechange', function(tagGroup, index) {
           alert('You are now viewing tab number ' + index);
       });
   </pre>
@@ -125,5 +125,5 @@
   If you want to switch to a new tab but don't want to alert listeners that the
   event has occurred, you can pass in the @silent@ option:
   
-  <pre class="prettyprint">    tabs.toggle(1, {silent: true});
+  <pre class="prettyprint">    tabs.setPage(1, {silent: true});
   </pre>
