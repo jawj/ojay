@@ -10,14 +10,21 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
      * @param {Object} options
      */
     initialize: function(tabs, options) {
-        options = this._options = options || {};
-        
+        this._tabGroup = tabs;
+        this._options  = options || {};
+    },
+    
+    /**
+     * @returns {Tabs}
+     */
+    setup: function() {
+        var options = this._options;
         options.toggleSelector = options.toggleSelector || this.klass.TOGGLE_SELECTOR;
         options.togglesClass   = options.togglesClass   || this.klass.TOGGLES_CLASS;
         options.switchTime     = options.switchTime     || this.klass.SWITCH_TIME;
         options.tabsPosition   = options.tabsPosition   || this.klass.INSERT_POSITION;
         
-        this._tabGroup  = Ojay(tabs);
+        this._tabGroup  = Ojay(this._tabGroup);
         this._container = this._tabGroup.parents().at(0);
         
         this._addToggles();
@@ -29,7 +36,25 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
         if (options.width && options.height)
             this._container.setStyle({height: options.height});
         
-        this.toggle(0);
+        var state = this.getInitialState();
+        this.toggle(state.tab);
+        return this;
+    },
+    
+    /**
+     * @returns {Object}
+     */
+    getInitialState: function() {
+        return {tab: 1};
+    },
+    
+    /**
+     * @param {Object} state
+     * @returns {Tabs}
+     */
+    changeState: function(state) {
+        if (state.tab !== undefined) this.toggle(state.tab);
+        return this;
     },
     
     /**
@@ -48,7 +73,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
                 if (i === 0) toggle.addClass('first');
                 if (i === self._tabGroup.length - 1) toggle.addClass('last');
                 self._toggles.push(toggle);
-                toggle.on('click', function() { self.toggle(i); });
+                toggle.on('click', function() { self.changeState({tab: i+1}); });
             });
         }));
         
@@ -67,6 +92,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
      * @param {Object} options
      */
     toggle: function(index, options) {
+        index  -= 1;
         options = options || {};
         
         if (index >= this._tabs.length) index = 0;

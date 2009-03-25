@@ -4,6 +4,8 @@
   
   @Ojay.Tabs@ is a class designed to allow you to easily create tabbed
   interfaces, compressing larger blocks of related content into a smaller area.
+  It provides event notification for tab switching events, and allows tabbed
+  areas to be back-button compatible using "@Ojay.History@":/articles/history.html.
   
   h3. Required files
   
@@ -14,9 +16,14 @@
   * @http://yoursite.com/ojay/core.js@
   * @http://yoursite.com/ojay/pkg/tabs.js@
   
+  To manage history and allow tabs to be bookmarked:
+  
+  * @http://yui.yahooapis.com/2.6.0/build/history/history.js@
+  * @http://yoursite.com/ojay/pkg/history.js@
+  
   h3. Examples
   
-  * "Simple tabs example":/examples/tabs.html
+  * "Simple tabs example, with history management":/examples/tabs.html
   
   h3. Creating a group of @Tabs@
   
@@ -45,9 +52,10 @@
   </pre>
   
   Given that markup structure, we can set things in motion by creating a new
-  @Ojay.Tabs@ object.
+  @Ojay.Tabs@ object and calling its @setup()@ method.
   
   <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab');
+      tabs.setup();
   </pre>
   
   This will add the toggles above the tabs, and apply various classes and
@@ -57,6 +65,7 @@
   <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab', {
           tabsPosition: 'after'
       });
+      tabs.setup();
   </pre>
   
   Here are the options currently supported:
@@ -76,10 +85,25 @@
     @insert@ function will work; see the "Generating HTML":/articles/generating_html.html
     article for more.
   
+  If you want the tab group to be history-managed, add a call to @Ojay.History@
+  before the @setup()@ call:
+  
+  <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab');
+      Ojay.History.manage(tabs, 'myTabGroup');
+      // Register other objects and initialize History
+      tabs.setup();
+  </pre>
+  
+  Remember to call @Ojay.History.initialize()@ when appropriate, and to
+  register all applicable objects beforehand. Do not call @setup()@ on these
+  objects until you've initialized the history manager, or else they will not
+  start up correctly. See "@Ojay.History@":/articles/history.html for more
+  information.
+  
   h3. API methods and events
   
   The only current API method that @Tabs@ instance have is @tabs.toggle(n)@.
-  This switches to the tab with the index @n@, e.g. @tabs.toggle(0)@ will
+  This switches to the tab with the index @n@, e.g. @tabs.toggle(1)@ will
   switch to the first tab.
   
   @Tabs@ instances publish a @tabchange@ event each time they switch to a new
