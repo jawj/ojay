@@ -56,6 +56,14 @@ YAHOO.util.Event.onDOMReady(function() {
         
         testDocument: function() {
             this.assert.areEqual(1, Ojay(document).length);
+        },
+        
+        testBooleanAttributeSetting: function() {
+          var checkbox = Ojay('form input[type=checkbox]');
+          checkbox.set({disabled: true});
+          this.assert.isTrue(checkbox.node.disabled);
+          checkbox.set({disabled: false});
+          this.assert.isFalse(checkbox.node.disabled);
         }
     }));
     
