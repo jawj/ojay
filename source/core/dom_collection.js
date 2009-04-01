@@ -322,13 +322,25 @@
          *
          * <pre><code>    Ojay('img').set({src: 'images/tom.png'});</code></pre>
          *
-         * @param Object options
-         * @returns DomCollection
+         * <p>Boolean attributes can be set and unset by passing in the appropriate boolean value.</p>
+         *
+         * <pre><code>    Ojay('input[type=checkbox]').set({disabled: true});</code></pre>
+         *
+         * @param {Object} options
+         * @returns {DomCollection}
          */
         set: function(options) {
             for (var i = 0, n = this.length; i < n; i++) {
-                for (var key in options)
-                    this[i].setAttribute(key, options[key]);
+                for (var key in options) {
+                    if (['disabled', 'checked', 'readonly', 'multiple'].indexOf(key) < 0) {
+                        this[i].setAttribute(key, options[key]);
+                    } else {
+                        if (options[key] === false || options[key] === null)
+                            this[i].removeAttribute(key);
+                        else
+                            this[i].setAttribute(key, key);
+                    }
+                }
             }
             return this;
         },
