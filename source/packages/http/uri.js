@@ -36,7 +36,7 @@ Ojay.URI = new JS.Class({
             
             if (/^\?/.test(string)) string.slice(1).split('&').forEach(function(pair) {
                 var bits = pair.split('=');
-                uri.setParam(bits[0], bits[1]);
+                uri.setParam(bits[0], bits[1].replace('+', ' '));
             });
             return uri;
         },
