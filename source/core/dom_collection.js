@@ -7,7 +7,6 @@
      * @class DomCollection
      */
     Ojay.DomCollection = new JS.Class(/** @scope Ojay.DomCollection.prototype */{
-        
         /**
          * @param {Array} collection
          * @returns {DomCollection}
@@ -126,7 +125,9 @@
         on: function(eventName, callback, scope) {
             var chain = new JS.MethodChain;
             if (callback && typeof callback != 'function') scope = callback;
-            YAHOO.util.Event.on(this, eventName, function(evnt) {
+            
+            var handler = function(evnt) {
+                if (evnt.eventName !== undefined && evnt.eventName != eventName) return;
                 var wrapper = Ojay(this);
                 evnt.stopDefault   = Ojay.stopDefault.method;
                 evnt.stopPropagate = Ojay.stopPropagate.method;
@@ -134,8 +135,56 @@
                 evnt.getTarget     = Ojay._getTarget;
                 if (typeof callback == 'function') callback.call(scope || null, wrapper, evnt);
                 chain.fire(scope || wrapper);
-            });
+            };
+            
+            if (/:/.test(eventName)) {
+                for (var i = 0, n = this.length; i < n; i++) (function(element) {
+                    var wrapped = handler.bind(element);
+                    if (element.addEventListener) {
+                        element.addEventListener('dataavailable', wrapped, false);
+                    } else {
+                        element.attachEvent('ondataavailable', wrapped);
+                        element.attachEvent('onfilterchange', wrapped);
+                    }
+                })(this[i]);
+            } else {
+                YAHOO.util.Event.on(this, eventName, handler);
+            }
             return chain;
+        },
+        
+        /**
+         * <p>Fires a custom event on each element in the collection, firing any custom event
+         * handlers that have been registered on these elements. The first argument should be
+         * the name of the event to fire, and the second argument (optional) should be a boolean
+         * indicating whether the event should bubble or not (this defaults to true).</p>
+         * @param {String} eventName
+         * @param {Boolean} bubble
+         * @returns {DomCollection}
+         */
+        fire: function(eventName, bubble) {
+            bubble = (bubble === undefined) ? true : false;
+            var data = [].slice.call(arguments, 2);
+            
+            for (var i = 0, n = this.length; i < n; i++) (function(element) {
+                if (element == document && document.createEvent && !element.dispatchEvent)
+                    element = document.documentElement;
+                var event;
+                if (document.createEvent) {
+                    event = document.createEvent('HTMLEvents');
+                    event.initEvent('dataavailable', bubble, true);
+                } else {
+                    event = document.createEventObject();
+                    event.eventType = bubble ? 'ondataavailable' : 'onfilterchange';
+                }
+                event.eventName = eventName;
+                event.data = data;
+                
+                document.createEvent ? element.dispatchEvent(event)
+                                     : element.fireEvent(event.eventType, event);
+            })(this[i]);
+            
+            return this;
         },
         
         /**
