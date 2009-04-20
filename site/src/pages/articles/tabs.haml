@@ -60,10 +60,10 @@
   
   This will add the toggles above the tabs, and apply various classes and
   layout properties to the tab group. You can add the tabs below the tab group,
-  rather than above it, by passing in a @tabsPosition@ option:
+  rather than above it, by passing in a @togglesPosition@ option:
   
   <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab', {
-          tabsPosition: 'after'
+          togglesPosition: 'after'
       });
       tabs.setup();
   </pre>
@@ -79,7 +79,7 @@
     @Tabs@ object is created. Defaults to @toggles@.
   * @toggleSelector@: the CSS selector string used to find the elements whose
     contents will be used in the toggles. Defaults to @".toggle"@.
-  * @tabsPosition@: controls where the toggles will be inserted, relative to
+  * @togglesPosition@: controls where the toggles will be inserted, relative to
     the parent of the elements picked out by the selector passed in as the
     first argument to the @Tabs@ constructor. Any string accepted by the
     @insert@ function will work; see the "Generating HTML":/articles/generating_html.html

@@ -1,4 +1,55 @@
 /**
+ * <p>The <tt>Tabs</tt> class is used to convert a list of document sections into a tabbed
+ * interface. Each section should contain a heading or similar common element whose content
+ * will be used as the text label for each tab.</p>
+ *
+ * <p>For example, the following starting markup:</p>
+ *
+ * <pre><code>    <div id="tabGroup">
+ *         <div class="tab">
+ *             <h3 class="toggle">J.G. Ballard</h3>
+ *             <p>I believe in the power of the imagination to remake the
+ *             world, to release the truth within us, to hold back the night...</p>
+ *         </div>
+ *         <div class="tab">
+ *             <h3 class="toggle">Andrei Tarkovsky</h3>
+ *             <p><q>We do not move in one direction, rather do we wander back and
+ *             forth, turning now this way and now that. We go back on our own...</p>
+ *         </div>
+ *         <div class="tab">
+ *             <h3 class="toggle">Philip K. Dick</h3>
+ *             <p>I ask in my writing, What is real? Because unceasingly we
+ *             are bombarded with pseudo-realities manufactured...</p>
+ *         </div>
+ *     </div></code></pre>
+ *
+ * <p>and the following script snippet:</p>
+ *
+ * <pre><code>    var tabs = Ojay.Tabs('#tabGroup .tab');
+ *     tabs.setup();</code></pre>
+ *
+ * <p>the markup is transformed into:</p>
+ *
+ * <pre><code>    <ul class="toggles">
+ *         <li class="toggle-1 first">J.G. Ballard</li>
+ *         <li class="toggle-2">Andrei Tarkovsky</li>
+ *         <li class="toggle-3 last">Philip K. Dick</li>
+ *     </ul>
+ *     <div id="tabGroup">
+ *         <div class="tab">
+ *             <p>I believe in the power of the imagination to remake the
+ *             world, to release the truth within us, to hold back the night...</p>
+ *         </div>
+ *         <div class="tab">
+ *             <p><q>We do not move in one direction, rather do we wander back and
+ *             forth, turning now this way and now that. We go back on our own...</p>
+ *         </div>
+ *         <div class="tab">
+ *             <p>I ask in my writing, What is real? Because unceasingly we
+ *             are bombarded with pseudo-realities manufactured...</p>
+ *         </div>
+ *     </div></code></pre>
+ *
  * @constructor
  * @class Tabs
  */
@@ -6,6 +57,17 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     include: [Ojay.Observable, JS.State],
       
     /**
+     * <p>To initialize, <tt>Tabs</tt> requires a CSS selector to get the list of page
+     * sections to convert to tabs, and optionally an options object. Available options
+     * are:</p>
+     *
+     * <ul>
+     *     <li><tt>toggleSelector</tt> - CSS selector used to get toggle elements
+     *     <li><tt>togglesClass</tt> - class name added to the generated list of toggles
+     *     <li><tt>togglesPosition</tt> - 'before' or 'after', position to insert toggles list
+     *     <li><tt>switchTime</tt> - duration of tab switch animation in seconds
+     * </ul>
+     *
      * @param {String} tabs
      * @param {Object} options
      */
@@ -14,11 +76,6 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
         this._options  = options || {};
         this.setState('CREATED');
     },
-    
-    /**
-     * @returns {Tabs}
-     */
-    
     
     /**
      * @returns {Object}
@@ -37,13 +94,23 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     },
     
     states: {
-        CREATED: {
+        /**
+         * <p>The <tt>Tabs</tt> instance is in the CREATED state until its <tt>setup()</tt>
+         * method is called.</p>
+         */
+        CREATED: /** @scope Ojay.Tabs.prototype */{
+            /**
+             * <p>Sets up all the DOM changes the <tt>Tabs</tt> object needs. If you want to history
+             * manage the object, make sure you set up history management before calling this method.
+             * Moves the object to the READY state if successful.</p>
+             * @returns {Tabs}
+             */
             setup: function() {
                 var options = this._options;
                 options.toggleSelector = options.toggleSelector || this.klass.TOGGLE_SELECTOR;
                 options.togglesClass   = options.togglesClass   || this.klass.TOGGLES_CLASS;
                 options.switchTime     = options.switchTime     || this.klass.SWITCH_TIME;
-                options.tabsPosition   = options.tabsPosition   || this.klass.INSERT_POSITION;
+                options.togglesPosition   = options.togglesPosition   || this.klass.INSERT_POSITION;
                 
                 this._tabGroup  = Ojay(this._tabGroup);
                 this._container = this._tabGroup.parents().at(0);
@@ -72,11 +139,11 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
                 var self = this, options = self._options;
                 var toggles = Ojay( Ojay.HTML.ul({className: options.togglesClass}, function (HTML) {
                     self._tabGroup.children(options.toggleSelector).forEach(function(header, i) {
-                        header.hide();
-                        var toggle = Ojay( HTML.li(header.node.innerHTML) ).addClass('toggle-' + i);
+                        var toggle = Ojay( HTML.li(header.node.innerHTML) ).addClass('toggle-' + (i+1));
                         if (i === 0) toggle.addClass('first');
                         if (i === self._tabGroup.length - 1) toggle.addClass('last');
                         self._toggles.push(toggle);
+                        header.remove();
                         toggle.on('click')._(self).setPage(i+1);
                     });
                 }) );
@@ -84,12 +151,19 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
                 if (typeof this._options.width != 'undefined')
                     toggles.setStyle({width: this._options.width});
                 
-                this._tabGroup.parents().at(0).insert(toggles, this._options.tabsPosition);
+                this._tabGroup.parents().at(0).insert(toggles, this._options.togglesPosition);
             }
         },
         
-        READY: {
+        /**
+         * <p>The <tt>Tabs</tt> object is in the READY state when all its DOM behaviour has been
+         * set up and it is not in the process of switching tabs.</p>
+         */
+        READY: /** @scope Ojay.Tabs.prototype */{
             /**
+             * <p>Switches the set of tabs to the given page (indexed from 1), inserting
+             * history entry. Passing in the <tt>silent</tt> option will stop the
+             * <tt>pagechange</tt> event from being published.</p>
              * @param {Number} page
              * @param {Object} options
              * @returns {Tabs}
@@ -101,10 +175,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
             },
             
             /**
-             * <p>Switch to the tab with the index provided as the first argument.
-             * Passing in the <tt>silent</tt> option will stop the <tt>pagechange</tt>
-             * event from being published.</p>
-             *
+             * <p>Switch to the tab with the index provided as the first argument.</p>
              * @param {Number} index
              */
             _handleSetPage: function(index) {
@@ -130,7 +201,10 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
             }
         },
         
-        ANIMATING: {}
+        /**
+         * <p>The <tt>Tabs</tt> instance is in the ANIMATING state during tab transitions.</p>
+         */
+        ANIMATING: /** @scope Ojay.Tabs.prototype */{}
     },
     
     extend: /** @scope Ojay.Tabs */{
