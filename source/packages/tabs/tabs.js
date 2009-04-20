@@ -127,6 +127,11 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
                 this.setState('READY');
                 var state = this.getInitialState();
                 this._handleSetPage(state.tab);
+                
+                this.on('pagechange', function(tabs, page) {
+                    tabs._highlightToggle(page - 1);
+                });
+                
                 return this;
             },
             
@@ -179,18 +184,16 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
              * @param {Number} index
              */
             _handleSetPage: function(index) {
-                index  -= 1;
+                index -= 1;
                 
                 if (index >= this._tabs.length) index = 0;
                 if (this._currentTab == index) return;
                 
                 if (typeof this._currentTab == 'undefined') {
                     this._currentTab = index;
-                    this._toggles[index].addClass('current');
                     this._tabs[index].show();
+                    this._highlightToggle(index);
                 } else {
-                    this._toggles.forEach({removeClass: 'current'});
-                    this._toggles[index].addClass('current');
                     this.setState('ANIMATING');
                     this._tabs[this._currentTab].hide()._(function(self) {
                         self._currentTab = index;
@@ -198,6 +201,15 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
                         ._(self).setState('READY');
                     }, this);
                 }
+            },
+            
+            /**
+             * <p>Sets the 'selected' class on the appropriate toggle.</p>
+             * @param {Number} index
+             */
+            _highlightToggle: function(index) {
+                this._toggles.forEach({removeClass: 'selected'});
+                this._toggles[index].addClass('selected');
             }
         },
         
