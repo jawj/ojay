@@ -21,7 +21,7 @@ YAHOO.util.Event.onDOMReady(function() {
         },
         
         testNoDuplicates: function() {
-            this.arrayAssert.itemsAreEqual([this.bar, this.foo, this.baz], Ojay('#content #bar, #content p'));
+            this.arrayAssert.itemsAreEqual([this.foo, this.bar, this.baz], Ojay('#content p, #content #bar'));
             this.arrayAssert.itemsAreEqual([this.bar, this.baz], Ojay('#content #bar', '#content .notfirst'));
         },
         
