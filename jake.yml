@@ -132,6 +132,15 @@ packages:
       - paginator
       - ajax_paginator
       - controls
+  
+  pkg/tabs:
+    directory:        packages/tabs
+    requires:
+      - ojay/core-min
+      - ojay/pkg/http-min
+    files:
+      - tabs
+      - ajax_tabs
 
 bundles:
   all:
@@ -146,3 +155,4 @@ bundles:
       - pkg/mouse
       - pkg/overlay
       - pkg/paginator
+      - pkg/tabs
