@@ -57,6 +57,7 @@ Ojay.Animation = new JS.Class(/** @scope Ojay.Animation.prototype */{
         var callbackAttached = false;
         
         var after = this._afterCallback, before = this._beforeCallback;
+        this._collection.fire('ojay:animstart', false);
         
         this._collection.forEach(function(element, i) {
             var parameters = paramSets[i], duration = durations[i];
@@ -65,6 +66,7 @@ Ojay.Animation = new JS.Class(/** @scope Ojay.Animation.prototype */{
                 if (YAHOO.env.ua.ie && (parameters.opacity || {}).to !== undefined)
                     element.setStyle({opacity: parameters.opacity.to});
                 
+                element.fire('ojay:animend', false);
                 if (after) after(element, i);
                 
                 if (duration == maxDuration && !callbackAttached) {
