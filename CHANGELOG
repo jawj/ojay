@@ -1,3 +1,27 @@
+Version 0.4.0
+TODO
+================================================================
+
+* Additions to core:
+    * Custom DOM events. DomCollection#on() treats event names
+      containing colons as custom events, and a fire() method
+      is provided for notifying observers.
+
+* Bug fixes:
+    * DomCollection#set() handles boolean attributes correctly
+    * '+' symbols in URLs are now parsed as spaces by Ojay.HTTP
+
+* New packages: Tabs
+
+* Additions to HTTP package:
+    * Raw strings can be used as the body for POST requests, e.g.
+      Ojay.HTTP.POST('/endpoint', 'request body', { /* callbacks */ })
+
+* Additions to Paginator package:
+    * New methods: push(), pop(), shift() and unshift() for
+      adding and removing items from Paginators
+
+
 Version 0.3.1
 December 1 2008
 ================================================================
