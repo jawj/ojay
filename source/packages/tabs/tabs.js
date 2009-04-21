@@ -73,7 +73,14 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
      */
     initialize: function(tabs, options) {
         this._tabGroup = tabs;
-        this._options  = options || {};
+        options  = options || {};
+        
+        options.toggleSelector  = options.toggleSelector  || this.klass.TOGGLE_SELECTOR;
+        options.togglesClass    = options.togglesClass    || this.klass.TOGGLES_CLASS;
+        options.switchTime      = options.switchTime      || this.klass.SWITCH_TIME;
+        options.togglesPosition = options.togglesPosition || this.klass.INSERT_POSITION;
+        this._options = options;
+        
         this.setState('CREATED');
     },
     
@@ -106,31 +113,12 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
              * @returns {Tabs}
              */
             setup: function() {
-                var options = this._options;
-                options.toggleSelector = options.toggleSelector || this.klass.TOGGLE_SELECTOR;
-                options.togglesClass   = options.togglesClass   || this.klass.TOGGLES_CLASS;
-                options.switchTime     = options.switchTime     || this.klass.SWITCH_TIME;
-                options.togglesPosition   = options.togglesPosition   || this.klass.INSERT_POSITION;
-                
                 this._tabGroup  = Ojay(this._tabGroup);
                 this._container = this._tabGroup.parents().at(0);
                 
-                this._addToggles();
-                
-                this._tabs = this._tabGroup.map(function(container) {
-                    return new this.klass.Tab(this, container);
-                }, this);
-                
-                if (options.width && options.height)
-                    this._container.setStyle({height: options.height});
-                
-                this.setState('READY');
-                var state = this.getInitialState();
-                this._handleSetPage(state.tab);
-                
-                this.on('pagechange', function(tabs, page) {
-                    tabs._highlightToggle(page - 1);
-                });
+                this._makeToggles();
+                this._makeViews();
+                this._restoreState();
                 
                 return this;
             },
@@ -139,9 +127,10 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
              * <p>Insert the toggle control group before or after the tabs' containing
              * element.</p>
              */
-            _addToggles: function() {
+            _makeToggles: function() {
                 this._toggles = [];
                 var self = this, options = self._options;
+                
                 var toggles = Ojay( Ojay.HTML.ul({className: options.togglesClass}, function (HTML) {
                     self._tabGroup.children(options.toggleSelector).forEach(function(header, i) {
                         var toggle = Ojay( HTML.li(header.node.innerHTML) ).addClass('toggle-' + (i+1));
@@ -157,6 +146,27 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
                     toggles.setStyle({width: this._options.width});
                 
                 this._tabGroup.parents().at(0).insert(toggles, this._options.togglesPosition);
+            },
+            
+            _makeViews: function() {
+                var self = this, options = self._options;
+                
+                this._tabs = this._tabGroup.map(function(container) {
+                    return new this.klass.Tab(this, container);
+                }, this);
+                
+                if (options.width && options.height)
+                    this._container.setStyle({height: options.height});
+            },
+            
+            _restoreState: function() {
+                this.setState('READY');
+                var state = this.getInitialState();
+                this._handleSetPage(state.tab);
+                
+                this.on('pagechange', function(tabs, page) {
+                    tabs._highlightToggle(page - 1);
+                });
             }
         },
         
@@ -174,8 +184,8 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
              * @returns {Tabs}
              */
             setPage: function(page, options) {
-                this.changeState({tab: page});
                 if ((options || {}).silent !== false) this.notifyObservers('pagechange', page);
+                this.changeState({tab: page});
                 return this;
             },
             

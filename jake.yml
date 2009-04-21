@@ -137,8 +137,10 @@ packages:
     directory:        packages/tabs
     requires:
       - ojay/core-min
+      - ojay/pkg/http-min
     files:
       - tabs
+      - ajax_tabs
 
 bundles:
   all:
