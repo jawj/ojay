@@ -122,7 +122,20 @@ Ojay.AjaxTabs = new JS.Class(Ojay.Tabs, /** @scope Ojay.AjaxTabs.prototype */{
     },
     
     extend: /** @scope Ojay.AjaxTabs */{
-        TAB_CLASS:    'tab'
+        TAB_CLASS:    'tab',
+        
+        /**
+         * <p>There's a pretty good chance of there being several good ways of instantiating
+         * one of these, so for now let's encourage the default way to be used through a
+         * factory method.</p>
+         * @param {String|DomCollection} links
+         * @param {String|DomCollection} container
+         * @param {Object} options
+         * @returns {AjaxTabs}
+         */
+        fromLinks: function(links, container, options) {
+            return new this(links, container, options);
+        }
     }
 });
 
