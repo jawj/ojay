@@ -1,0 +1,111 @@
+- @title = 'Tabs'
+
+#summary
+  :textile
+    h2. Tabbed interfaces using @Ojay.Tabs@
+    
+    RTFM crap goes here.
+    
+:plain
+    <style id="display-style" type="text/css">
+        .tab-group {
+            clear: both;
+            border: 1px solid #ccc;
+        }
+        
+        .tab-group .tab {
+            padding: 10px;
+        }
+        
+        .toggles {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .toggles LI {
+            float: left;
+            margin: 0 5px -1px 0;
+            border: 1px solid #ccc;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            -webkit-border-top-left-radius: 5px;
+            -webkit-border-top-right-radius: 5px;
+            -moz-border-radius-topleft: 5px;
+            -moz-border-radius-topright: 5px;
+            padding: 5px 10px;
+            font-weight: bold;
+            color: #404040;
+            background-color: #ccc;
+            list-style: none;
+            cursor: pointer;
+        }
+        
+        .toggles LI:hover {
+            border-color: #e5e5e5;
+            border-bottom-color: #ccc;
+            background-color: #e5e5e5;
+        }
+        
+        .toggles .current, .toggles .current:hover {
+            border-color: #ccc;
+            border-bottom-color: #fff;
+            background-color: #fff;
+        }
+    </style>
+  
+    <div class="tab-group">
+        <div class="tab">
+            <h3 class="toggle">J.G. Ballard</h3>
+            <blockquote>
+                <p>I believe in the power of the imagination to remake the
+                world, to release the truth within us, to hold back the night,
+                to transcend death, to charm motorways, to ingratiate ourselves
+                with birds, to enlist the confidences of madmen.</p>
+                
+                <p>I believe in my own obsessions, in the beauty of the car
+                crash, in the peace of the submerged forest, in the excitements
+                of the deserted holiday beach, in the elegance of automobile
+                graveyards, in the mystery of multi-storey car parks, in the
+                poetry of abandoned hotels.</p>
+            </blockquote>
+              
+            <p><cite>Excerpted from 'What I Believe' by J.G. Ballard, first
+            published in Interzone #8, 1984</cite></p>
+        </div>
+        <div class="tab">
+            <h3 class="toggle">Andrei Tarkovsky</h3>
+            
+            <blockquote>
+                <p><q>We do not move in one direction, rather do we wander back and
+                forth, turning now this way and now that. We go back on our own
+                tracks&hellip;</q> That thought of Montaigne's reminds me about
+                something I thought of in connection with flying saucers,
+                humanoids, and the remains of unbelievably advanced technology
+                found in some ancient ruins. They write about aliens, but I think
+                that in these phenomena we are in fact confronting ourselves;
+                that is our future, our descendants who are actually traveling in
+                time.</p>
+            </blockquote>
+
+            <p><cite>Andrei Tarkovsky</cite></p>
+        </div>
+        <div class="tab">
+            <h3 class="toggle">Philip K. Dick</h3>
+            
+            <blockquote>
+                <p>I ask in my writing, What is real? Because unceasingly we
+                are bombarded with pseudo-realities manufactured by very
+                sophisticated people using very sophisticated electronic
+                mechanisms. I do not distrust their motives; I distrust their
+                power. They have a lot of it. And it is an astonishing power:
+                that of creating whole universes, universes of the mind.</p>
+            </blockquote>
+            
+            <p><cite>Philip K. Dick, 'How to Build a Universe that Doesn't
+            Fall Apart Two Days Later' (1978)</cite></p>
+        </div>
+    </div>
+    
+    <script id="display-script" type="text/javascript">
+        var tabs = new Ojay.Tabs('.tab-group .tab');
+    </script>
