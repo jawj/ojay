@@ -58,11 +58,12 @@
     
     <script id="display-script" type="text/javascript">
         var list = Ojay('#navigation'), links = list.descendants('a');
+        
+        // Insert an element after the links to display tab views
         var holder = Ojay.HTML.div({className: 'tabView'});
         list.insert(holder, 'after');
         
         // Set up the tabs
-        
-        var pager = new Ojay.AjaxTabs(links, holder);
-        pager.setup();
+        var tabs = Ojay.AjaxTabs.fromLinks(links, holder);
+        tabs.setup();
     </script>
