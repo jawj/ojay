@@ -4,6 +4,8 @@
   
   @Ojay.Tabs@ is a class designed to allow you to easily create tabbed
   interfaces, compressing larger blocks of related content into a smaller area.
+  It provides event notification for tab switching events, and allows tabbed
+  areas to be back-button compatible using "@Ojay.History@":/articles/history.html.
   
   h3. Required files
   
@@ -14,9 +16,20 @@
   * @http://yoursite.com/ojay/core.js@
   * @http://yoursite.com/ojay/pkg/tabs.js@
   
+  To use @Ojay.AjaxTabs@:
+  
+  * @http://yui.yahooapis.com/2.6.0/build/connection/connection.js@
+  * @http://yoursite.com/ojay/pkg/http.js@
+  
+  To manage history and allow tabs to be bookmarked:
+  
+  * @http://yui.yahooapis.com/2.6.0/build/history/history.js@
+  * @http://yoursite.com/ojay/pkg/history.js@
+  
   h3. Examples
   
-  * "Simple tabs example":/examples/tabs.html
+  * "Simple tabs example, with history management":/examples/tabs.html
+  * "Lazy-loading tabs from HTML links":/examples/ajax_tabs.html
   
   h3. Creating a group of @Tabs@
   
@@ -26,8 +39,7 @@
   be a good match. By default the @Ojay.Tabs@ constructor will look for
   elements with a class of @toggle@, as in the example below:
   
-  <pre class="prettyprint">
-      <div class="tab-group">
+  <pre class="prettyprint">    <div class="tab-group">
           <div class="tab">
                 <h3 class="toggle">First</h3>
                 <!-- content goes here -->
@@ -46,19 +58,20 @@
   </pre>
   
   Given that markup structure, we can set things in motion by creating a new
-  @Ojay.Tabs@ object.
+  @Ojay.Tabs@ object and calling its @setup()@ method.
   
-  <pre class="prettyprint">
-      var tabs = new Ojay.Tabs('.tab-group .tab');
+  <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab');
+      tabs.setup();
   </pre>
   
   This will add the toggles above the tabs, and apply various classes and
   layout properties to the tab group. You can add the tabs below the tab group,
-  rather than above it, by passing in a @tabsPosition@ option:
+  rather than above it, by passing in a @togglesPosition@ option:
   
-  <pre class="prettyprint">
-      var tabs = new Ojay.Tabs('.tab-group .tab', {
-          tabsPosition: 'below'});
+  <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab', {
+          togglesPosition: 'after'
+      });
+      tabs.setup();
   </pre>
   
   Here are the options currently supported:
@@ -72,23 +85,37 @@
     @Tabs@ object is created. Defaults to @toggles@.
   * @toggleSelector@: the CSS selector string used to find the elements whose
     contents will be used in the toggles. Defaults to @".toggle"@.
-  * @tabsPosition@: controls where the toggles will be inserted, relative to
+  * @togglesPosition@: controls where the toggles will be inserted, relative to
     the parent of the elements picked out by the selector passed in as the
     first argument to the @Tabs@ constructor. Any string accepted by the
     @insert@ function will work; see the "Generating HTML":/articles/generating_html.html
     article for more.
   
-  h3. API methods & events
+  If you want the tab group to be history-managed, add a call to @Ojay.History@
+  before the @setup()@ call:
   
-  The only current API method that @Tabs@ instance have is @tabs.toggle(n)@.
-  This switches to the tab with the index @n@, e.g. @tabs.toggle(0)@ will
+  <pre class="prettyprint">    var tabs = new Ojay.Tabs('.tab-group .tab');
+      Ojay.History.manage(tabs, 'myTabGroup');
+      // Register other objects and initialize History
+      tabs.setup();
+  </pre>
+  
+  Remember to call @Ojay.History.initialize()@ when appropriate, and to
+  register all applicable objects beforehand. Do not call @setup()@ on these
+  objects until you've initialized the history manager, or else they will not
+  start up correctly. See "@Ojay.History@":/articles/history.html for more
+  information.
+  
+  h3. API methods and events
+  
+  The only current API method that @Tabs@ instance have is @tabs.setPage(n)@.
+  This switches to the tab with the index @n@, e.g. @tabs.setPage(1)@ will
   switch to the first tab.
   
-  @Tabs@ instances publish a @tabchange@ event each time they switch to a new
+  @Tabs@ instances publish a @pagechange@ event each time they switch to a new
   tab. To listen for them, just add a new event handler in the usual manner:
   
-  <pre class="prettyprint">
-      tabs.on('tabchange', callback, scope);
+  <pre class="prettyprint">    tabs.on('pagechange', callback, scope);
   </pre>
   
   Here @callback@ is the function you wish to be executed when the event is
@@ -96,8 +123,7 @@
   the user when they switch to a different tab, you could use the following
   code:
   
-  <pre class="prettyprint">
-      tabs.on('tabchange', function(index) {
+  <pre class="prettyprint">    tabs.on('pagechange', function(tagGroup, index) {
           alert('You are now viewing tab number ' + index);
       });
   </pre>
@@ -105,6 +131,51 @@
   If you want to switch to a new tab but don't want to alert listeners that the
   event has occurred, you can pass in the @silent@ option:
   
-  <pre class="prettyprint">
-      tabs.toggle(1, {silent: true});
+  <pre class="prettyprint">    tabs.setPage(1, {silent: true});
   </pre>
+  
+  h3. Ajax tabs
+  
+  The class @Ojay.AjaxTabs@, a child of @Ojay.Tabs@, allows a set of tabs to be
+  generated from a set of HTML link elements; the content of each tab will be
+  the contents of the pages referenced by the links. Say we start with the
+  following markup:
+  
+  <pre class="prettyprint">    <ul id="authors">
+          <li><a href="/first.html">First</a></li>
+          <li><a href="/second.html">Second</a></li>
+          <li><a href="/third.html">Third</a></li>
+      </ul>
+      <div id="tabView"></div>
+  </pre>
+  
+  We can create a set of tabs by supplying selectors (or element references)
+  for the links and the element in which to display the tab content:
+  
+  <pre class="prettyprint">    var tabs = Ojay.AjaxTabs.fromLinks('#authors a', '#tabView');
+      tabs.setup();
+  </pre>
+  
+  The class method @Ojay.AjaxTabs.fromLinks@ takes an optional third argument,
+  which allows you to specify options as described above for the base
+  @Ojay.Tabs@ class. The @Ojay.AjaxTabs@ has the same API as its parent class
+  and can be "history managed":/articles/history.html, and it also publishes
+  two additional events:
+  
+  * @pagerequest@ - fired when a request for content is made to the server. Passes the
+    requested URL as the second callback argument.
+  * @pageload@ - fires when an Ajax request completes successfully. Passes the requested
+    URL and the @HTTP.Response@ object in case, say, you have script in the response that
+    you want to execute.
+  
+  The content for each tab is loaded if and when the corresponding link is
+  clicked, so you can lazy-load content. If the tab contents contain scripts
+  you need to run, you can handle this as follows:
+  
+  <pre class="prettyprint">    tabs.on('pageload', function(tabs, url, response) {
+          response.evalScripts();
+      });
+  </pre>
+  
+  See the "ajax tabs example":/examples/ajax_tabs.html for more ideas.
+

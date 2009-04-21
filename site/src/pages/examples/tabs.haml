@@ -4,56 +4,59 @@
   :textile
     h2. Tabbed interfaces using @Ojay.Tabs@
     
-    RTFM crap goes here.
+    In this example we turn a simple list of document sections into a tabbed
+    interface, and use @Ojay.History@ to give the individual tabs the ability
+    to be bookmarked and navigated using the browser back/forward buttons.
     
 :plain
     <style id="display-style" type="text/css">
-        .tab-group {
-            clear: both;
-            border: 1px solid #ccc;
+        #tabGroup {
+            clear:                            both;
+            border:                           1px solid #ccc;
         }
         
-        .tab-group .tab {
-            padding: 10px;
+        #tabGroup .tab {
+            padding:                          10px;
         }
         
         .toggles {
-            margin: 0;
-            padding: 0;
+            margin:                           0;
+            padding:                          0;
         }
         
-        .toggles LI {
-            float: left;
-            margin: 0 5px -1px 0;
-            border: 1px solid #ccc;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-            -webkit-border-top-left-radius: 5px;
-            -webkit-border-top-right-radius: 5px;
-            -moz-border-radius-topleft: 5px;
-            -moz-border-radius-topright: 5px;
-            padding: 5px 10px;
-            font-weight: bold;
-            color: #404040;
-            background-color: #ccc;
-            list-style: none;
-            cursor: pointer;
+        .toggles li {
+            float:                            left;
+            margin:                           0 5px -1px 0;
+            border:                           1px solid #ccc;
+            border-top-left-radius:           5px;
+            border-top-right-radius:          5px;
+            -webkit-border-top-left-radius:   5px;
+            -webkit-border-top-right-radius:  5px;
+            -moz-border-radius-topleft:       5px;
+            -moz-border-radius-topright:      5px;
+            padding:                          5px 10px;
+            font-weight:                      bold;
+            color:                            #404040;
+            background-color:                 #ccc;
+            list-style:                       none;
+            cursor:                           pointer;
         }
         
-        .toggles LI:hover {
-            border-color: #e5e5e5;
-            border-bottom-color: #ccc;
-            background-color: #e5e5e5;
+        .toggles li:hover {
+            border-color:                     #e5e5e5;
+            border-bottom-color:              #ccc;
+            background-color:                 #e5e5e5;
         }
         
-        .toggles .current, .toggles .current:hover {
-            border-color: #ccc;
-            border-bottom-color: #fff;
-            background-color: #fff;
+        .toggles .selected,
+        .toggles .selected:hover {
+            border-color:                     #ccc;
+            border-bottom-color:              #fff;
+            background-color:                 #fff;
         }
     </style>
   
-    <div class="tab-group">
+    <div id="tabGroup">
         <div class="tab">
             <h3 class="toggle">J.G. Ballard</h3>
             <blockquote>
@@ -107,5 +110,8 @@
     </div>
     
     <script id="display-script" type="text/javascript">
-        var tabs = new Ojay.Tabs('.tab-group .tab');
+        var tabs = new Ojay.Tabs('#tabGroup .tab');
+        Ojay.History.manage(tabs, 'tabs');
+        Ojay.History.initialize({asset: '/service/hello.html'});
+        tabs.setup();
     </script>
