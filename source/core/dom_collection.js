@@ -387,13 +387,10 @@
         set: function(options) {
             for (var i = 0, n = this.length; i < n; i++) {
                 for (var key in options) {
-                    if (['disabled', 'checked', 'readonly', 'multiple'].indexOf(key) < 0) {
-                        this[i].setAttribute(key, options[key]);
-                    } else {
-                        if (options[key] === false || options[key] === null)
-                            this[i].removeAttribute(key);
-                        else
-                            this[i].setAttribute(key, key);
+                    switch (options[key]) {
+                        case true:  this[i].setAttribute(key, key);     break;
+                        case false: this[i].removeAttribute(key);       break;
+                        default:    this[i].setAttribute(key, options[key]);
                     }
                 }
             }
