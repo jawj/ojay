@@ -101,4 +101,6 @@ YAHOO.util.Event.onDOMReady(function() {
             alert('Custom event caught by BODY ' + (evnt.house || ''));
         }
     }));
+    
+    Ojay('body').on('never:happens', function() { alert('You should not be seeing this') });
 });
