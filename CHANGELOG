@@ -13,6 +13,10 @@ TODO
 
 * New packages: Tabs
 
+* Additions to Forms package:
+    * New method: Ojay.Forms.submit(form) acts as a replacement
+      for Form#submit() that respects validation and Ajax rules.
+
 * Additions to HTTP package:
     * Raw strings can be used as the body for POST requests, e.g.
       Ojay.HTTP.POST('/endpoint', 'request body', { /* callbacks */ })

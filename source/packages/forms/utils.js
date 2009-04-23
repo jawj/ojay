@@ -122,6 +122,16 @@ JS.extend(Ojay.Forms, /** @scope Ojay.Forms */{
     }.curry(),
     
     /**
+     * <p>Submits the given form, routing the submission through our validdation and
+     * ajax routines.</p>
+     * @param {String|HTMLElement} form
+     */
+    submit: function(form) {
+        form = Ojay(form);
+        getForm(form.node.id)._submit();
+    },
+    
+    /**
      * <p>Goes through all sets of form rules and makes sure each one is associated with
      * an existing form in the document. Useful for replacing a form dynamically and then
      * reattaching all the rules. Returns the number of reattached forms.</p>

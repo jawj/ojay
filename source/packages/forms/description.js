@@ -39,8 +39,12 @@ var FormDescription = new JS.Class(/** @scope FormDescription.prototype */{
         this._names  = {};
         this._form = Ojay.byId(this._formID);
         if (!this._hasForm()) return false;
-        this._form.on('submit', this.method('_handleSubmission'));
         for (var field in this._requirements) this._requirements[field]._attach();
+        
+        this._form.on('submit', function(form, evnt) {
+            if (!this._handleSubmission()) evnt.stopDefault();
+        }, this);
+        
         return true;
     },
     
@@ -50,7 +54,7 @@ var FormDescription = new JS.Class(/** @scope FormDescription.prototype */{
      * @returns {Boolean}
      */
     _hasForm: function() {
-        return this._form && this._form.matches('body form');
+        return this._form && this._form.ancestors('body').node;
     },
     
     /**
@@ -64,21 +68,27 @@ var FormDescription = new JS.Class(/** @scope FormDescription.prototype */{
     },
     
     /**
+     * <p>Submits the form, enforcing validation and Ajax rules.</p>
+     */
+    _submit: function() {
+        if (this._handleSubmission()) this._form.node.submit();
+    },
+    
+    /**
      * <p>Processes form submission events by validating the form and stopping the event
      * from proceeding if the form data is found to be invalid.</p>
-     * @param {DomCollection} form
-     * @param {Event} evnt
      */
-    _handleSubmission: function(form, evnt) {
-        var valid = this._isValid();
-        if (this._ajax || !valid) evnt.stopDefault();
-        if (!this._ajax || !valid) return;
+    _handleSubmission: function() {
+        var allowed = true; valid = this._isValid();
+        if (this._ajax || !valid) allowed = false;
+        if (!this._ajax || !valid) return allowed;
         var form = this._form.node;
         Ojay.HTTP[(form.method || 'POST').toUpperCase()](form.action, this._data, {
             onSuccess: function(response) {
                 this._ajaxResponders.forEach({call: [null, response]});
             }.bind(this)
         });
+        return allowed;
     },
     
     /**
