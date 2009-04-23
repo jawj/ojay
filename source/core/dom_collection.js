@@ -180,8 +180,9 @@
                 event.eventName = eventName;
                 JS.extend(event, data || {});
                 
-                document.createEvent ? element.dispatchEvent(event)
-                                     : element.fireEvent(event.eventType, event);
+                try { document.createEvent ? element.dispatchEvent(event)
+                                           : element.fireEvent(event.eventType, event);
+                } catch (e) {}
             })(this[i]);
             
             return this;
