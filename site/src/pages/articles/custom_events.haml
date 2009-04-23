@@ -1,0 +1,75 @@
+:textile
+  h3. Custom DOM events
+  
+  As well as all the "standard DOM events":/articles/events.html - @click@, @mouseover@ and the
+  like - you can make up your own event names and publish them through the DOM. Non-standard events
+  need to be handled in a different way to built-in events, so for Ojay to tell which events are
+  custom you must use a colon in the event name, e.g. @my:event@. When firing an event you can
+  specify data to attach to the event object, and whether the event should bubble up the DOM tree.
+  Some examples:
+  
+  <pre class="prettyprint">    // Fire 'my:event' on all paragraphs
+      Ojay('p').trigger('my:event');
+      
+      // Attach a field called 'meaningOfLife' to the event
+      // with the value 42
+      Ojay('p').trigger('my:event', {meaningOfLife: 42});
+      
+      // No additional data, and prevent bubbling
+      Ojay('p').trigger('my:event', {}, false);</pre>
+  
+  Other collections can subscribe to these events in the usual way, using the @on()@ method.
+  Say I have a paragraph with ID @adams@:
+  
+  <pre class="prettyprint">    // We can get the data published with the event
+      // from the event object passed to the callback
+      Ojay('p#adams').on('my:event', function(para, evnt) {
+          var meaning = evnt.meaningOfLife;
+          // ...
+      });
+      
+      // MethodChain is supported:
+      Ojay('p#adams').on('my:event').setStyle({fontSize: '42em'});
+      
+      // So is delegation, assuming your trigger() call bubbles:
+      Ojay('body').on('my:event', Ojay.delegateEvent({
+          'p': function(para, evnt) {
+              var meaning = evnt.meaningOfLife;
+              // ...
+          }
+      }));
+  </pre>
+  
+  In short, custom events behave just like regular DOM events, you just need to use a @":"@
+  when naming them.
+  
+  Note that custom DOM events _are_ different from the event model provided by the
+  "@Observable@":/articles/observable.html module. @Observable@ allows event listeners to be
+  attached to a single JavaScript object and does not interact with the DOM. The expressions
+  @Ojay('p')@ and @Ojay('#adams')@ return _different_ JavaScript objects, but both collections
+  share a reference to a paragraph in the document. Custom DOM events are published through
+  the DOM, meaning events published by one collection can be received by another.
+  
+  You should only use custom DOM events where it makes sense for the DOM to publish the event,
+  i.e. if the event releates to some change or interaction with the DOM. Depending on the type
+  of events you want, you may find "@Observable@":/articles/observable.html to be a better fit.
+  
+  h3. Events published by Ojay
+  
+  Ojay publishes a number of custom events when its "DOM methods":/articles/dom_methods.html
+  are used. They are as follows (terms in parentheses are the names of data fields added to
+  the event object, followed by whether the event bubbles):
+  
+  * @ojay:classadded@ - when a class name is added to an element (@className@, no)
+  * @ojay:classremoved@ - when a class is removed from an element (@className@, no)
+  * @ojay:stylechange@ - when a element's style is changed (@styles@, no)
+  * @ojay:attrchange@ - when the attributes of an element change (@attributes@, no)
+  * @ojay:hide@ - when an element is hidden (no)
+  * @ojay:show@ - when an element is made visible (no)
+  * @ojay:contentchange@ - when the content of an element is changed (@content@, yes)
+  * @ojay:insert@ - when new content is inserted into the DOM (@content@, @position@, yes)
+  * @ojay:remove@ - when an element is removed from the DOM (yes)
+  * @ojay:regionfit@ - when @fitToRegion()@ is used (no)
+  * @ojay:animstart@ - when an element begins an animation (no)
+  * @ojay:animend@ - when an element completes an animation (no)
+  

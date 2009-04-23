@@ -159,12 +159,12 @@
          * the name of the event to fire, and the second argument (optional) should be a boolean
          * indicating whether the event should bubble or not (this defaults to true).</p>
          * @param {String} eventName
+         * @param {Object} data
          * @param {Boolean} bubble
          * @returns {DomCollection}
          */
-        fire: function(eventName, bubble) {
+        trigger: function(eventName, data, bubble) {
             bubble = (bubble === undefined) ? true : false;
-            var data = [].slice.call(arguments, 2);
             
             for (var i = 0, n = this.length; i < n; i++) (function(element) {
                 if (element == document && document.createEvent && !element.dispatchEvent)
@@ -178,7 +178,7 @@
                     event.eventType = bubble ? 'ondataavailable' : 'onfilterchange';
                 }
                 event.eventName = eventName;
-                event.data = data;
+                JS.extend(event, data || {});
                 
                 document.createEvent ? element.dispatchEvent(event)
                                      : element.fireEvent(event.eventType, event);
@@ -280,7 +280,7 @@
          */
         addClass: function(className) {
             Dom.addClass(this, className);
-            this.fire('ojay:classadded', false, className);
+            this.trigger('ojay:classadded', {className: className}, false);
             return this;
         },
         
@@ -292,7 +292,7 @@
          */
         removeClass: function(className) {
             Dom.removeClass(this, className);
-            this.fire('ojay:classremoved', false, className);
+            this.trigger('ojay:classremoved', {className: className}, false);
             return this;
         },
         
@@ -305,8 +305,8 @@
          */
         replaceClass: function(oldClass, newClass) {
             Dom.replaceClass(this, oldClass, newClass);
-            this.fire('ojay:classremoved', false, oldClass);
-            this.fire('ojay:classadded', false, newClass);
+            this.trigger('ojay:classremoved', {className: className}, false);
+            this.trigger('ojay:classadded', {className: className}, false);
             return this;
         },
         
@@ -319,7 +319,7 @@
         setClass: function(className) {
             for (var i = 0, n = this.length; i < n; i++)
                 this[i].className = className;
-            this.fire('ojay:classadded', false, className);
+            this.trigger('ojay:classadded', {className: className}, false);
             return this;
         },
         
@@ -367,7 +367,7 @@
                 }
                 Dom.setStyle(this, property, options[property]);
             }
-            this.fire('ojay:stylechange', false, options);
+            this.trigger('ojay:stylechange', {styles: options}, false);
             return this;
         },
         
@@ -394,7 +394,7 @@
                     }
                 }
             }
-            this.fire('ojay:attrchange', false, options);
+            this.trigger('ojay:attrchange', {attributes: options}, false);
             return this;
         },
         
@@ -408,7 +408,7 @@
          */
         hide: function() {
             this.setStyle({display: 'none'});
-            this.fire('ojay:hide', false);
+            this.trigger('ojay:hide', {}, false);
             return this;
         },
         
@@ -418,7 +418,7 @@
          */
         show: function() {
             this.setStyle({display: ''});
-            this.fire('ojay:show', false);
+            this.trigger('ojay:show', {}, false);
             return this;
         },
         
@@ -442,7 +442,7 @@
                     element.insert(html, 'bottom');
                 });
             }
-            this.fire('ojay:contentchange', true, html);
+            this.trigger('ojay:contentchange', {content: html}, true);
             return this;
         },
         
@@ -469,7 +469,7 @@
             if (position == 'replace') return this.setContent(html);
             if (html instanceof this.klass) html = html.node;
             new Ojay.DomInsertion(this.toArray(), html, position);
-            this.fire('ojay:insert', true, html, position);
+            this.trigger('ojay:insert', {content: html, position: position}, true);
             return this;
         },
         
@@ -482,7 +482,7 @@
                 if (element.parentNode)
                     element.parentNode.removeChild(element);
             });
-            this.fire('ojay:remove', true);
+            this.trigger('ojay:remove', {}, true);
             return this;
         },
         
@@ -620,7 +620,7 @@
                 var reg = element.getRegion(), w = reg.getWidth(), h = reg.getHeight();
                 element.setStyle({width: (2 * width - w) + 'px', height: (2 * height - h) + 'px'});
             });
-            this.fire('ojay:regionfit', false);
+            this.trigger('ojay:regionfit', {}, false);
             return this;
         },
         

@@ -2,12 +2,13 @@
 :textile
   h3. Handling events
   
-  Scripting web pages is primarily about handling events triggered by the user. These events include mouse events such
-  as clicking or mousing over an element, keyboard events and document-wide events, such as detecting when the document
-  has loaded. We use _event listener_ functions to respond to users' actions.
+  Scripting web pages is primarily about handling events triggered by the user. These events
+  include mouse events such as clicking or mousing over an element, keyboard events and
+  document-wide events, such as detecting when the document has loaded. We use _event listener_
+  functions to respond to users' actions.
   
-  There is nothing special about event listeners, they are just regular functions that you bind to a particular event
-  so you can run some code whenever that event happens.
+  There is nothing special about event listeners, they are just regular functions that you bind
+  to a particular event so you can run some code whenever that event happens.
   
   h3. Required files
   
@@ -18,8 +19,8 @@
   
   h3. How do I respond to events?
   
-  Ojay makes this really simple, using the @on@ method. You can use this method to listen for any event on an Ojay
-  collection as follows:
+  Ojay makes this really simple, using the @on@ method. You can use this method to listen for any
+  event on an Ojay collection as follows:
   
   <pre class="prettyprint">    Ojay('h3').on('click', function(element, e) {
           alert('You clicked on: ' + element.node.innerHTML);
@@ -27,18 +28,18 @@
   
   Try clicking on one of the headings on this page to see this in action.
   
-  @on@ takes two arguments: the event name (@click@, @mouseover@, etc) and a function that will fire whenever the event
-  occurs. The function receives two arguments:
+  @on@ takes two arguments: the event name (@click@, @mouseover@, etc) and a function that will
+  fire whenever the event occurs. The function receives two arguments:
   
   * @element@ - an Ojay collection wrapping the single element that fired the event
   * @e@ - an @Event@ object, which can be used to stop default behaviour and get information about the event
   
-  Note that the above code listens to all @h3@ tags in the document, but @element@ only refers to the one that fired
-  the event.
+  Note that the above code listens to all @h3@ tags in the document, but @element@ only refers to
+  the one that fired the event.
   
-  @on@ takes an optional third argument that specifies the meaning of the @this@ keyword inside the function. This
-  becomes more useful when using classes and object oriented programming, but the following example should illustrate
-  the idea:
+  @on@ takes an optional third argument that specifies the meaning of the @this@ keyword inside
+  the function. This becomes more useful when using classes and object oriented programming, but
+  the following example should illustrate the idea:
   
   <pre class="prettyprint">    var firstPara = Ojay('p').at(0);
       
@@ -50,8 +51,8 @@
   
   h3. Getting the event target
   
-  While @element@ in your callback function refers to the member of the collection that triggered the event, that
-  element may not be the event's target. For example, consider the following situation:
+  While @element@ in your callback function refers to the member of the collection that triggered
+  the event, that element may not be the event's target. For example, consider the following situation:
   
   <pre class="prettyprint">    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing
       elit. Integer vehicula scelerisque est. <em>Vestibulum ante</em>
@@ -60,22 +61,25 @@
       <strong>fermentum erat</strong> sed enim.</p>
       
       <script type="text/javascript">
-        Ojay('p').on('click', function(element, e) {
-          alert(element.node.tagName);
-          alert(e.getTarget().node.tagName);
-        });
+          Ojay('p').on('click', function(element, e) {
+              alert(element.node.tagName);
+              alert(e.getTarget().node.tagName);
+          });
       </script></pre>
   
-  If you were to click on the paragraph, the first @alert()@ will always display "@P@". The second @alert()@ will
-  depend on which child element of the paragraph you clicked on. It could display "@P@", "@EM@" or "@STRONG@"
-  depending on where you click. This method can be used to set up event listeners for lots of elements just by
-  listening to their common parent element. This registers fewer event listeners with the browser and thus uses
-  a lot less memory.
+  If you were to click on the paragraph, the first @alert()@ will always display "@P@". The second
+  @alert()@ will depend on which child element of the paragraph you clicked on. It could display
+  "@P@", "@EM@" or "@STRONG@" depending on where you click. This method can be used to set up event
+  listeners for lots of elements just by listening to their common parent element. This registers
+  fewer event listeners with the browser and thus uses a lot less memory.
+  
+  Ojay provides a simple API for delegating events in this fashion: see 'How to delegate events', below.
   
   h3. Controlling event execution
   
-  You'll often need to stop the browser running the default behaviour for an event, such as stopping it loading a
-  new page when a particular link is clicked. Ojay gives you three methods on the event object for doing this.
+  You'll often need to stop the browser running the default behaviour for an event, such as stopping
+  it loading a new page when a particular link is clicked. Ojay gives you three methods on the event
+  object for doing this.
   
   * @stopDefault@ stops the event's default behaviour from happening
   * @stopPropagate@ stops the event bubbling up the DOM
@@ -84,27 +88,29 @@
   An example:
   
   <pre class="prettyprint">    Ojay('#someLink').on('click', function(element, e) {
-        e.stopDefault();
-        Ojay.HTTP.GET(element.node.href).insertInto('#foo');
-        // etc...
+          e.stopDefault();
+          Ojay.HTTP.GET(element.node.href).insertInto('#foo');
+          // etc...
       })</pre>
   
-  If all your callback does is stop the event, use one of Ojay's pre-stored callback functions to improve readability
-  and avoid wasting memory on new functions. They have the same names as the event methods:
+  If all your callback does is stop the event, use one of Ojay's pre-stored callback functions to
+  improve readability and avoid wasting memory on new functions. They have the same names as the
+  event methods:
   
   <pre class="prettyprint">    Ojay('#someLink').on('click', Ojay.stopEvent)
           .setStyle({fontSize: '12px'})</pre>
   
   h3. Using @MethodChain@
   
-  @on()@ is one of a few special methods in Ojay that return a "@MethodChain@":/articles/method_chain.html object.
-  This means you can chain methods after the @on()@ call rather than using callback functions explicitly:
+  @on()@ is one of a few special methods in Ojay that return a "@MethodChain@":/articles/method_chain.html
+  object. This means you can chain methods after the @on()@ call rather than using callback functions
+  explicitly:
   
   <pre class="prettyprint">    // change H1 children's style when they are clicked
       Ojay('h1').on('click').children().setStyle({fontWeight: 'normal'})</pre>
   
-  If you pass an object as the last argument to @on()@ in this situation, that object is used as the base of the
-  chain:
+  If you pass an object as the last argument to @on()@ in this situation, that object is used as
+  the base of the chain:
   
   <pre class="prettyprint">    Ojay('a').on('click', Ojay.stopEvent, Ojay.HTTP)
           .GET('/index.html', {ajaxLayout: true})
@@ -114,27 +120,28 @@
   
   h3. Detecting load events
   
-  Oftentimes one wants to execute a piece of code only once the page has completely loaded, or when the DOM is
-  ready to use. Ojay borrows three methods from YUI for these purposes: @onAvailable@, @onContentReady@ and
-  @onDOMReady@.
+  Oftentimes one wants to execute a piece of code only once the page has completely loaded, or when
+  the DOM is ready to use. Ojay borrows three methods from YUI for these purposes: @onAvailable@,
+  @onContentReady@ and  @onDOMReady@.
   
   @onAvailable@ allows one to add event handlers which are executed as soon as the element
   on which it's defined is detected in the DOM. For more information, see
   "the YUI documentation":http://developer.yahoo.com/yui/event/#onavailable.
   
   <pre class="prettyprint">    Ojay.onAvailable('header', function() {
-        // ...
+          // ...
       });</pre>
   
-  @onContentReady@ is broadly similar, and has the same syntax as @onAvailable@, but waits until the element's siblings
-  are also ready, so as to ensure it's safe to modify the element's content.
+  @onContentReady@ is broadly similar, and has the same syntax as @onAvailable@, but waits until the
+  element's siblings are also ready, so as to ensure it's safe to modify the element's content.
   
-  @onDOMReady@, in contrast, waits for the entire DOM tree to be usable before executing. The main advantage of
-  @onDOMReady@ over the traditional @window.onload@ is that it will execute faster; external content such as images
-  can take a while to load, and it's useful to be able to run complex DOM queries without having to wait for them.
+  @onDOMReady@, in contrast, waits for the entire DOM tree to be usable before executing. The main
+  advantage of @onDOMReady@ over the traditional @window.onload@ is that it will execute faster;
+  external content such as images can take a while to load, and it's useful to be able to run
+  complex DOM queries without having to wait for them.
   
   <pre class="prettyprint">    Ojay.onDOMReady(function() {
-        // ...
+          // ...
       });</pre>
   
   h3. How to delegate events
@@ -156,9 +163,9 @@
   A better approach, using event delegation:
   
   <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
-        'a.external': function(link, evnt) {
-          // ...
-        }
+          'a.external': function(link, evnt) {
+              // ...
+          }
       }));</pre>
   
   This creates a single listener (on the @body@ element) that catches all the clicks you want
@@ -168,13 +175,13 @@
   You can specify more selectors to be handled by a single delegator by simply listing them:
   
   <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
-        'a.external': function(link, evnt) {
-          // ...
-        },
-        
-        '.content p': function(para, evnt) {
-          // ...
-        }
+          'a.external': function(link, evnt) {
+              // ...
+          },
+          
+          '.content p': function(para, evnt) {
+              // ...
+          }
       }));</pre>
   
   For most purposes this works fine but say you have something like this:
@@ -187,9 +194,9 @@
   anchor element. You could work around this by doing this:
   
   <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
-        'a.external, a.external *': function(element, evnt) {
-          // ...
-        }
+          'a.external, a.external *': function(element, evnt) {
+              // ...
+          }
       }));</pre>
   
   This would work, but then if you want to refer to the link you need to find out whether the
@@ -198,9 +205,9 @@
   @delegateEvent()@ and it will crawl back up the DOM tree until it finds a matching element.
   
   <pre class="prettyprint">    Ojay('body').on('click', Ojay.delegateEvent({
-        'a.external': function(link, evnt) {
-          // ...
-        }
+          'a.external': function(link, evnt) {
+              // ...
+          }
       }, true));</pre>
   
   This will catch clicks on @a.external@ elements, and _any elements contained within them_.

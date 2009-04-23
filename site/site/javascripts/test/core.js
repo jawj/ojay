@@ -83,4 +83,22 @@ YAHOO.util.Event.onDOMReady(function() {
     }, true));
     
     Ojay('.red').setStyle({color: 'red'})._('.green').setStyle({color: 'green'});
+    
+    Ojay('#custom1 span').on('click').trigger('custom:event');
+    Ojay('#custom2 span').on('click').trigger('custom:event', {house: 97});
+    Ojay('#custom3 span').on('click').trigger('custom:event', {}, false);
+    Ojay('#custom4 span').on('click').trigger('custom:event', {house: 13}, false);
+    
+    Ojay('.custom-event-trigger').on('custom:event', function(source, evnt) {
+        var str = source.node.tagName;
+        str += ' ' + evnt.getTarget().node.tagName;
+        if (evnt.house) str += ' ' + evnt.house;
+        alert(str);
+    });
+    
+    Ojay('body').on('custom:event', Ojay.delegateEvent({
+        'span': function(target, evnt) {
+            alert('Custom event caught by BODY ' + (evnt.house || ''));
+        }
+    }));
 });
