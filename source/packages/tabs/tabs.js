@@ -93,10 +93,11 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
     
     /**
      * @param {Object} state
+     * @param {Object} options
      * @returns {Tabs}
      */
-    changeState: function(state) {
-        if (state.tab !== undefined) this._handleSetPage(state.tab);
+    changeState: function(state, options) {
+        if (state.tab !== undefined) this._handleSetPage(state.tab, options);
         return this;
     },
     
@@ -184,20 +185,22 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
              * @returns {Tabs}
              */
             setPage: function(page, options) {
-                if ((options || {}).silent !== false) this.notifyObservers('pagechange', page);
-                this.changeState({tab: page});
+                this.changeState({tab: page}, options);
                 return this;
             },
             
             /**
              * <p>Switch to the tab with the index provided as the first argument.</p>
              * @param {Number} index
+             * @param {Object} options
              */
-            _handleSetPage: function(index) {
+            _handleSetPage: function(index, options) {
                 index -= 1;
                 
                 if (index >= this._tabs.length) index = 0;
                 if (this._currentTab == index) return;
+                
+                if ((options || {}).silent !== false) this.notifyObservers('pagechange', index+1);
                 
                 if (typeof this._currentTab == 'undefined') {
                     this._currentTab = index;
