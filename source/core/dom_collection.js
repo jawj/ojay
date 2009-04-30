@@ -306,8 +306,8 @@
          */
         replaceClass: function(oldClass, newClass) {
             Dom.replaceClass(this, oldClass, newClass);
-            this.trigger('ojay:classremoved', {className: className}, false);
-            this.trigger('ojay:classadded', {className: className}, false);
+            this.trigger('ojay:classremoved', {className: oldClass}, false);
+            this.trigger('ojay:classadded', {className: newClass}, false);
             return this;
         },
         
