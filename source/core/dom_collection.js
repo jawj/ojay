@@ -6,7 +6,7 @@
      * @constructor
      * @class DomCollection
      */
-    Ojay.DomCollection = new JS.Class(/** @scope Ojay.DomCollection.prototype */{
+    Ojay.DomCollection = new JS.Class('Ojay.DomCollection', /** @scope Ojay.DomCollection.prototype */{
         /**
          * @param {Array} collection
          * @returns {DomCollection}

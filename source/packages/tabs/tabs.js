@@ -53,7 +53,7 @@
  * @constructor
  * @class Tabs
  */
-Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
+Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
     include: [Ojay.Observable, JS.State],
       
     /**
@@ -243,7 +243,7 @@ Ojay.Tabs = new JS.Class(/** @scope Ojay.Tabs.prototype */{
          * @constructor
          * @class Tab
          */
-        Tab: new JS.Class(/** @scope Ojay.Tabs.Tab.prototype */{
+        Tab: new JS.Class('Ojay.Tabs.Tab', /** @scope Ojay.Tabs.Tab.prototype */{
             /**
              * @param {Ojay.Tab} group
              * @param {HTMLElement} container

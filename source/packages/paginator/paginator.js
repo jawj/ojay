@@ -54,7 +54,7 @@
  * @constructor
  * @class Paginator
  */
-Ojay.Paginator = new JS.Class(/** @scope Ojay.Paginator.prototype */{
+Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.prototype */{
     include: [Ojay.Observable, JS.State],
     
     extend: /** @scope Ojay.Paginator */{
