@@ -209,10 +209,13 @@ packages:
         - Ojay.Paginator
         - Ojay.AjaxPaginator
         - Ojay.Paginator.Controls
+        - Ojay.FilmStrip
     files:
+      - paginatable
       - paginator
       - ajax_paginator
       - controls
+      - film_strip
   
   pkg/tabs:
     directory:        packages/tabs
