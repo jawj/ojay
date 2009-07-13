@@ -42,6 +42,15 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
         }, this);
     },
     
+    getTotalOffset: function() {
+        var region = this.getRegion(),
+            dims   = this.getDimensions();
+        
+        return this.getDirection() == 'vertical'
+            ? dims.height - region.getHeight()
+            : dims.width  - region.getWidth();
+    },
+    
     getDimensions: function() {
         var vertical = (this.getDirection() == 'vertical'),
             width    = 0,
@@ -62,6 +71,31 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
     
     getPages: function() {
         return this._numPages = this.getItems().length;
+    },
+    
+    _getEdges: function() {
+        if (this._edges) return this._edges.slice();
+        
+        var vertical = (this.getDirection() == 'vertical'),
+            method   = vertical ? 'getHeight' : 'getWidth',
+            edges    = [0];
+        
+        this.getItems().forEach(function(item) {
+            var size     = item[method](),
+                previous = edges[edges.length-1];
+            edges.push(previous + size);
+        });
+        
+        return (this._edges = edges).slice();
+    },
+    
+    _getCenters: function() {
+        var centers = [];
+        this._getEdges().reduce(function(x,y) {
+            centers.push((x + y) / 2);
+            return y;
+        });
+        return centers;
     },
     
     states: {
@@ -107,37 +141,27 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
             },
             
             _handleSetPage: function(page, callback, scope) {
+                var vertical = (this.getDirection() == 'vertical'),
+                    method   = vertical ? 'getHeight' : 'getWidth',
+                    center   = this.getRegion()[method]() / 2,
+                    offset   = this._getCenters()[page - 1] - center;
+                
+                this._currentPage = page;
+                this.setScroll(offset, {animate: true}, callback, scope);
+            },
+            
+            setScroll: function(amount, options, callback, scope) {
                 var region   = this.getRegion(),
                     vertical = (this.getDirection() == 'vertical'),
                     method   = vertical ? 'getHeight' : 'getWidth',
                     halfR    = region[method]() / 2,
-                    offset   = 0,
-                    i        = 0,
-                    items    = this.getItems();
+                    total    = this.getTotalOffset();
                 
-                while (i < page - 1) {
-                    offset += items[i][method]();
-                    i += 1;
-                }
-                offset += items[page - 1][method]() / 2;
-                
-                var diff = offset - halfR;
-                
-                
-                this._currentPage = page;
-                this.setScroll(offset - halfR, {animate: true}, callback, scope);
-            },
-            
-            setScroll: function(amount, options, callback, scope) {
-                var region     = this.getRegion(),
-                    dimensions = this.getDimensions(),
-                    vertical   = (this.getDirection() == 'vertical'),
-                    method     = vertical ? 'getHeight' : 'getWidth',
-                    halfR      = region[method]() / 2;
+                if (amount >= 0 && amount <= 1) amount = amount * total;
                 
                 if (this._options.overshoot === false) {
                     amount = Math.max(amount, 0);
-                    amount = Math.min(amount, dimensions[vertical ? 'height' : 'width'] - 2*halfR);
+                    amount = Math.min(amount, total - 2*halfR);
                 }
                 
                 var settings = {};
