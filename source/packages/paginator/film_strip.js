@@ -96,7 +96,7 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
             return y;
         });
         return centers;
-    },
+    }.traced(),
     
     states: {
         CREATED: {
@@ -146,6 +146,12 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
                     center   = this.getRegion()[method]() / 2,
                     offset   = this._getCenters()[page - 1] - center;
                 
+                if (page !== this._currentPage) {
+                    this.notifyObservers('pagechange', page);
+                    if (page == 1) this.notifyObservers('firstpage');
+                    if (page == this.getPages()) this.notifyObservers('lastpage');
+                }
+                
                 this._currentPage = page;
                 this.setScroll(offset, {animate: true}, callback, scope);
             },
@@ -161,7 +167,7 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
                 
                 if (this._options.overshoot === false) {
                     amount = Math.max(amount, 0);
-                    amount = Math.min(amount, total - 2*halfR);
+                    amount = Math.min(amount, total);
                 }
                 
                 var settings = {};
