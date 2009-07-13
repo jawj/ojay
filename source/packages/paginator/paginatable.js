@@ -63,7 +63,41 @@ Ojay.Paginatable = new JS.Module('Ojay.Paginatable', {
         return this._elements._container.getRegion();
     },
     
+    /**
+     * <p>Returns the number of the current page, numbered from 1.</p>
+     * @returns {Number}
+     */
+    getCurrentPage: function() {
+        return this._currentPage || undefined;
+    },
+    
+    /**
+     * <p>Places a default set of UI controls before or after the <tt>Paginator</tt> in the
+     * document and returns a <tt>Paginator.Controls</tt> instance representing this UI.</p>
+     * @returns {Paginator.Controls}
+     */
+    addControls: function(position) {
+        if (this.inState('CREATED') || !/^(?:before|after)$/.test(position)) return undefined;
+        var controls = new Ojay.Paginator.Controls(this);
+        this.getContainer().insert(controls.getHTML().node, position);
+        return controls;
+    },
+    
     states: {
+        CREATED: {
+            /**
+             * <p>Sets the initial page for the paginator to start at when in the CREATED
+             * state. No scrolling takes place, and the number set will override the initial
+             * page setting and any setting pulled in by the history manager.</p>
+             * @param {Number} page
+             * @returns {Paginator}
+             */
+            setPage: function(page) {
+                this._currentPage = Number(page);
+                return this;
+            }
+        },
+        
         READY: {
             /**
              * <p>Sets the current page of the <tt>Paginator</tt> by scrolling the subject

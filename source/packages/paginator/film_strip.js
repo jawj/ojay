@@ -61,7 +61,7 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
     },
     
     getPages: function() {
-        return this.getItems().length;
+        return this._numPages = this.getItems().length;
     },
     
     states: {
@@ -96,6 +96,14 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
             focusItem: function(item) {
                 this.setPage(this._items.indexOf(item) + 1);
                 return this;
+            },
+            
+            incrementPage: function() {
+                return this.setPage(this._currentPage + 1);
+            },
+            
+            decrementPage: function() {
+                return this.setPage(this._currentPage - 1);
             },
             
             _handleSetPage: function(page, callback, scope) {

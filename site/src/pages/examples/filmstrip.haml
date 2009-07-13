@@ -16,6 +16,43 @@
             float:        left;
             padding:      4px;
         }
+        
+        .paginator-controls {
+            width:          100%;
+            margin:         20px 0;
+            text-align:     center;
+        }
+        
+        .paginator-controls .previous,
+        .paginator-controls .next,
+        .paginator-controls .pages {
+            display:        inline;
+        }
+        
+        .paginator-controls .previous,
+        .paginator-controls .next,
+        .paginator-controls .pages span {
+            border:         1px solid #ccc;
+            cursor:         pointer;
+            font:           bold 12px Arial, sans-serif;
+            margin:         0 4px;
+            padding:        2px 4px;
+        }
+        
+        .paginator-controls .disabled {
+            color:          #ccc;
+            cursor:         default;
+        }
+        
+        .paginator-controls .hovered {
+            background:     #cef;
+        }
+        
+        .paginator-controls .pages .selected {
+            background:     #f30;
+            border-color:   #000;
+            color:          #fff;
+        }
     </style>
     
     <div id="photos">
@@ -34,4 +71,5 @@
             overshoot:  false
         });
         strip.setup();
+        strip.addControls('after');
     </script>

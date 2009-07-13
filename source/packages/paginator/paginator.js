@@ -215,14 +215,6 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
     },
     
     /**
-     * <p>Returns the number of the current page, numbered from 1.</p>
-     * @returns {Number}
-     */
-    getCurrentPage: function() {
-        return this._currentPage || undefined;
-    },
-    
-    /**
      * <p>Returns the page number containing the nth child element. Pages and items are
      * both numbered from 1 upwards.</p>
      * @param {Number} id
@@ -233,18 +225,6 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
         var n = this._elements._items.length;
         if (id < 1 || id > n) return undefined;
         return ((id - 1) / this._itemsPerPage).floor() + 1;
-    },
-    
-    /**
-     * <p>Places a default set of UI controls before or after the <tt>Paginator</tt> in the
-     * document and returns a <tt>Paginator.Controls</tt> instance representing this UI.</p>
-     * @returns {Paginator.Controls}
-     */
-    addControls: function(position) {
-        if (this.inState('CREATED') || !/^(?:before|after)$/.test(position)) return undefined;
-        var controls = new this.klass.Controls(this);
-        this.getContainer().insert(controls.getHTML().node, position);
-        return controls;
     },
     
     states: {
@@ -282,18 +262,6 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
                 if (this._currentPage === undefined) this._currentPage = state.page;
                 this._handleSetPage(this._currentPage);
                 
-                return this;
-            },
-            
-            /**
-             * <p>Sets the initial page for the paginator to start at when in the CREATED
-             * state. No scrolling takes place, and the number set will override the initial
-             * page setting and any setting pulled in by the history manager.</p>
-             * @param {Number} page
-             * @returns {Paginator}
-             */
-            setPage: function(page) {
-                this._currentPage = Number(page);
                 return this;
             }
         },
