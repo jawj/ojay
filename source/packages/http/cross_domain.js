@@ -20,9 +20,12 @@
         return JSONP_HANDLER_NAME + (HANDLER_COUNT++);
     };
     
-    var handleJsonP = function(callback, data) {
-        var args = Array.from(arguments), callback = args.shift();
+    var handleJsonP = function(callback, id, data) {
+        var args     = Array.from(arguments),
+            callback = args.shift(),
+            id       = args.shift();
         callback.apply(null, args);
+        removeHandler(id);
     };
     
     var removeHandler = function(id) {
@@ -120,8 +123,8 @@
                 var handlerID = getHandlerId();
                 uri.setParam(uri.params.jsonp, handlerID);
                 if (uri.params.jsonp !== 'jsonp') delete uri.params.jsonp;
-                window[handlerID] = handleJsonP.partial(callbacks.onSuccess);
-                callbacks.onSuccess = removeHandler(handlerID);
+                window[handlerID] = handleJsonP.partial(callbacks.onSuccess, handlerID);
+                callbacks.onSuccess = null;
             }
             
             YAHOO.util.Get[assetType](uri.toString(), callbacks);
