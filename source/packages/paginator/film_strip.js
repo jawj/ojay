@@ -172,7 +172,7 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', {
                 
                 var settings = {};
                 settings[vertical ? 'top' : 'left'] = {to: -amount};
-                this._elements._subject.animate(settings, this.klass.SCROLL_TIME);
+                this._elements._subject.animate(settings, this._options.scrollTime, {easing: this._options.easing});
                 
                 return this;
             }
