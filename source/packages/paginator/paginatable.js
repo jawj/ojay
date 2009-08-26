@@ -1,3 +1,6 @@
+/**
+ * @module Ojay.Paginatable
+ */
 Ojay.Paginatable = new JS.Module('Ojay.Paginatable', {
     include: [Ojay.Observable, JS.State],
     
