@@ -158,13 +158,6 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
     },
     
     /**
-     * @returns {Number}
-     */
-    getCurrentOffset: function() {
-        return this._reportedOffset;
-    },
-    
-    /**
      * <p>Returns an Ojay collection wrapping the child elements of the subject.</p>
      * @returns {DomCollection}
      */
@@ -378,43 +371,13 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
              * @returns {Paginator}
              */
             setScroll: function(amount, options, callback, scope) {
-                var options     = options || {},
-                    orientation = this._options.direction,
-                    scrollTime  = options._scrollTime || this._options.scrollTime,
-                    pages       = this._numPages,
-                    total       = this.getTotalOffset(),
-                    chain       = new JS.MethodChain(),
-                    settings;
+                var pages = this._numPages,
+                    total = this.getTotalOffset();
                 
-                if (amount >= 0 && amount <= 1) amount = amount * total;
+                var result = this.callSuper(),
+                    reportedOffset = Math.min(Math.max(this._reportedOffset / total, 0), 1);
                 
                 this._elements._items.removeClass('focused');
-                options = options || {};
-                
-                if (options.animate && YAHOO.util.Anim) {
-                    this.setState('SCROLLING');
-                    settings = (orientation == 'vertical')
-                            ? { top: {to: -amount} }
-                            : { left: {to: -amount} };
-                    this._elements._subject.animate(settings,
-                        scrollTime, {easing: this._options.easing})._(function(self) {
-                        self.setState('READY');
-                        chain.fire(scope || self);
-                        if (callback) callback.call(scope || null);
-                    }, this);
-                } else {
-                    settings = (orientation == 'vertical')
-                            ? { top: (-amount) + 'px' }
-                            : { left: (-amount) + 'px' };
-                    this._elements._subject.setStyle(settings);
-                }
-                
-                var reportedOffset = amount/total;
-                if (reportedOffset < 0) reportedOffset = 1;
-                if (reportedOffset > 1) reportedOffset = 0;
-                this._reportedOffset = amount;
-                
-                if (!options.silent) this.notifyObservers('scroll', reportedOffset, total);
                 
                 var page = (pages * reportedOffset).ceil() || 1;
                 if (page != this._currentPage) {
@@ -425,7 +388,7 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
                     if (page == pages) this.notifyObservers('lastpage');
                 }
                 
-                return (options.animate && YAHOO.util.Anim) ? chain : this;
+                return result;
             },
             
             /**
@@ -618,8 +581,6 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
                 this.notifyObservers('pagedestroy');
                 this.notifyObservers('scroll', offset, this.getTotalOffset());
             }
-        },
-        
-        SCROLLING: {}
+        }
     }
 });

@@ -159,8 +159,6 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
             : dims.width  - region.getWidth();
     },
     
-    // TODO Paginator#getCurrentOffset
-    
     /**
      * <p>Returns an Ojay collection wrapping the child elements of the subject.</p>
      * @returns {DomCollection}
@@ -335,32 +333,13 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
                 return this;
             },
             
-            // TODO * optional animation
-            //      * event silencing
-            //      * callbacks
             setScroll: function(amount, options, callback, scope) {
-                var region   = this.getRegion(),
-                    vertical = (this.getDirection() == 'vertical'),
-                    method   = vertical ? 'getHeight' : 'getWidth',
-                    halfR    = region[method]() / 2,
-                    total    = this.getTotalOffset();
+                if (this._options.overshoot === false)
+                    amount = Math.min(Math.max(amount, 0), this.getTotalOffset());
                 
-                if (amount >= 0 && amount <= 1) amount = amount * total;
-                
-                if (this._options.overshoot === false) {
-                    amount = Math.max(amount, 0);
-                    amount = Math.min(amount, total);
-                }
-                
-                var settings = {};
-                settings[vertical ? 'top' : 'left'] = {to: -amount};
-                this._elements._subject.animate(settings, this._options.scrollTime, {easing: this._options.easing});
-                
-                return this;
+                return this.callSuper(amount, options, callback, scope);
             }
-        },
-        
-        SCROLLING: {}
+        }
     }
 });
 
