@@ -189,6 +189,39 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
     },
     
     /**
+     * <p>Returns the page corresponding to the given absolute offset.</p>
+     * @returns {Number}
+     */
+    _pageFromOffset: function(offset) {
+        var vertical = (this.getDirection() == 'vertical'),
+            method   = vertical ? 'getHeight' : 'getWidth',
+            center   = this.getRegion()[method]() / 2,
+            i        = 1,
+            page     = null;
+        
+        this._getEdges().reduce(function(x,y) {
+            if (page !== null) return;
+            if (x - offset <= center && y - offset >= center) page = i;
+            i += 1;
+            return y;
+        });
+        return page;
+    },
+    
+    /**
+     * <p>Returns the scroll offset fo the given page, ignoring overshoot clipping.</p>
+     * @param {Number} page
+     * @returns {Number}
+     */
+    _offsetForPage: function(page) {
+        var vertical = (this.getDirection() == 'vertical'),
+            method   = vertical ? 'getHeight' : 'getWidth',
+            center   = this.getRegion()[method]() / 2;
+       
+       return this._getCenters()[page - 1] - center;;
+    },
+    
+    /**
      * <p>Returns an object with <tt>width</tt> and <tt>height</tt> attributes
      * describing the size of the content contained in the filmstrip.</p>
      * @returns {Object}
@@ -245,20 +278,6 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
         return centers;
     },
     
-    /**
-     * <p>Returns the scroll offset fo the given page, ignoring overshoot clipping.</p>
-     * @param {Number} page
-     * @returns {Number}
-     */
-    _offsetForPage: function(page) {
-        var vertical = (this.getDirection() == 'vertical'),
-            method   = vertical ? 'getHeight' : 'getWidth',
-            center   = this.getRegion()[method]() / 2,
-            offset   = this._getCenters()[page - 1] - center;
-       
-       return offset;
-    },
-    
     states: {
         /**
          * <p>The <tt>FilmStrip</tt> is in the CREATED state when it has been instantiated but
@@ -311,14 +330,6 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
              */
             _handleSetPage: function(page, callback, scope) {
                 var offset = this._offsetForPage(page);
-                
-                if (page !== this._currentPage) {
-                    this.notifyObservers('pagechange', page);
-                    if (page == 1) this.notifyObservers('firstpage');
-                    if (page == this.getPages()) this.notifyObservers('lastpage');
-                }
-                
-                this._currentPage = page;
                 this.setScroll(offset, {animate: true}, callback, scope);
             },
             

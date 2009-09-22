@@ -198,6 +198,15 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
     },
     
     /**
+     * <p>Returns the page corresponding to the given absolute offset.</p>
+     * @returns {Number}
+     */
+    _pageFromOffset: function(offset) {
+        offset = Math.min(Math.max(offset / this.getTotalOffset(), 0), 1);
+        return (this.getPages() * offset).ceil() || 1;
+    },
+    
+    /**
      * <p>Splits the list of item elements into groups by page, and wraps each group of items
      * in a <tt>div</tt> that represents the page. This allows horizontal galleries to avoid
      * stringing all the items onto one row.</p>
@@ -286,9 +295,8 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
              * @param {Object} scope
              */
             _handleSetPage: function(page, callback, scope) {
-                this.setScroll(this.getTotalOffset() * (page - 1) / (this._numPages - 1),
-                               {animate: true, clip: false},
-                               callback, scope);
+                var offset = this.getTotalOffset() * (page - 1) / (this._numPages - 1);
+                this.setScroll(offset, {animate: true, clip: false}, callback, scope);
             },
             
             /**
@@ -380,24 +388,8 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
              * @returns {Paginator}
              */
             setScroll: function(amount, options, callback, scope) {
-                var pages = this._numPages,
-                    total = this.getTotalOffset();
-                
-                var result = this.callSuper(),
-                    reportedOffset = Math.min(Math.max(this._reportedOffset / total, 0), 1);
-                
                 this._elements._items.removeClass('focused');
-                
-                var page = (pages * reportedOffset).ceil() || 1;
-                if (page != this._currentPage) {
-                    this._currentPage = page;
-                    this.notifyObservers('pagechange', page);
-                    
-                    if (page == 1) this.notifyObservers('firstpage');
-                    if (page == pages) this.notifyObservers('lastpage');
-                }
-                
-                return result;
+                return this.callSuper();
             },
             
             /**
