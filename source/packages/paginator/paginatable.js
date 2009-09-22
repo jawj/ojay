@@ -134,11 +134,15 @@ Ojay.Paginatable = new JS.Module('Ojay.Paginatable', {
                 var options    = options || {},
                     scrollTime = options._scrollTime || this._options.scrollTime,
                     vertical   = (this._options.direction == 'vertical'),
-                    total      = this.getTotalOffset(),
+                    limits     = this.getScrollLimits(),
+                    total      = limits[1] - limits[0],
                     chain      = new JS.MethodChain(),
                     settings;
                 
-                if (amount >= 0 && amount <= 1) amount = amount * total;
+                if (amount >= 0 && amount <= 1 && !options.absolute) amount = limits[0] + amount * total;
+                this._reportedOffset = amount;
+                
+                if (options.clip !== false) amount = Math.min(Math.max(amount, limits[0]), limits[1]);
                 
                 if (options.animate && YAHOO.util.Anim) {
                     this.setState('SCROLLING');
@@ -158,10 +162,9 @@ Ojay.Paginatable = new JS.Module('Ojay.Paginatable', {
                     this._elements._subject.setStyle(settings);
                 }
                 
-                var reportedOffset = amount/total;
+                var reportedOffset = (amount - limits[0])/total;
                 if (reportedOffset < 0) reportedOffset = 1;
                 if (reportedOffset > 1) reportedOffset = 0;
-                this._reportedOffset = amount;
                 
                 if (!options.silent) this.notifyObservers('scroll', reportedOffset, total);
                 

@@ -158,6 +158,13 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
     },
     
     /**
+     * @returns {Array}
+     */
+    getScrollLimits: function() {
+        return [0, this.getTotalOffset()];
+    },
+    
+    /**
      * <p>Returns an Ojay collection wrapping the child elements of the subject.</p>
      * @returns {DomCollection}
      */
@@ -279,7 +286,9 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
              * @param {Object} scope
              */
             _handleSetPage: function(page, callback, scope) {
-                this.setScroll(this.getTotalOffset() * (page - 1) / (this._numPages - 1), {animate: true}, callback, scope);
+                this.setScroll(this.getTotalOffset() * (page - 1) / (this._numPages - 1),
+                               {animate: true, clip: false},
+                               callback, scope);
             },
             
             /**
