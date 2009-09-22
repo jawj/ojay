@@ -20,7 +20,7 @@
  *         &lt;div class="item"&gt;&lt;img src="08.jpg" /&gt;&lt;/div&gt;
  *     &lt;/div&gt;</code></pre>
  *
- * <p>After applying a <tt>FilmStrip</tt> to this markup, its is wrapped in some elements
+ * <p>After applying a <tt>FilmStrip</tt> to this markup, it is wrapped in some elements
  * to facilitate, scrolling, leaving us with:</p>
  *
  * <pre><code>    &lt;div class="filmstrip"&gt;
