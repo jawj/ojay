@@ -1,3 +1,8 @@
+:plain
+  <style type="text/css">
+    .orange {color:#ff9600;}
+  </style>
+
 %h1 Core selector tests
 
 %p#foo Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas purus metus, iaculis in, placerat id, ornare a, urna. Pellentesque ac mauris. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc pharetra mattis tellus. Ut vulputate eleifend lorem. Ut suscipit est a odio. Vivamus nec nisl vitae magna rhoncus sollicitudin. In lacus libero, semper ac, lobortis at, sagittis quis, nisl. Phasellus aliquam nibh vel metus. Nulla eget ante lacinia est dignissim volutpat. Quisque fringilla iaculis mauris. Mauris suscipit. Integer lectus felis, rhoncus id, ullamcorper ut, hendrerit ut, odio. Vivamus convallis arcu non orci. Donec id ipsum. Nulla facilisi.
@@ -19,6 +24,13 @@
 
 .green
   Should be green
+
+#quux
+  Should be orange
+
+%form
+  %input#eeks{:type => "checkbox", :name => "eeks"}
+  %label#egreck Label for checkbox
 
 %form
   %input{:type => "checkbox"}

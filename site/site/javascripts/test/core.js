@@ -64,6 +64,19 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.isTrue(checkbox.node.disabled);
             checkbox.set({disabled: false});
             this.assert.isFalse(checkbox.node.disabled);
+        },
+        
+        testClassNameAttributeSetting: function() {
+            var quux = Ojay('#quux');
+            quux.set({className: 'orange'});
+            this.assert.areEqual('orange', quux.node.className);
+        },
+        
+        testHtmlForAttributeSetting: function() {
+            var eeks = Ojay('input#eeks'), egreck = Ojay('label#egreck');
+            egreck.set({htmlFor: 'eeks'});
+            this.assert.areEqual('eeks', egreck.node.htmlFor);
+            this.assert.areEqual(eeks.node.name, egreck.node.htmlFor);
         }
     }));
     

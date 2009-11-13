@@ -387,6 +387,14 @@
          * @returns {DomCollection}
          */
         set: function(options) {
+            if (options.className) {
+                options['class'] = options.className;
+                delete(options.className);
+            }
+            if (options.htmlFor) {
+                options['for'] = options.htmlFor;
+                delete(options.htmlFor);
+            }
             for (var i = 0, n = this.length; i < n; i++) {
                 for (var key in options) {
                     switch (options[key]) {
