@@ -64,6 +64,10 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.isTrue(checkbox.node.disabled);
             checkbox.set({disabled: false});
             this.assert.isFalse(checkbox.node.disabled);
+            checkbox.set({checked: true});
+            this.assert.isTrue(checkbox.node.checked);
+            checkbox.set({checked: false});
+            this.assert.isFalse(checkbox.node.checked);
         },
         
         testClassNameAttributeSetting: function() {
