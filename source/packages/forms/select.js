@@ -38,6 +38,8 @@ Ojay.Forms.Select = new JS.Class('Ojay.Forms.Select', /** @scope Forms.Select.pr
                 this._label = option.text.stripTags();
                 this.hovered = false;
                 
+                this.setDisabled(option.disabled);
+                
                 var element = this.getHTML();
                 [element.on('mouseover'), element.on('mousemove')]
                         .forEach(it()._(this).setHovered(true));
@@ -65,6 +67,19 @@ Ojay.Forms.Select = new JS.Class('Ojay.Forms.Select', /** @scope Forms.Select.pr
                     this._nudgeIntoView();
                 }
                 this.getHTML()[state === false ? 'removeClass' : 'addClass']('hovered');
+                return this;
+            },
+            
+            /**
+             * <p>Sets the option to be disabled.</p>
+             * @param {Boolean} state
+             * @returns {Forms.Select.Option}
+             */
+            setDisabled: function(state) {
+                this.disabled = (state !== false);
+                if (this._option.node.disabled !== this.disabled)
+                    this._option.set({disabled: this.disabled});
+                this.getHTML()[state === false ? 'removeClass' : 'addClass']('disabled');
                 return this;
             },
             
