@@ -81,6 +81,13 @@ YAHOO.util.Event.onDOMReady(function() {
             egreck.set({htmlFor: 'eeks'});
             this.assert.areEqual('eeks', egreck.node.htmlFor);
             this.assert.areEqual(eeks.node.name, egreck.node.htmlFor);
+        },
+        
+        testChangingAlias: function() {
+            Ojay.changeAlias('_');
+            this.assert.areEqual(Ojay, _);
+            Ojay.changeAlias('__');
+            this.assert.areEqual(Ojay, __);
         }
     }));
     
