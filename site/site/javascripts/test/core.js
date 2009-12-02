@@ -64,6 +64,13 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.isTrue(checkbox.node.disabled);
             checkbox.set({disabled: false});
             this.assert.isFalse(checkbox.node.disabled);
+        },
+        
+        testChangingAlias: function() {
+            Ojay.changeAlias('_');
+            this.assert.areEqual(Ojay, _);
+            Ojay.changeAlias('__');
+            this.assert.areEqual(Ojay, __);
         }
     }));
     
