@@ -387,20 +387,25 @@
          * @returns {DomCollection}
          */
         set: function(options) {
-            if (options.className) {
+            var isIE = !!YAHOO.env.ua.ie;
+            if (options.className && !isIE) {
                 options['class'] = options.className;
                 delete(options.className);
             }
-            if (options.htmlFor) {
+            if (options.htmlFor && !isIE) {
                 options['for'] = options.htmlFor;
                 delete(options.htmlFor);
             }
             for (var i = 0, n = this.length; i < n; i++) {
                 for (var key in options) {
-                    switch (options[key]) {
-                        case true:  this[i].setAttribute(key, key);     break;
-                        case false: this[i].removeAttribute(key);       break;
-                        default:    this[i].setAttribute(key, options[key]);
+                    if (isIE) {
+                        this[i][key] = options[key];
+                    } else {
+                        switch (options[key]) {
+                            case true:  this[i].setAttribute(key, key);     break;
+                            case false: this[i].removeAttribute(key);       break;
+                            default:    this[i].setAttribute(key, options[key]);
+                        }
                     }
                 }
             }
