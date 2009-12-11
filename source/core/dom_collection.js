@@ -398,14 +398,18 @@
             }
             for (var i = 0, n = this.length; i < n; i++) {
                 for (var key in options) {
-                    if (isIE) {
-                        this[i][key] = options[key];
+                    if (options[key] === true) {
+                        if (isIE)
+                            this[i][key] = true;
+                        else
+                            this[i].setAttribute(key, key);
+                    } else if (options[key] === false) {
+                        if (isIE)
+                            this[i][key] = undefined;
+                        else
+                            this[i].removeAttribute(key);
                     } else {
-                        switch (options[key]) {
-                            case true:  this[i].setAttribute(key, key);     break;
-                            case false: this[i].removeAttribute(key);       break;
-                            default:    this[i].setAttribute(key, options[key]);
-                        }
+                        this[i].setAttribute(key, options[key]);
                     }
                 }
             }

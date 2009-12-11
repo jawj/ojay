@@ -83,6 +83,12 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.areEqual(eeks.node.name, egreck.node.htmlFor);
         },
         
+        testNonStandardAttributeSetting: function() {
+            var quux = Ojay('#quux');
+            quux.set({'data-hash': '8240fd8e1c524f68f1f1396d310d9d6402e14d49'});
+            this.assert.areEqual('8240fd8e1c524f68f1f1396d310d9d6402e14d49', quux.node.getAttribute('data-hash'));
+        },
+        
         testChangingAlias: function() {
             Ojay.changeAlias('_');
             this.assert.areEqual(Ojay, _);
