@@ -164,7 +164,7 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
             _restoreState: function() {
                 this.setState('READY');
                 var state = this.getInitialState();
-                this._handleSetPage(state.tab);
+                this._handleSetPage(state.tab, {animate: false});
                 
                 this.on('pagechange', function(tabs, page) {
                     tabs._highlightToggle(page - 1);
@@ -205,13 +205,13 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
                 
                 if (typeof this._currentTab == 'undefined') {
                     this._currentTab = index;
-                    this._tabs[index].show();
+                    this._tabs[index].show(options);
                     this._highlightToggle(index);
                 } else {
                     this.setState('ANIMATING');
-                    this._tabs[this._currentTab].hide()._(function(self) {
+                    this._tabs[this._currentTab].hide(options)._(function(self) {
                         self._currentTab = index;
-                        self._tabs[index].show()
+                        self._tabs[index].show(options)
                         ._(self).setState('READY');
                     }, this);
                 }
@@ -258,22 +258,39 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
             },
             
             /**
+             * @param {Object} options
              * @returns {JS.MethodChain}
              */
-            hide: function() {
-                return this._container.animate({opacity: {to: 0}},
-                        this._group._options.switchTime)
-                        .hide()
-                        ._(this);
+            hide: function(options) {
+                var chain = new JS.MethodChain();
+                
+                if ((options || {}).animate !== false) {
+                    chain.animate({opacity: {to: 0}}, this._group._options.switchTime);
+                } else {
+                    chain.setStyle({opacity: 0});
+                }
+                
+                chain.hide()._(this);
+                
+                return chain.fire(this._container);
             },
             
             /**
+             * @param {Object} options
              * @returns {JS.MethodChain}
              */
-            show: function() {
-                return this._container.show().animate({opacity: {to: 1}},
-                        this._group._options.switchTime)
-                        ._(this);
+            show: function(options) {
+                var chain = new JS.MethodChain().show();
+                
+                if ((options || {}).animate !== false) {
+                    chain.animate({opacity: {to: 1}}, this._group._options.switchTime);
+                } else {
+                    chain.setStyle({opacity: 1});
+                }
+                
+                chain._(this);
+                
+                return chain.fire(this._container);
             }
         })
     }
