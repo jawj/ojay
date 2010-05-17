@@ -1,3 +1,21 @@
+Version 0.4.2
+May 18 2010
+================================================================
+
+* Additions to core:
+    * URI#removeParam() method added to remove a parameter from
+      a URI.
+
+* Bug fixes:
+    * Ojay.changeAlias now works in Internet Explorer.
+    * ClearType is now reinstated when setting an element's
+      opacity to 1.
+    * JSONP callback generation/cleanup bug.
+    * Tabs no longer animate when created.
+    * Ojay.Forms.Select now respects disabled attributes on
+      option elements.
+
+
 Version 0.4.1
 June 25 2009
 ================================================================
