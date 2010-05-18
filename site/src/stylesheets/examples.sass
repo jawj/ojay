@@ -1,98 +1,94 @@
-!white          = #fff
-!black          = #000
-!light_grey     = #eee
-!mid_grey       = #999
-!dark_grey      = #444
-!brown          = #807065
-!teal           = #61A098
-!light_blue     = #C2ECE7
-!green          = #bbdd92
-!columns        = 6
-!column_width   = 130px
-!gutter_width   = 16px
-!font_size      = 14px
-!leading        = 1.5
+$white: white
+$black: black
+$light_grey: #eeeeee
+$mid_grey: #999999
+$dark_grey: #444444
+$brown: #807065
+$teal: #61a098
+$light_blue: #c2ece7
+$green: #bbdd92
+$columns: 6
+$column_width: 130px
+$gutter_width: 16px
+$font_size: 14px
+$leading: 1.5
 
 body, #container
-  :background     = !white
-  :color          = !black
-  :margin         0
-  :padding        0
-  :font
-    :size         = !font_size
-    :family       Arial, Helvetica, sans-serif
-  :line-height    = !leading
+  background: $white
+  color: $black
+  margin: 0
+  padding: 0
+  font:
+    size: $font_size
+    family: Arial, Helvetica, sans-serif
+  line-height: $leading
 
 .sub
-  :width          = (!columns * !column_width) + ((!columns - 1) * !gutter_width)
-  :margin         0 auto
-  :position       relative
+  width: $columns * $column_width + ($columns - 1) * $gutter_width
+  margin: 0 auto
+  position: relative
 
 #header
-  :margin           = 0 0 (2*!leading*!font_size)
-  :padding          = 0 0 !font_size
-  :border-bottom    = 1px solid !black
-  
+  margin: 0 0 2 * $leading * $font_size
+  padding: 0 0 $font_size
+  border-bottom: 1px solid $black
   h1
-    :width          344px
-    :height         0
-    :overflow       hidden
-    :margin         30px 0 0
-    :padding        57px 0 0
-    :background     url(examples.gif) left top no-repeat
-  
+    width: 344px
+    height: 0
+    overflow: hidden
+    margin: 30px 0 0
+    padding: 57px 0 0
+    background: url(examples.gif) left top no-repeat
   #versions
-    :font
-      :size         80%
-      :family       Monaco, Consolas, Lucida Console, Courier New, monospace
-    :position       absolute
-    :right          0
-    :bottom         8px
+    font:
+      size: 80%
+      family: Monaco, Consolas, Lucida Console, Courier New, monospace
+    position: absolute
+    right: 0
+    bottom: 8px
 
 #footer
-  :color          = !black
-  :border-top     = 1px solid !black
-  :padding        = !leading*!font_size 0
-  :margin         = !leading*!font_size 0 0
-  
+  color: $black
+  border-top: 1px solid $black
+  padding: $leading * $font_size 0
+  margin: $leading * $font_size 0 0
   a
-    :color        = !brown
-    :text-decoration none
-  
+    color: $brown
+    text-decoration: none
   a:hover
-    :color        = !white
-    :background   = !brown
+    color: $white
+    background: $brown
 
 .clear
-  :clear          both
-  :height         0
-  :overflow       hidden
+  clear: both
+  height: 0
+  overflow: hidden
 
 #style-display, #script-display
-  :border       0
-  :width        100%
+  border: 0
+  width: 100%
 
 h2
-  :font
-    :size       20px
-    :weight     bold
-  :line-height  = !leading * !font_size
-  :margin       = 0 0 (!leading*!font_size)
+  font:
+    size: 20px
+    weight: bold
+  line-height: $leading * $font_size
+  margin: 0 0 $leading * $font_size
 
 #summary
-  :border-bottom    = 1px solid !mid_grey
-  :margin-bottom    = 2 * !leading * !font_size
+  border-bottom: 1px solid $mid_grey
+  margin-bottom: 2 * $leading * $font_size
 
 h4
-  :font
-    :size       14px
-    :weight     bold
-  :margin       = !leading*!font_size 0
-  :padding      6px 0 0
-  :border-top   = 1px solid !mid_grey
+  font:
+    size: 14px
+    weight: bold
+  margin: $leading * $font_size 0
+  padding: 6px 0 0
+  border-top: 1px solid $mid_grey
 
 textarea
-  :font
-    :size       80%
-    :family     Monaco, Consolas, Lucida Console, Courier New, monospace
-  :line-height  1.4em
+  font:
+    size: 80%
+    family: Monaco, Consolas, Lucida Console, Courier New, monospace
+  line-height: 1.4em
