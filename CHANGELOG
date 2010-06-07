@@ -14,6 +14,8 @@ May 18 2010
     * Tabs no longer animate when created.
     * Ojay.Forms.Select now respects disabled attributes on
       option elements.
+    * Removing all the elements from a Paginator no longer
+      throws errors.
 
 
 Version 0.4.1
