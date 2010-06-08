@@ -115,56 +115,30 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
          */
         expand: function(animate) {
             if (this._open) return this;
+            this._accordion._expand(this, animate);
+            this._collapser.setStyle({overflow: 'hidden'});
+            this._element.addClass('expanded').removeClass('collapsed');
             
-            return this._accordion._expand(this, animate)
-            ._(this._collapser).setStyle({overflow: 'hidden'})
-            ._(this._element).replaceClass('collapsed', 'expanded')
-            ._(function() {
-                var size = this.getSize(),
-                    settings = {},
-                    postAnim = {overflow: ''};
-                
-                settings[this.param] = (animate === false) ? '' : {to: size};
-                postAnim[this.param] = '';
-                
-                if (animate !== false ) this.notifyObservers('expand');
-                
-                if (animate === false) {
-                    this._collapser.setStyle(settings).setStyle({overflow: ''});
-                    this._open = true;
-                    return this;
-                } else {
-                    return this._collapser.animate(settings, this._duration, {easing: this._easing})
-                    .setStyle(postAnim)
-                    ._(function(self) { self._open = true; }, this)
-                    ._(this);
-                }
-            }.bind(this));
+            var size = this.getSize(),
+                settings = {},
+                postAnim = {overflow: ''};
             
-            // this._accordion._expand(this, animate);
-            // this._collapser.setStyle({overflow: 'hidden'});
-            // this._element.addClass('expanded').removeClass('collapsed');
-            // 
-            // var size = this.getSize(),
-            //     settings = {},
-            //     postAnim = {overflow: ''};
-            // 
-            // settings[this.param] = (animate === false) ? '' : {to: size};
-            // postAnim[this.param] = '';
-            // 
-            // var acc = this._accordion;
-            // if (animate !== false ) this.notifyObservers('expand');
-            // 
-            // if (animate === false) {
-            //     this._collapser.setStyle(settings).setStyle({overflow: ''});
-            //     this._open = true;
-            //     return this;
-            // } else {
-            //     return this._collapser.animate(settings, this._duration, {easing: this._easing})
-            //     .setStyle(postAnim)
-            //     ._(function(self) { self._open = true; }, this)
-            //     ._(this);
-            // }
+            settings[this.param] = (animate === false) ? '' : {to: size};
+            postAnim[this.param] = '';
+            
+            var acc = this._accordion;
+            if (animate !== false ) this.notifyObservers('expand');
+            
+            if (animate === false) {
+                this._collapser.setStyle(settings).setStyle({overflow: ''});
+                this._open = true;
+                return this;
+            } else {
+                return this._collapser.animate(settings, this._duration, {easing: this._easing})
+                .setStyle(postAnim)
+                ._(function(self) { self._open = true; }, this)
+                ._(this);
+            }
         }
     })
 });
