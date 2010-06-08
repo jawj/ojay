@@ -16,6 +16,8 @@ May 18 2010
       option elements.
     * Removing all the elements from a Paginator no longer
       throws errors.
+    * Mix JS.State into Accordion so that it's no longer
+      possible to open multiple panes at once.
 
 
 Version 0.4.1

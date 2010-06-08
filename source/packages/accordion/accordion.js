@@ -57,7 +57,7 @@
  * @class Accordion
  */
 Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.prototype */{
-    include: Ojay.Observable,
+    include: [Ojay.Observable, JS.State],
     
     extend: /** @scope Ojay.Accordion */{
         DIRECTIONS: {
@@ -77,22 +77,7 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
         this._direction   = direction;
         this._sections    = sections;
         this._collapsible = collapsible;
-    },
-    
-    /**
-     * @returns {Accordion}
-     */
-    setup: function() {
-        var SectionClass = this.klass[this.klass.DIRECTIONS[this._direction]];
-        this._sections = Ojay(this._sections).map(function(section, index) {
-            var section = new SectionClass(this, index, section, this._collapsible, this._options);
-            section.on('expand')._(this).notifyObservers('sectionexpand', index, section);
-            section.on('collapse')._(this).notifyObservers('sectioncollapse', index, section);
-            return section;
-        }, this);
-        var state = this.getInitialState();
-        this._sections[state.section].expand(false);
-        return this;
+        this.setState('CREATED');
     },
     
     /**
@@ -103,50 +88,83 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
     },
     
     /**
-     * @param {Object} state
-     * @returns {Accordion}
-     */
-    changeState: function(state) {
-        this._sections[state.section].expand();
-        return this;
-    },
-    
-    /**
-     * @param {Accordion.Section} section
-     * @param {Boolean} animate
-     */
-    _expand: function(section, animate) {
-        if (this._currentSection) this._currentSection.collapse(animate);
-        this._currentSection = section;
-    },
-    
-    /**
      * @returns {Array}
      */
     getSections: function() {
-        return this._sections.slice();
+        return this._sections ? this._sections.slice() : [];
     },
     
-    /**
-     * @param {Number} n
-     * @param {Boolean} animate
-     * @returns {Accordion}
-     */
-    expand: function(n, animate) {
-        var section = this._sections[n];
-        if (section) section.expand(animate);
-        return this;
-    },
-    
-    /**
-     * @param {Number} n
-     * @param {Boolean} animate
-     * @returns {Accordion}
-     */
-    collapse: function(n, animate) {
-        var section = this._sections[n];
-        if (section) section.collapse(animate);
-        return this;
+    states: {
+        CREATED: {
+            /**
+             * @returns {Accordion}
+             */
+            setup: function() {
+                var SectionClass = this.klass[this.klass.DIRECTIONS[this._direction]];
+                this._sections = Ojay(this._sections).map(function(section, index) {
+                    section = new SectionClass(this, index, section, this._collapsible, this._options);
+                    section.on('expand')._(this).notifyObservers('sectionexpand', index, section);
+                    section.on('collapse')._(this).notifyObservers('sectioncollapse', index, section);
+                    return section;
+                }, this);
+                this.setState('READY');
+                var state = this.getInitialState();
+                return this._sections[state.section].expand(false)._(this);
+            }
+        },
+        
+        READY: {
+            /**
+             * @param {Object} state
+             * @returns {Accordion}
+             */
+            changeState: function(state) {
+                this._sections[state.section].expand();
+                return this;
+            },
+            
+            /**
+             * @param {Accordion.Section} section
+             * @param {Boolean} animate
+             */
+            _expand: function(section, animate) {
+                if (this._currentSection) {
+                    if (animate === false) {
+                        this._currentSection.collapse(animate);
+                    } else {
+                        this.setState('ANIMATING');
+                        this._currentSection.collapse(animate)._(this).setState('READY');
+                    }
+                }
+                
+                this._currentSection = section;
+                return this;
+            },
+            
+            /**
+             * @param {Number} n
+             * @param {Boolean} animate
+             * @returns {Accordion}
+             */
+            expand: function(n, animate) {
+                var section = this._sections[n];
+                if (section) section.expand(animate);
+                return this;
+            },
+            
+            /**
+             * @param {Number} n
+             * @param {Boolean} animate
+             * @returns {Accordion}
+             */
+            collapse: function(n, animate) {
+                var section = this._sections[n];
+                if (section) section.collapse(animate);
+                return this;
+            }
+        },
+        
+        ANIMATING: {}
     }
 });
 
