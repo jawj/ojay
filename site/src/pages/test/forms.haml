@@ -1,8 +1,10 @@
+- @layout = 'test'
+
 %h1 Forms tests
 
 =javascripts 'test/validation'
 
-%form#buttons
+%form#buttons{:action => "", :method => "post"}
   %button{:id => 'disabler'} Disable things
   %button{:id => 'setter1'} Set drop-down value
   %button{:id => 'setter2'} Set radio value
@@ -42,7 +44,7 @@
 #results
 
 #form-wrapper
-  %form#login{:method => 'get'}
+  %form#login{:action => "", :method => 'get'}
     %div
       %label
         Username
@@ -69,7 +71,7 @@
     %div
       %input{:type => 'submit', :value => 'Sign in'}
 
-%form#search{:action => '/service/search.html', :method => 'GET'}
+%form#search{:action => '/service/search.html', :method => 'get'}
   %div
     %label{:for => 'q'} Search terms
     %input{:name => 'q', :id => 'q'}
@@ -84,30 +86,3 @@
 #searches
 
 =javascripts 'test/forms'
-
-:plain
-  <style type="text/css">
-    form { margin: 18px 0; }
-    label { font-family: Arial, sans-serif; font-style: italic; }
-    input.invalid, .error-explanation { background: #fcc; border: 1px solid #900; }
-    label.invalid { color: #f00; font-weight: bold; }
-    .error-explanation { padding: 12px; margin: 12px; }
-    
-    #buttons label.js { display: inline; float: left; border: 1px solid #666; background: #eee; padding: 8px; margin-right: 8px; }
-    #buttons label.js.checked { border-color: #393; background: #9f6; }
-    #buttons label.js.focused { border-width: 2px; font-weight: bold; }
-    #buttons label.js.hovered { background: #cef; }
-    #buttons label.js.disabled { color: #666 !important; font-weight: normal !important; background: #fff !important; }
-    
-    input.focused { border: 2px solid #000; }
-    label.focused { text-decoration: underline; }
-    
-    .select-container { clear: left; margin: 30px 0; width: 200px; }
-    .select-display { border: 1px solid #000; }
-    .select-list ul { border: 1px solid #666; background: #fff; }
-    .select-list ul, .select-list li { list-style: none; margin: 0; padding: 0; }
-    .select-list li { width: 182px; border-top: 1px solid #cce; padding: 4px 8px; }
-    .select-list li.hovered { background: #cef; }
-    
-    .notshown { display: none; }
-  </style>

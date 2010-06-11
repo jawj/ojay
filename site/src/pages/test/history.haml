@@ -1,3 +1,5 @@
+- @layout = 'test'
+
 %h1 History tests
 
 =javascripts 'test/fixtures/gallery', 'test/fixtures/browser'
@@ -28,9 +30,9 @@
 
 %p This one is not...
 #baz
-%script{:type => 'text/javascript'}
-  :plain
-    baz.setup();
+
+:javascript
+  baz.setup();
 
 =link 'Go to test index', './index.html'
 
@@ -39,6 +41,5 @@
     =link 'the OTHER media', 'http://othermedia.com'
     =link 'Google', 'http://google.co.uk'
     =link 'Amazon', 'http://amazon.co.uk'
-%script{:type => 'text/javascript'}
-  :plain
+:javascript
     urls.setup();
