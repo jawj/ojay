@@ -138,8 +138,9 @@ Ojay.Paginator.extend(/** @scope Ojay.Paginator */{
          * @param {Number}
          */
         _highlightPage: function(page) {
+            var page = this._elements._pages[page - 1];
             this._elements._pages.forEach({removeClass: 'selected'});
-            this._elements._pages[page - 1].addClass('selected');
+            if (page) page.addClass('selected');
         },
         
         /**

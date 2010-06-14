@@ -1,3 +1,5 @@
+- @layout = 'test'
+
 %h1 Accordion tests
 
 #accordV
@@ -25,30 +27,15 @@
 #accordH
   .section
     %h3 01
-    %img{:src => "/images/gallery/04.jpg"}
+    %img{:src => "/images/gallery/04.jpg", :alt => ""}
   .section
     %h3 02
-    %img{:src => "/images/gallery/05.jpg"}
+    %img{:src => "/images/gallery/05.jpg", :alt => ""}
   .section
     %h3 03
-    %img{:src => "/images/gallery/06.jpg"}
+    %img{:src => "/images/gallery/06.jpg", :alt => ""}
 
-:plain
-  <style type="text/css">
-    body { font-family: Arial, sans-serif; }
-    #accordV { width: 400px; }
-    #accordV .section { width: 400px; border: 1px solid #ccc; }
-    #accordV .section .handle { background: #444; color: #fff; padding: 4px 8px; }
-    #accordV .section p { font-size: 10px; color: #666; margin: 0; padding: 12px; }
-    #accordV .expanded .handle { background: #fff; color: #000; }
-    #accordV .accordion-collapsible p { font-size: 10px; padding: 10px; border: 1px solid #ccc; border-top: none; margin: 0 0 0 0; }
-    
-    #accordH .accordion-section, #accordH .accordion-collapsible img { float: left; background: #444; padding: 18px; color: #fff; border-left: 1px solid #fff; font-weight: bold; height: 400px; }
-    #accordH .accordion-collapsible { float: left; }
-    #accordH img { width: 600px; }
-  </style>
-  
-  <script type="text/javascript">
+:javascript
     var acc = new Ojay.Accordion('vertical', '#accordV .section', 'p', {
         duration: 0.5,
         easing: 'easeOut',
@@ -64,4 +51,3 @@
     new Ojay.Accordion('horizontal', '#accordH .section', 'img', {easing: 'easeOutStrong'})
     .setup()
     .on('sectionexpand', function() {}.traced());
-  </script>

@@ -1,5 +1,5 @@
 !!!
-%html
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en"}
   %head
     %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
     %title
@@ -10,7 +10,8 @@
     #container
       #header
         .sub
-          %h1 Ojay
+          %h1
+            =link 'Ojay', '/'
           #tom-link
             =link 'theOTHERmedia', 'http://othermedia.com'
       #main
@@ -19,7 +20,7 @@
             = yield
           #sidebar
             #download
-              =link 'Download 0.4.1', 'http://ojay.googlecode.com/files/ojay-0.4.1.zip'
+              =link 'Download 0.4.2', '/downloads/ojay-0.4.2.zip'
             %ul#nav
               %li
                 =link 'Home', '/'

@@ -1,7 +1,4 @@
-:plain
-  <style type="text/css">
-    .orange {color:#ff9600;}
-  </style>
+- @layout = 'test'
 
 %h1 Core selector tests
 
@@ -28,7 +25,7 @@
 #quux
   Should be orange
 
-%form
+%form{:action => "", :method => "get"}
   %input#eeks{:type => "checkbox", :name => "eeks"}
   %label#egreck Label for checkbox
 

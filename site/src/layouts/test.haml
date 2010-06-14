@@ -5,8 +5,8 @@
     %meta{'http-equiv' => "Content-type", :content => "text/html; charset=utf-8"}/
     %title Ojay: Test suite
     =javascripts 'globals', 'yui/2.8.0r4', 'ext','sizzle', 'peppy', 'ojay/all', 'test/enumerable', 'test/set'
-    =stylesheets 'logger', 'testlogger'
+    =stylesheets 'logger', 'testlogger', 'test'
     =javascripts *( %w(logger yuitest).map &script_map )
-  %body
+  %body{:id => "test-#{current_page.sub('.html', '').split('/').last}"}
     #content
       =yield

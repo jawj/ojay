@@ -430,10 +430,13 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
              */
             pop: function(n) {
                 n = (n === undefined) ? this._numPages - 1 : n;
-                var last = (n === this._numPages - 1);
+                var last = (n === this._numPages - 1),
+                    page = this._elements._pages[n],
+                    item;
                 
-                var page = this._elements._pages[n],
-                    item = Ojay(page.children().toArray().pop());
+                if (!page) return;
+                
+                item = Ojay(page.children().toArray().pop());
                 
                 this.notifyObservers('itemremove');
                 if (!last) return item.remove();
@@ -457,9 +460,13 @@ Ojay.Paginator = new JS.Class('Ojay.Paginator', /** @scope Ojay.Paginator.protot
              */
             shift: function(n) {
                 n = (n === undefined) ? 0 : n;
-                var first = (n === 0);
-                var page = this._elements._pages[n],
-                    item = page.children().at(0);
+                var first = (n === 0),
+                    page = this._elements._pages[n],
+                    item;
+                
+                if (!page) return;
+                
+                item = page.children().at(0);
                 
                 this.notifyObservers('itemremove');
                 if (!first) return item.remove();

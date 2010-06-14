@@ -1,3 +1,27 @@
+Version 0.4.2
+June 14 2010
+================================================================
+
+* Additions to core:
+    * URI#removeParam() method added to remove a parameter from
+      a URI.
+
+* Bug fixes:
+    * Ojay.changeAlias now works in Internet Explorer.
+    * ClearType is now reinstated when setting an element's
+      opacity to 1.
+    * JSONP callback generation/cleanup bug.
+    * Tabs no longer animate when created.
+    * Ojay.Forms.Select now respects disabled attributes on
+      option elements.
+    * Removing all the elements from a Paginator no longer
+      throws errors.
+    * Mix JS.State into Accordion so that it's no longer
+      possible to open multiple panes at once.
+    * Rewrite some of the Accordion internals to improve the
+      separation of concerns.
+
+
 Version 0.4.1
 June 25 2009
 ================================================================
