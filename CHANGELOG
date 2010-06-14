@@ -18,6 +18,8 @@ Version 0.4.2
       throws errors.
     * Mix JS.State into Accordion so that it's no longer
       possible to open multiple panes at once.
+    * Rewrite some of the Accordion internals to improve the
+      separation of concerns.
 
 
 Version 0.4.1

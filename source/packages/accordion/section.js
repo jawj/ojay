@@ -47,15 +47,14 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
             
             options = options || {};
             this._duration = options.duration || this.klass.DEFAULT_DURATION;
-            this._easing = options.easing || this.klass.DEFAULT_EASING;
+            this._easing   = options.easing   || this.klass.DEFAULT_EASING;
             
             this._element.addClass(this.klass.SECTION_CLASS);
             this._element.on(options.event || this.klass.DEFAULT_EVENT)._(this._accordion).changeState({section: index});
             
-            if (options.collapseOnClick)
-                this._element.on('click', function() {
-                    if (this._open) this.collapse();
-                }, this);
+            if (options.collapseOnClick) {
+                this._element.on('click')._(this._accordion).collapse(index);
+            }
             
             this._open = true;
             this.collapse(false);
@@ -86,13 +85,13 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
          */
         collapse: function(animate) {
             if (!this._open) return this;
+            
             this._collapser.setStyle({overflow: 'hidden'});
             this._element.removeClass('expanded').addClass('collapsed');
             
             var settings = {};
             settings[this.param] = (animate === false) ? 0 : {to: 0};
             
-            var acc = this._accordion;
             if (animate !== false ) this.notifyObservers('collapse');
             
             if (animate === false) {
@@ -115,7 +114,7 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
          */
         expand: function(animate) {
             if (this._open) return this;
-            this._accordion._expand(this, animate);
+            
             this._collapser.setStyle({overflow: 'hidden'});
             this._element.addClass('expanded').removeClass('collapsed');
             
@@ -126,7 +125,6 @@ Ojay.Accordion.extend(/** @scope Ojay.Accordion */{
             settings[this.param] = (animate === false) ? '' : {to: size};
             postAnim[this.param] = '';
             
-            var acc = this._accordion;
             if (animate !== false ) this.notifyObservers('expand');
             
             if (animate === false) {

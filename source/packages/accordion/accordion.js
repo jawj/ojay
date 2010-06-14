@@ -101,15 +101,17 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
              */
             setup: function() {
                 var SectionClass = this.klass[this.klass.DIRECTIONS[this._direction]];
+                
                 this._sections = Ojay(this._sections).map(function(section, index) {
                     section = new SectionClass(this, index, section, this._collapsible, this._options);
                     section.on('expand')._(this).notifyObservers('sectionexpand', index, section);
                     section.on('collapse')._(this).notifyObservers('sectioncollapse', index, section);
                     return section;
                 }, this);
+                
                 this.setState('READY');
-                var state = this.getInitialState();
-                return this._sections[state.section].expand(false)._(this);
+                
+                return this.changeState(this.getInitialState(), false);
             }
         },
         
@@ -118,26 +120,20 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
              * @param {Object} state
              * @returns {Accordion}
              */
-            changeState: function(state) {
-                this._sections[state.section].expand();
-                return this;
-            },
-            
-            /**
-             * @param {Accordion.Section} section
-             * @param {Boolean} animate
-             */
-            _expand: function(section, animate) {
-                if (this._currentSection) {
-                    if (animate === false) {
-                        this._currentSection.collapse(animate);
-                    } else {
-                        this.setState('ANIMATING');
-                        this._currentSection.collapse(animate)._(this).setState('READY');
-                    }
-                }
+            changeState: function(state, animate) {
+                var section = this._sections[state.section];
                 
-                this._currentSection = section;
+                if (!section || section === this._currentSection) return this;
+                
+                this.setState('ANIMATING');
+                
+                if (this._currentSection) this._currentSection.collapse(animate);
+                
+                section.expand(animate)._(function(self) {
+                    self._currentSection = section;
+                    self.setState('READY');
+                }, this);
+                
                 return this;
             },
             
@@ -147,8 +143,7 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
              * @returns {Accordion}
              */
             expand: function(n, animate) {
-                var section = this._sections[n];
-                if (section) section.expand(animate);
+                this.changeState({section: n}, animate);
                 return this;
             },
             
@@ -160,6 +155,7 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
             collapse: function(n, animate) {
                 var section = this._sections[n];
                 if (section) section.collapse(animate);
+                if (section === this._currentSection) this._currentSection = null;
                 return this;
             }
         },
@@ -167,4 +163,3 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
         ANIMATING: {}
     }
 });
-
