@@ -1,3 +1,21 @@
+EDGE
+[Unreleased]
+================================================================
+
+* Additions to core:
+    * Upgrade to JS.Class 2.1.5 See http://jsclass.jcoglan.com
+      for details.
+
+* Bug fixes:
+    * Fixed a double-decode problem in History.
+
+* Additions to Paginator package:
+    * New FilmStrip class for handling a single row or column of
+      variable-width elements.
+    * Both Paginator and FilmStrip now implement a common core
+      of functionality, encapsulated in the Paginatable module.
+
+
 Version 0.4.2
 June 14 2010
 ================================================================

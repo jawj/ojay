@@ -1,6 +1,6 @@
 /**
  * JS.Class: Ruby-style JavaScript
- * Copyright (c) 2007-2009 James Coglan
+ * Copyright (c) 2007-2010 James Coglan
  * 
  * http://jsclass.jcoglan.com
  * http://github.com/jcoglan/js.class
@@ -25,7 +25,7 @@
  * 
  * Parts of this software are derived from the following open-source projects:
  * 
- *     - The Prototype framework, (c) 2005-2009 Sam Stephenson
+ *     - The Prototype framework, (c) 2005-2010 Sam Stephenson
  *     - Alex Arnell's Inheritance library, (c) 2006, Alex Arnell
  *     - Base, (c) 2006-9, Dean Edwards
  */
@@ -41,7 +41,8 @@
  * various utility methods used throughout. None of these methods should be taken as being
  * public API, they are all 'plumbing' and may be removed or changed at any time.
  **/
-JS = {
+this.JS = this.JS || {};
+
   /**
    * JS.extend(target, extensions) -> Object
    * - target (Object): object to be extended
@@ -51,14 +52,16 @@ JS = {
    * needlessly overwrite fields with identical values; if an object has inherited a property
    * we should not add the property to the object itself.
    **/
-  extend: function(target, extensions) {
+  JS.extend = function(target, extensions) {
     extensions = extensions || {};
     for (var prop in extensions) {
       if (target[prop] === extensions[prop]) continue;
       target[prop] = extensions[prop];
     }
     return target;
-  },
+  };
+  
+JS.extend(JS, {
   
   /**
    * JS.makeFunction() -> Function
@@ -184,7 +187,7 @@ JS = {
    * - object (Object): object whose type we wish to check
    * - type (JS.Module): type to match against
    * 
-   * Returns `true` iff `object is of the given `type`.
+   * Returns `true` iff `object` is of the given `type`.
    **/
   isType: function(object, type) {
     if (!object || !type) return false;
@@ -204,7 +207,7 @@ JS = {
   ignore: function(key, object) {
     return /^(include|extend)$/.test(key) && typeof object === 'object';
   }
-};
+});
 
 
 /** section: core
@@ -320,6 +323,8 @@ JS.extend(JS.Module.prototype, {
     this.__res__ = options._resolve || null;
     
     if (methods) this.include(methods, false);
+    
+    if (JS.Module.__chainq__) JS.Module.__chainq__.push(this);
   },
   
   /**
@@ -822,9 +827,13 @@ JS.Class.klass = JS.Class.constructor = JS.Class;
 
 JS.extend(JS.Module, {
   _observers: [],
+  
+  __chainq__: [],
+  
   methodAdded: function(block, context) {
     this._observers.push([block, context]);
   },
+  
   _notify: function(name, object) {
     var obs = this._observers, i = obs.length;
     while (i--) obs[i][0].call(obs[i][1] || null, name, object);
