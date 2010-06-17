@@ -38,9 +38,9 @@ packages:
         - YAHOO.util.Dom
         - YAHOO.util.Event
         - YAHOO.util.Region
+        - YAHOO.util.ColorAnim
       uses:
         - YAHOO.lang.JSON
-        - YAHOO.util.ColorAnim
         - YAHOO.util.Easing
         - YAHOO.util.Selector
         - YAHOO.util.Scroll
