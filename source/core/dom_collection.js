@@ -387,32 +387,24 @@
          * @returns {DomCollection}
          */
         set: function(options) {
-            var isIE = !!YAHOO.env.ua.ie;
-            if (options.className && !isIE) {
-                options['class'] = options.className;
-                delete(options.className);
-            }
-            if (options.htmlFor && !isIE) {
-                options['for'] = options.htmlFor;
-                delete(options.htmlFor);
-            }
-            for (var i = 0, n = this.length; i < n; i++) {
-                for (var key in options) {
-                    if (options[key] === true) {
-                        if (isIE)
-                            this[i][key] = true;
-                        else
-                            this[i].setAttribute(key, key);
-                    } else if (options[key] === false) {
-                        if (isIE)
-                            this[i][key] = undefined;
-                        else
-                            this[i].removeAttribute(key);
+            var ie = YAHOO.env.ua.ie,
+                n  = this.length,
+                i, key;
+            
+            for (i = 0; i < n; i++) {
+                for (key in options) {
+                    if (options[key] === false) {
+                        this[i][key] = null;
+                    } else if (options[key] === true) {
+                        this[i].setAttribute(key, key);
+                    } else if ((ie < 1 || ie > 7) && (key === 'className' || key === 'htmlFor')) {
+                        this[i][key] = options[key];
                     } else {
                         this[i].setAttribute(key, options[key]);
                     }
                 }
             }
+            
             this.trigger('ojay:attrchange', {attributes: options}, false);
             return this;
         },

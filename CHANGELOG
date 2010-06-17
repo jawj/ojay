@@ -7,6 +7,8 @@ EDGE
       for details.
 
 * Bug fixes:
+    * Fixed some cross-browser problems with DomCollection#set,
+      boolean attributes and reserved word attributes.
     * Fixed a double-decode problem in History.
 
 * Additions to Paginator package:
