@@ -17,4 +17,3 @@ JS.MethodChain.addMethods(Ojay);
         _: kernel.instanceMethod('_').wrap(convertSelectors)
     });
 })();
-
