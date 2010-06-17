@@ -17,7 +17,7 @@ jake_helper :version do
 end
 
 jake_hook :build_complete do |build|
-  %w(README LICENSE CHANGELOG).each do |doc|
+  %w(README.md LICENSE CHANGELOG).each do |doc|
     FileUtils.copy doc, "#{ build.build_directory }/../#{ doc }"
   end
   
