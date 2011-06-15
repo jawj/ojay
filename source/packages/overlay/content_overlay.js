@@ -98,8 +98,8 @@ Ojay.ContentOverlay = new JS.Class('Ojay.ContentOverlay', Ojay.Overlay, /** @sco
              * @returns {ContentOverlay}
              */
             fitToContent: function(options) {
-                var options     = options || {},
-                    animate     = !!options.animate,
+                    options     = options || {};
+                var animate     = !!options.animate,
                     balance     = !!options.balance,
                     innerRegion = this._elements._content.getRegion(),
                     outerRegion = this.getRegion();
