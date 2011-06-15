@@ -17,6 +17,9 @@ EDGE
     * Both Paginator and FilmStrip now implement a common core
       of functionality, encapsulated in the Paginatable module.
 
+* Additions to Overlay package:
+    * Added addCloseButton method to ContentOverlay class.
+
 
 Version 0.4.2
 June 14 2010

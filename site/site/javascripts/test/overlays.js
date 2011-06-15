@@ -51,6 +51,14 @@ Ojay('#animated-fit').on('click', function(el,ev) {
     overlay.show();
 });
 
+Ojay('#add-close-button').on('click', function(el, ev) {
+    ev.stopEvent();
+    var overlay = new Ojay.ContentOverlay()
+        .setContent('<div style="width: 100px;">With a close button.</div>')
+        .fitToContent().center().show('zoom');
+    overlay.addCloseButton();
+});
+
 Ojay('#mover').on('click', function(el,ev) {
     ev.stopEvent();
     overlays[0].resize(30, 80, 500, 200, {duration: 2, easing: 'backBoth'}).close('zoom');
