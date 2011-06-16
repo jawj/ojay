@@ -77,12 +77,12 @@ Ojay.ContentOverlay = new JS.Class('Ojay.ContentOverlay', Ojay.Overlay, /** @sco
      * <p>Adds a 'Close' button to the overlay, which closes it when clicked.</p>
      * @returns {Ojay.DomCollection}
      */
-    addCloseButton: function() {
+    addCloseButton: function(transition, options) {
         if (this._elements._closeButton) return this._elements._closeButton;
         
         var button = Ojay(Ojay.HTML.div({className: 'close-overlay'},
             Ojay.HTML.button('Close')));
-        button.on('click', function() { this.hide(); }, this);
+        button.on('click', function() { this.hide(transition, options); }, this);
         this._elements._content.insert(button, 'top');
         return this._elements._closeButton = button;
     },

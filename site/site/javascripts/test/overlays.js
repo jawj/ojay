@@ -56,7 +56,7 @@ Ojay('#add-close-button').on('click', function(el, ev) {
     var overlay = new Ojay.ContentOverlay()
         .setContent('<div style="width: 100px;">With a close button.</div>')
         .fitToContent().center().show('zoom');
-    overlay.addCloseButton();
+    overlay.addCloseButton('fade');
 });
 
 Ojay('#mover').on('click', function(el,ev) {
