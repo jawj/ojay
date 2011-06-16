@@ -4,7 +4,7 @@ Ojay
 [Ojay][ojay] is a developer-friendly wrapper for the Yahoo! User Interface
 library.
 
-Copyright (c) 2007-09 the OTHER media Limited, written by James Coglan.
+Copyright (c) 2007-11 the OTHER media Limited, written by James Coglan.
 
 Ojay is open source software released under the BSD license. Please see the
 `LICENSE` file for more details.
