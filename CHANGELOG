@@ -10,6 +10,7 @@ EDGE
     * Fixed some cross-browser problems with DomCollection#set,
       boolean attributes and reserved word attributes.
     * Fixed a double-decode problem in History.
+    * Fixed creation of input elements in Internet Explorer 9.
 
 * Additions to Paginator package:
     * New FilmStrip class for handling a single row or column of

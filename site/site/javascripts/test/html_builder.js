@@ -37,6 +37,17 @@ YAHOO.util.Event.onDOMReady(function() {
                 Ojay.HTML.span('Three'), '.'
             );
             this.assert.isTrue(/^These are spans: <span>One<\/span>, <span>Two<\/span>, <span>Three<\/span>\.$/i.test(p.innerHTML.toLowerCase()));
+        },
+        
+        testInputCreation: function() {
+            var text   = this.html.input({type: 'text', value: 'Lipsum'}),
+                submit = this.html.input({type: 'submit', value: 'Submit'}),
+                radio  = this.html.input({type: 'radio', value: 'FM'}),
+                cbox   = this.html.input({type: 'checkbox', value: 'Green'});
+            this.assert.areEqual('Lipsum', text.value);
+            this.assert.areEqual('Submit', submit.value);
+            this.assert.areEqual('FM', radio.value);
+            this.assert.areEqual('Green', cbox.value);
         }
     }));
     

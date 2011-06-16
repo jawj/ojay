@@ -107,7 +107,7 @@ Ojay.HtmlBuilder = new JS.Class('Ojay.HtmlBuilder', /* @scope Ojay.HtmlBuilder.p
                 var node = document.createElement(name), arg, attr, style, appendable,
                     type = (arguments[0]||{}).type || 'text';
                 
-                if (YAHOO.env.ua.ie && name == 'input')
+                if (YAHOO.env.ua.ie && YAHOO.env.ua.ie < 9 && name == 'input')
                     node = document.createElement('<input type="' + type + '">');
                 
                 loop: for (var j = 0, m = arguments.length; j < m; j++) {
