@@ -92,7 +92,7 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.areEqual('http://ojay.othermedia.org/', 'http://ojay.othermedia.org:80/'.parseURI().toString());
             this.assert.areEqual('http://ojay.othermedia.org:3030/', 'http://ojay.othermedia.org:3030/'.parseURI().toString());
             
-            this.assert.areEqual('http://localhost:' + this.localPort + '/path.html', 'http://localhost/path.html'.parseURI().toString());
+            this.assert.areEqual('http://localhost:' + this.localPort + '/path.html', 'http://localhost:3030/path.html'.parseURI().toString());
         },
         
         testCrossDomainDetection: function() {
