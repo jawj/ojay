@@ -26,7 +26,7 @@ YAHOO.util.Event.onDOMReady(function() {
         }
     });
     
-    Ojay('input[type=submit]').on('click', function(el, e) { YAHOO.util.Event.preventDefault(e) })
+    Ojay('input[type=submit]').on('click', function(el, e) { YAHOO.util.Event.preventDefault(e); })
         ._(Ojay.HTTP.GET, '/index.html', {
             width: Ojay('#on200').method('getWidth')
         })
@@ -55,7 +55,7 @@ var TestCase = {
 };
 
 Ojay.HTTP.on('request', function(){}.traced())._(function() {
-    window.console && console.log(this.uri)
+    window.console && console.log(this.uri);
 });
 Ojay.HTTP.on(200, function() {
     window.console && console.log(200);

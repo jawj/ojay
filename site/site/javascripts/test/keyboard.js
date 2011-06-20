@@ -19,4 +19,4 @@ Ojay('#block2 .enable').on('click', Ojay.stopEvent)._(ctrlS).enable();
 Ojay('#block2 .allow').on('click', Ojay.stopEvent)._(ctrlS).allowDefault();
 Ojay('#block2 .deny').on('click', Ojay.stopEvent)._(ctrlS).preventDefault();
 
-var contextCheck = Ojay.Keyboard.listen(document, '9', function() { alert(this) }, 9);
+var contextCheck = Ojay.Keyboard.listen(document, '9', function() { alert(this); }, 9);
