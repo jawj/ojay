@@ -130,12 +130,16 @@ YAHOO.util.Event.onDOMReady(function() {
             this.assert.isFalse('/path/?something=else'.equalsURI('/path/?something=else&foo=bar'));
             this.assert.isFalse('/path/?foo=k&something=else'.equalsURI('/path/?something=else&foo=bar'));
             this.assert.areEqual('something else', '/foo?q=something+else'.parseURI().params.q);
+            
+            this.assert.isTrue('/path/?foo=bar&baz&something=else'.equalsURI('/path/?foo=bar&baz&something=else'));
+            this.assert.isTrue('/path/?foo=bar&baz&something=else'.equalsURI('/path/?foo=bar&baz=&something=else'));
         },
         
         testToString: function() {
             var local = this.localProtocol + '://' + this.localHost + ':' + this.localPort;
             this.assert.areEqual(local + '/path.html?a=b&c=d&e=f', '/path.html?e=f&a=b&c=d'.parseURI().toString());
             this.assert.areEqual(local + '/path.html?a=b&c=%2F%2F%3F%2F%2F%3F%2F%2F%2F%2F%2F&e=f', '/path.html?e=f&a=b&c=//?//?/////'.parseURI().toString());
+            this.assert.areEqual(local + '/path.html/?a=b&c', '/path.html/?a=b&c='.parseURI().toString());
         },
         
         testHash: function() {

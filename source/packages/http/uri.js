@@ -37,7 +37,7 @@ Ojay.URI = new JS.Class('Ojay.URI', {
             if (/^\?/.test(string)) string.slice(1).split('&').forEach(function(pair) {
                 var bits = pair.split('=');
                 uri.setParam(decodeURIComponent(bits[0]),
-                             decodeURIComponent(bits[1].replace('+', ' ')));
+                             decodeURIComponent((bits[1] || '').replace('+', ' ')));
             });
             return uri;
         },
@@ -102,7 +102,9 @@ Ojay.URI = new JS.Class('Ojay.URI', {
      */
     getQueryString: function() {
         return this.keys.sort().map(function(key) {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(this.params[key]);
+            var param = encodeURIComponent(key);
+            if(this.params[key] !== '') param += '=' + encodeURIComponent(this.params[key]);
+            return param
         }, this).join('&');
     },
     
