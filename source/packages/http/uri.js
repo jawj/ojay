@@ -104,7 +104,7 @@ Ojay.URI = new JS.Class('Ojay.URI', {
         return this.keys.sort().map(function(key) {
             var param = encodeURIComponent(key);
             if(this.params[key] !== '') param += '=' + encodeURIComponent(this.params[key]);
-            return param
+            return param;
         }, this).join('&');
     },
     
