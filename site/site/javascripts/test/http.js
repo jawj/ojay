@@ -133,6 +133,9 @@ YAHOO.util.Event.onDOMReady(function() {
             
             this.assert.isTrue('/path/?foo=bar&baz&something=else'.equalsURI('/path/?foo=bar&baz&something=else'));
             this.assert.isTrue('/path/?foo=bar&baz&something=else'.equalsURI('/path/?foo=bar&baz=&something=else'));
+            
+            this.assert.isTrue('/path/?foo=bar&baz&something=else'.equalsURI('/path/?foo=bar;baz;something=else'));
+            this.assert.isTrue('/path/?foo=bar;baz&something=else'.equalsURI('/path/?foo=bar&baz;something=else'));
         },
         
         testToString: function() {

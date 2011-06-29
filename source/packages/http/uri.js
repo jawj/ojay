@@ -34,7 +34,7 @@ Ojay.URI = new JS.Class('Ojay.URI', {
             if (uri.path.charAt(0) != '/' && uri.domain == this.local.domain)
                 uri.path = this.local.directory + uri.path;
             
-            if (/^\?/.test(string)) string.slice(1).split('&').forEach(function(pair) {
+            if (/^\?/.test(string)) string.slice(1).split(/[&;]/).forEach(function(pair) {
                 var bits = pair.split('=');
                 uri.setParam(decodeURIComponent(bits[0]),
                              decodeURIComponent((bits[1] || '').replace('+', ' ')));
