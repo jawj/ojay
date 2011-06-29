@@ -48,7 +48,8 @@ Ojay.URI = new JS.Class('Ojay.URI', {
          * @returns {URI}
          */
         build: function(url, params) {
-            var uri = this.parse(url), params = params || {}, value;
+                params = params || {};
+            var uri    = this.parse(url), value;
             for (var key in params) {
                 value = (typeof params[key] == 'function') ? params[key]() : params[key];
                 uri.setParam(key, value);
