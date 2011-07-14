@@ -87,7 +87,7 @@ Ojay.Paginatable = new JS.Module('Ojay.Paginatable', {
      * @returns {Paginator.Controls}
      */
     addControls: function(position) {
-        if (this.inState('CREATED') || !/^(?:before|after)$/.test(position)) return undefined;
+        if (this.inState('CREATED') || !(/^(?:before|after)$/).test(position)) return undefined;
         var controls = new Ojay.Paginator.Controls(this);
         this.getContainer().insert(controls.getHTML().node, position);
         return controls;

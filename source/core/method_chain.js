@@ -1,8 +1,7 @@
 JS.MethodChain.addMethods(Ojay);
 
 (function() {
-    // ObjectMethods will be renamed to Kernel in JS.Class 2.1
-    var kernel = JS.ObjectMethods || JS.Kernel;
+    var kernel = JS.Kernel;
     
     var convertSelectors = function() {
         var args = Array.from(arguments), _ = args.shift();
@@ -14,6 +13,6 @@ JS.MethodChain.addMethods(Ojay);
     JS.MethodChain.prototype._ = JS.MethodChain.prototype._.wrap(convertSelectors);
     
     kernel.include({
-        _: kernel.instanceMethod('_').wrap(convertSelectors)
+        _: kernel._.wrap(convertSelectors)
     });
 })();

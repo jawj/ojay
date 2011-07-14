@@ -82,7 +82,7 @@ Ojay.Observable = new JS.Module('Ojay.Observable', {
             var args = Array.from(arguments), message = args.shift();
             if (message != eventName) return;
             if (typeof callback == 'function') callback.apply(scope || null, args);
-            chain.fire(scope || args[0]);
+            chain.__exec__(scope || args[0]);
         }, this);
         return chain;
     },

@@ -52,75 +52,6 @@ Ojay.AjaxTabs = new JS.Class('Ojay.AjaxTabs', Ojay.Tabs, /** @scope Ojay.AjaxTab
         return this;
     },
     
-    states: {
-        CREATED: {
-            /**
-             * <p>Sets up all the DOM changes the <tt>Tabs</tt> object needs. If you want to history
-             * manage the object, make sure you set up history management before calling this method.
-             * Moves the object to the READY state if successful.</p>
-             * @returns {Tabs}
-             */
-            setup: function() {
-                this._links = Ojay(this._tabGroup);
-                this._loaded = this._links.map(function() { return false; });
-                this._container = Ojay(this._container);
-                
-                this._makeToggles();
-                this._makeViews();
-                this._restoreState();
-                
-                return this;
-            },
-            
-            /**
-             * <p>Sets up the links as toggles to control tab visibility.</p>
-             */
-            _makeToggles: function() {
-                this._toggles = [];
-                this._links.forEach(function(link, i) {
-                    link.addClass('toggle-' + (i+1));
-                    if (i === 0) link.addClass('first');
-                    if (i === this._links.length - 1) link.addClass('last');
-                    this._toggles.push(link);
-                    link.on('click', Ojay.stopDefault)._(this).setPage(i+1);
-                }, this);
-            },
-            
-            /**
-             * <p>Generates a set of elements to hold the content retrieved over Ajax
-             * when the links are clicked.</p>
-             */
-            _makeViews: function() {
-                this._container.setContent('');
-                this._links.forEach(function(link, i) {
-                    var div = Ojay.HTML.div({className: this.klass.TAB_CLASS});
-                    this._container.insert(div);
-                }, this);
-                this._tabGroup = this._container.children();
-                this.callSuper();
-            }
-        },
-        
-        READY: {
-            /**
-             * <p>Handles request to <tt>changeState()</tt>.</p>
-             * @param {Number} page
-             */
-            _handleSetPage: function(index) {
-                if (this.pageLoaded(index)) return this.callSuper();
-                
-                var _super = this.method('callSuper');
-                this.setState('REQUESTING');
-                this.loadPage(index, function() {
-                    this.setState('READY');
-                    _super();
-                }, this);
-            }
-        },
-        
-        REQUESTING: {}
-    },
-    
     extend: /** @scope Ojay.AjaxTabs */{
         TAB_CLASS:    'tab',
         
@@ -139,3 +70,74 @@ Ojay.AjaxTabs = new JS.Class('Ojay.AjaxTabs', Ojay.Tabs, /** @scope Ojay.AjaxTab
     }
 });
 
+Ojay.AjaxTabs.states({
+    CREATED: {
+        /**
+         * <p>Sets up all the DOM changes the <tt>Tabs</tt> object needs. If you want to history
+         * manage the object, make sure you set up history management before calling this method.
+         * Moves the object to the READY state if successful.</p>
+         * @returns {Tabs}
+         */
+        setup: function() {
+            this._links = Ojay(this._tabGroup);
+            this._loaded = this._links.map(function() { return false; });
+            this._container = Ojay(this._container);
+            
+            this._makeToggles();
+            this._makeViews();
+            this._restoreState();
+            
+            return this;
+        },
+        
+        /**
+         * <p>Sets up the links as toggles to control tab visibility.</p>
+         */
+        _makeToggles: function() {
+            this._toggles = [];
+            this._links.forEach(function(link, i) {
+                link.addClass('toggle-' + (i+1));
+                if (i === 0) link.addClass('first');
+                if (i === this._links.length - 1) link.addClass('last');
+                this._toggles.push(link);
+                link.on('click', Ojay.stopDefault)._(this).setPage(i+1);
+            }, this);
+        },
+        
+        /**
+         * <p>Generates a set of elements to hold the content retrieved over Ajax
+         * when the links are clicked.</p>
+         */
+        _makeViews: function() {
+            this._container.setContent('');
+            this._links.forEach(function(link, i) {
+                var div = Ojay.HTML.div({className: this.klass.TAB_CLASS});
+                this._container.insert(div);
+            }, this);
+            this._tabGroup = this._container.children();
+            this.callSuper();
+        }
+    },
+    
+    READY: {
+        /**
+         * <p>Handles request to <tt>changeState()</tt>.</p>
+         * @param {Number} page
+         */
+        _handleSetPage: function(index) {
+            if (this.pageLoaded(index)) {
+                this.callSuper();
+                return;
+            }
+            
+            var _super = this.method('callSuper');
+            this.setState('REQUESTING');
+            this.loadPage(index, function() {
+                this.setState('READY');
+                _super();
+            }, this);
+        }
+    },
+    
+    REQUESTING: {}
+});

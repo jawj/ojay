@@ -290,58 +290,58 @@ Ojay.Forms.Select = new JS.Class('Ojay.Forms.Select', /** @scope Forms.Select.pr
         var list = this._elements._listContainer;
         list.setStyle({width: region.getWidth() + 'px', left: 0, top: region.getHeight() + 'px'});
         return this;
-    },
-    
-    states: {
-        LIST_CLOSED: /** @scope Forms.Select.prototype */{
-            /**
-             * <p>Displays the drop-down list.</p>
-             * @returns {Forms.Select}
-             */
-            showList: function() {
-                if (this.disabled) return this;
-                this.updateListPosition();
-                this._elements._listContainer.show();
-                this.setState('LIST_OPEN');
-                this._focusInput();
-                var selected = this.getSelectedOption();
-                if (selected) this._getOption(selected.value).setHovered(true);
-                return this;
-            },
-            
-            /**
-             * <p>Displays the drop-down list.</p>
-             * @returns {Forms.Select}
-             */
-            toggleList: function() {
-                return this.showList();
-            }
+    }
+});
+
+Ojay.Forms.Select.states({
+    LIST_CLOSED: /** @scope Forms.Select.prototype */{
+        /**
+         * <p>Displays the drop-down list.</p>
+         * @returns {Forms.Select}
+         */
+        showList: function() {
+            if (this.disabled) return this;
+            this.updateListPosition();
+            this._elements._listContainer.show();
+            this.setState('LIST_OPEN');
+            this._focusInput();
+            var selected = this.getSelectedOption();
+            if (selected) this._getOption(selected.value).setHovered(true);
+            return this;
         },
         
-        LIST_OPEN: /** @scope Forms.Select.prototype */{
-            /**
-             * <p>Hides the drop-down list.</p>
-             * @param {Boolean} update
-             * @returns {Forms.Select}
-             */
-            hideList: function(update) {
-                this._elements._listContainer.hide();
-                this.setState('LIST_CLOSED');
-                if (update !== false) {
-                    this.setValue(this._currentOption.value);
-                    this._focusInput();
-                }
-                return this;
-            },
-            
-            /**
-             * <p>Hides the drop-down list.</p>
-             * @param {Boolean} update
-             * @returns {Forms.Select}
-             */
-            toggleList: function(update) {
-                return this.hideList(update);
+        /**
+         * <p>Displays the drop-down list.</p>
+         * @returns {Forms.Select}
+         */
+        toggleList: function() {
+            return this.showList();
+        }
+    },
+    
+    LIST_OPEN: /** @scope Forms.Select.prototype */{
+        /**
+         * <p>Hides the drop-down list.</p>
+         * @param {Boolean} update
+         * @returns {Forms.Select}
+         */
+        hideList: function(update) {
+            this._elements._listContainer.hide();
+            this.setState('LIST_CLOSED');
+            if (update !== false) {
+                this.setValue(this._currentOption.value);
+                this._focusInput();
             }
+            return this;
+        },
+        
+        /**
+         * <p>Hides the drop-down list.</p>
+         * @param {Boolean} update
+         * @returns {Forms.Select}
+         */
+        toggleList: function(update) {
+            return this.hideList(update);
         }
     }
 });

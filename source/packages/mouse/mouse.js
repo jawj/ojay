@@ -116,7 +116,7 @@ Ojay.DomCollection.include({on: Ojay.DomCollection.prototype.on.wrap(function() 
     this.forEach(function(element) {
         Ojay.Mouse.on(type, element, function(position) {
             if (typeof callback == 'function') callback.call(scope || null, element, position);
-            collector.fire(scope || element);
+            collector.__exec__(scope || element);
         });
     });
     

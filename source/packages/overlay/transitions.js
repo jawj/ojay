@@ -8,7 +8,7 @@ Ojay.Overlay.Transitions
 .add('none', {
     hide: function(overlay, chain) {
         overlay.getContainer().hide();
-        chain.fire();
+        chain.__exec__();
         return overlay;
     },
     
@@ -18,7 +18,7 @@ Ojay.Overlay.Transitions
             .setStyle(overlay.getSize(true))
             .setStyle(overlay.getPosition(true))
             .show();
-        chain.fire();
+        chain.__exec__();
         return overlay;
     }
 })

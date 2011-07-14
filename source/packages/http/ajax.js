@@ -153,7 +153,7 @@ Ojay.HTTP.Request = new JS.Class('Ojay.HTTP.Request', /** @scope Ojay.HTTP.Reque
                 success  && Function.from(success)(response);
                 onStatus && Function.from(onStatus)(response);
                 complete && Function.from(complete)(response);
-                this.chain.fire(response);
+                this.chain.__exec__(response);
                 Ojay.HTTP.notifyObservers('success', {receiver: response});
                 Ojay.HTTP.notifyObservers(response.status, {receiver: response});
                 Ojay.HTTP.notifyObservers('complete', {receiver: response});

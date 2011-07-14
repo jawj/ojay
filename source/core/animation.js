@@ -71,7 +71,7 @@ Ojay.Animation = new JS.Class('Ojay.Animation', /** @scope Ojay.Animation.protot
                 
                 if (duration == maxDuration && !callbackAttached) {
                     callbackAttached = true;
-                    this.chain.fire(this._collection);
+                    this.chain.__exec__(this._collection);
                 }
             }.bind(this));
             if (before) before(element, i);

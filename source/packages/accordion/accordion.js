@@ -92,74 +92,74 @@ Ojay.Accordion = new JS.Class('Ojay.Accordion', /** @scope Ojay.Accordion.protot
      */
     getSections: function() {
         return this._sections ? this._sections.slice() : [];
+    }
+});
+
+Ojay.Accordion.states({
+    CREATED: {
+        /**
+         * @returns {Accordion}
+         */
+        setup: function() {
+            var SectionClass = this.klass[this.klass.DIRECTIONS[this._direction]];
+            
+            this._sections = Ojay(this._sections).map(function(section, index) {
+                section = new SectionClass(this, index, section, this._collapsible, this._options);
+                section.on('expand')._(this).notifyObservers('sectionexpand', index, section);
+                section.on('collapse')._(this).notifyObservers('sectioncollapse', index, section);
+                return section;
+            }, this);
+            
+            this.setState('READY');
+            
+            return this.changeState(this.getInitialState(), false);
+        }
     },
     
-    states: {
-        CREATED: {
-            /**
-             * @returns {Accordion}
-             */
-            setup: function() {
-                var SectionClass = this.klass[this.klass.DIRECTIONS[this._direction]];
-                
-                this._sections = Ojay(this._sections).map(function(section, index) {
-                    section = new SectionClass(this, index, section, this._collapsible, this._options);
-                    section.on('expand')._(this).notifyObservers('sectionexpand', index, section);
-                    section.on('collapse')._(this).notifyObservers('sectioncollapse', index, section);
-                    return section;
-                }, this);
-                
-                this.setState('READY');
-                
-                return this.changeState(this.getInitialState(), false);
-            }
+    READY: {
+        /**
+         * @param {Object} state
+         * @returns {Accordion}
+         */
+        changeState: function(state, animate) {
+            var section = this._sections[state.section];
+            
+            if (!section || section === this._currentSection) return this;
+            
+            this.setState('ANIMATING');
+            
+            if (this._currentSection) this._currentSection.collapse(animate);
+            
+            section.expand(animate)._(function(self) {
+                self._currentSection = section;
+                self.setState('READY');
+            }, this);
+            
+            return this;
         },
         
-        READY: {
-            /**
-             * @param {Object} state
-             * @returns {Accordion}
-             */
-            changeState: function(state, animate) {
-                var section = this._sections[state.section];
-                
-                if (!section || section === this._currentSection) return this;
-                
-                this.setState('ANIMATING');
-                
-                if (this._currentSection) this._currentSection.collapse(animate);
-                
-                section.expand(animate)._(function(self) {
-                    self._currentSection = section;
-                    self.setState('READY');
-                }, this);
-                
-                return this;
-            },
-            
-            /**
-             * @param {Number} n
-             * @param {Boolean} animate
-             * @returns {Accordion}
-             */
-            expand: function(n, animate) {
-                this.changeState({section: n}, animate);
-                return this;
-            },
-            
-            /**
-             * @param {Number} n
-             * @param {Boolean} animate
-             * @returns {Accordion}
-             */
-            collapse: function(n, animate) {
-                var section = this._sections[n];
-                if (section) section.collapse(animate);
-                if (section === this._currentSection) this._currentSection = null;
-                return this;
-            }
+        /**
+         * @param {Number} n
+         * @param {Boolean} animate
+         * @returns {Accordion}
+         */
+        expand: function(n, animate) {
+            this.changeState({section: n}, animate);
+            return this;
         },
         
-        ANIMATING: {}
-    }
+        /**
+         * @param {Number} n
+         * @param {Boolean} animate
+         * @returns {Accordion}
+         */
+        collapse: function(n, animate) {
+            var section = this._sections[n];
+            if (section) section.collapse(animate);
+            if (section === this._currentSection) this._currentSection = null;
+            return this;
+        }
+    },
+    
+    ANIMATING: {}
 });

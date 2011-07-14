@@ -224,7 +224,7 @@ Ojay.Overlay = new JS.Class('Ojay.Overlay', /** @scope Ojay.Overlay.prototype */
         var pos = this._position, left = pos.left, top = pos.top;
         return strings
                 ? {left: left, top: top}
-                : {left: parseInt(left), top: parseInt(top)};
+                : {left: parseInt(left, 10), top: parseInt(top, 10)};
     },
     
     /**
@@ -257,7 +257,7 @@ Ojay.Overlay = new JS.Class('Ojay.Overlay', /** @scope Ojay.Overlay.prototype */
         var size = this._dimensions, width = size.width, height = size.height;
         return strings
                 ? {width: width, height: height}
-                : {width: parseInt(width), height: parseInt(height)};
+                : {width: parseInt(width, 10), height: parseInt(height, 10)};
     },
     
     /**

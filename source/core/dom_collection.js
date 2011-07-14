@@ -134,7 +134,7 @@
                 evnt.stopEvent     = Ojay.stopEvent.method;
                 evnt.getTarget     = Ojay._getTarget;
                 if (typeof callback == 'function') callback.call(scope || null, wrapper, evnt);
-                chain.fire(scope || wrapper);
+                chain.__exec__(scope || wrapper);
             };
             
             if (/:/.test(eventName)) {

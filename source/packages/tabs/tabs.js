@@ -101,138 +101,6 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
         return this;
     },
     
-    states: {
-        /**
-         * <p>The <tt>Tabs</tt> instance is in the CREATED state until its <tt>setup()</tt>
-         * method is called.</p>
-         */
-        CREATED: /** @scope Ojay.Tabs.prototype */{
-            /**
-             * <p>Sets up all the DOM changes the <tt>Tabs</tt> object needs. If you want to history
-             * manage the object, make sure you set up history management before calling this method.
-             * Moves the object to the READY state if successful.</p>
-             * @returns {Tabs}
-             */
-            setup: function() {
-                this._tabGroup  = Ojay(this._tabGroup);
-                this._container = this._tabGroup.parents().at(0);
-                
-                this._makeToggles();
-                this._makeViews();
-                this._restoreState();
-                
-                return this;
-            },
-            
-            /**
-             * <p>Insert the toggle control group before or after the tabs' containing
-             * element.</p>
-             */
-            _makeToggles: function() {
-                this._toggles = [];
-                var self = this, options = self._options;
-                
-                var toggles = Ojay( Ojay.HTML.ul({className: options.togglesClass}, function (HTML) {
-                    self._tabGroup.children(options.toggleSelector).forEach(function(header, i) {
-                        var toggle = Ojay( HTML.li() ).addClass('toggle-' + (i+1));
-                        toggle.setContent(header.node.innerHTML);
-                        if (i === 0) toggle.addClass('first');
-                        if (i === self._tabGroup.length - 1) toggle.addClass('last');
-                        self._toggles.push(toggle);
-                        header.remove();
-                        toggle.on('click')._(self).setPage(i+1);
-                    });
-                }) );
-                
-                if (typeof this._options.width != 'undefined')
-                    toggles.setStyle({width: this._options.width});
-                
-                this._tabGroup.parents().at(0).insert(toggles, this._options.togglesPosition);
-            },
-            
-            _makeViews: function() {
-                var self = this, options = self._options;
-                
-                this._tabs = this._tabGroup.map(function(container) {
-                    return new this.klass.Tab(this, container);
-                }, this);
-                
-                if (options.width && options.height)
-                    this._container.setStyle({height: options.height});
-            },
-            
-            _restoreState: function() {
-                this.setState('READY');
-                var state = this.getInitialState();
-                this._handleSetPage(state.tab, {animate: false});
-                
-                this.on('pagechange', function(tabs, page) {
-                    tabs._highlightToggle(page - 1);
-                });
-            }
-        },
-        
-        /**
-         * <p>The <tt>Tabs</tt> object is in the READY state when all its DOM behaviour has been
-         * set up and it is not in the process of switching tabs.</p>
-         */
-        READY: /** @scope Ojay.Tabs.prototype */{
-            /**
-             * <p>Switches the set of tabs to the given page (indexed from 1), inserting
-             * history entry. Passing in the <tt>silent</tt> option will stop the
-             * <tt>pagechange</tt> event from being published.</p>
-             * @param {Number} page
-             * @param {Object} options
-             * @returns {Tabs}
-             */
-            setPage: function(page, options) {
-                this.changeState({tab: page}, options);
-                return this;
-            },
-            
-            /**
-             * <p>Switch to the tab with the index provided as the first argument.</p>
-             * @param {Number} index
-             * @param {Object} options
-             */
-            _handleSetPage: function(index, options) {
-                index -= 1;
-                
-                if (index >= this._tabs.length) index = 0;
-                if (this._currentTab == index) return;
-                
-                if ((options || {}).silent !== false) this.notifyObservers('pagechange', index+1);
-                
-                if (typeof this._currentTab == 'undefined') {
-                    this._currentTab = index;
-                    this._tabs[index].show(options);
-                    this._highlightToggle(index);
-                } else {
-                    this.setState('ANIMATING');
-                    this._tabs[this._currentTab].hide(options)._(function(self) {
-                        self._currentTab = index;
-                        self._tabs[index].show(options)
-                        ._(self).setState('READY');
-                    }, this);
-                }
-            },
-            
-            /**
-             * <p>Sets the 'selected' class on the appropriate toggle.</p>
-             * @param {Number} index
-             */
-            _highlightToggle: function(index) {
-                this._toggles.forEach({removeClass: 'selected'});
-                this._toggles[index].addClass('selected');
-            }
-        },
-        
-        /**
-         * <p>The <tt>Tabs</tt> instance is in the ANIMATING state during tab transitions.</p>
-         */
-        ANIMATING: /** @scope Ojay.Tabs.prototype */{}
-    },
-    
     extend: /** @scope Ojay.Tabs */{
         TOGGLE_SELECTOR:  '.toggle',
         TOGGLES_CLASS:    'toggles',
@@ -249,7 +117,8 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
              * @param {HTMLElement} container
              */
             initialize: function(group, container) {
-                this._container = container, this._group = group;
+                this._container = container;
+                this._group     = group;
                 
                 this._container.hide().setStyle({opacity: 0});
                 
@@ -272,7 +141,7 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
                 
                 chain.hide()._(this);
                 
-                return chain.fire(this._container);
+                return chain.__exec__(this._container);
             },
             
             /**
@@ -290,9 +159,153 @@ Ojay.Tabs = new JS.Class('Ojay.Tabs', /** @scope Ojay.Tabs.prototype */{
                 
                 chain._(this);
                 
-                return chain.fire(this._container);
+                return chain.__exec__(this._container);
             }
         })
     }
 });
 
+Ojay.Tabs.states({
+    /**
+     * <p>The <tt>Tabs</tt> instance is in the CREATED state until its <tt>setup()</tt>
+     * method is called.</p>
+     */
+    CREATED: /** @scope Ojay.Tabs.prototype */{
+        /**
+         * <p>Sets up all the DOM changes the <tt>Tabs</tt> object needs. If you want to history
+         * manage the object, make sure you set up history management before calling this method.
+         * Moves the object to the READY state if successful.</p>
+         * @returns {Tabs}
+         */
+        setup: function() {
+            this._tabGroup  = Ojay(this._tabGroup);
+            this._container = this._tabGroup.parents().at(0);
+            
+            this._makeToggles();
+            this._makeViews();
+            this._restoreState();
+            
+            return this;
+        },
+        
+        /**
+         * <p>Insert the toggle control group before or after the tabs' containing
+         * element.</p>
+         */
+        _makeToggles: function() {
+            var self = this, options = self._options, toggles;
+            
+            this._toggles = [];
+            
+            toggles = Ojay( Ojay.HTML.ul({className: options.togglesClass}, function (HTML) {
+                self._tabGroup.children(options.toggleSelector).forEach(function(header, i) {
+                    var toggle = Ojay( HTML.li() )
+                                    .addClass('toggle-' + (i+1))
+                                    .setContent(header.node.innerHTML);
+                    
+                    if (i === 0) {
+                        toggle.addClass('first');
+                    }
+                    
+                    if (i === self._tabGroup.length - 1) {
+                        toggle.addClass('last');
+                    }
+                    
+                    self._toggles.push(toggle);
+                    
+                    toggle.on('click')._(self).setPage(i+1);
+                    
+                    header.remove();
+                });
+            }) );
+            
+            if (typeof this._options.width != 'undefined')
+                toggles.setStyle({width: this._options.width});
+            
+            this._tabGroup.parents().at(0).insert(toggles, this._options.togglesPosition);
+        },
+        
+        _makeViews: function() {
+            var self = this, options = self._options;
+            
+            this._tabs = this._tabGroup.map(function(container) {
+                return new this.klass.Tab(this, container);
+            }, this);
+            
+            if (options.width && options.height)
+                this._container.setStyle({height: options.height});
+        },
+        
+        _restoreState: function() {
+            this.setState('READY');
+            var state = this.getInitialState();
+            this._handleSetPage(state.tab, {animate: false});
+            
+            this.on('pagechange', function(tabs, page) {
+                tabs._highlightToggle(page - 1);
+            });
+        }
+    },
+    
+    /**
+     * <p>The <tt>Tabs</tt> object is in the READY state when all its DOM behaviour has been
+     * set up and it is not in the process of switching tabs.</p>
+     */
+    READY: /** @scope Ojay.Tabs.prototype */{
+        /**
+         * <p>Switches the set of tabs to the given page (indexed from 1), inserting
+         * history entry. Passing in the <tt>silent</tt> option will stop the
+         * <tt>pagechange</tt> event from being published.</p>
+         * @param {Number} page
+         * @param {Object} options
+         * @returns {Tabs}
+         */
+        setPage: function(page, options) {
+            this.changeState({tab: page}, options);
+            return this;
+        },
+        
+        /**
+         * <p>Switch to the tab with the index provided as the first argument.</p>
+         * @param {Number} index
+         * @param {Object} options
+         */
+        _handleSetPage: function(index, options) {
+            index -= 1;
+            
+            if (index >= this._tabs.length) index = 0;
+            if (this._currentTab == index) return;
+            
+            if ((options || {}).silent !== false) this.notifyObservers('pagechange', index+1);
+            
+            if (typeof this._currentTab == 'undefined') {
+                this._currentTab = index;
+                this._tabs[index].show(options);
+                this._highlightToggle(index);
+            } else {
+                this.setState('ANIMATING');
+                this._tabs[this._currentTab].hide(options)._(function(self) {
+                    self._currentTab = index;
+                    self._tabs[index].show(options)
+                    ._(self).setState('READY');
+                }, this);
+            }
+        },
+        
+        /**
+         * <p>Sets the 'selected' class on the appropriate toggle.</p>
+         * @param {Number} index
+         */
+        _highlightToggle: function(index) {
+            this._toggles.forEach({removeClass: 'selected'});
+            this._toggles[index].addClass('selected');
+        }
+    },
+    
+    /**
+     * <p>The <tt>Tabs</tt> instance is in the ANIMATING state during tab transitions.</p>
+     */
+    ANIMATING: /** @scope Ojay.Tabs.prototype */{}
+});
+
+JS.MethodChain.addMethods(Ojay.Tabs.instanceMethods());
