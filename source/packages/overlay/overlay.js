@@ -333,165 +333,166 @@ Ojay.Overlay = new JS.Class('Ojay.Overlay', /** @scope Ojay.Overlay.prototype */
         return this._layer;
     },
     
-    states: /** @scope Ojay.Overlay.prototype */{
-        
-        /**
-         * <p>An overlay is in the INVISIBLE state when it is present in the document
-         * but is not visible.</p>
-         */
-        INVISIBLE: /** @scope Ojay.Overlay.prototype */{
-            /**
-             * <p>Centers the overlay within the viewport.</p>
-             * @returns {Overlay}
-             */
-            center: whileHidden('center'),
-            
-            /**
-             * <p>Shows the overlay using the given transition. Returns a <tt>MethodChain</tt>
-             * object so you can chain code to run after the transition finishes. The root of
-             * this chain is the receiving overlay instance.</p>
-             * @param {String} transition
-             * @param {Object} options
-             * @returns {Overlay|MethodChain}
-             */
-            show: function(transition, options) {
-                this.setState('SHOWING');
-                transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()._(this).setState('VISIBLE');
-                if ((options||{}).silent !== true) chain._(this).notifyObservers('show');
-                chain._(this);
-                return transition.show(this, chain);
-            },
-            
-            /**
-             * <p>'Closes' the overlay by removing it from the document.</p>
-             * @param {Object} options
-             * @returns {Overlay}
-             */
-            close: function(options) {
-                this._elements._container.remove();
-                this.setState('CLOSED');
-                if ((options||{}).silent !== true) this.notifyObservers('close');
-                return this;
-            }
-        },
-        
-        /**
-         * <p>An overlay is in the SHOWING state when it is transitioning between
-         * INVISIBLE and VISIBLE.</p>
-         */
-        SHOWING: /** @scope Ojay.Overlay.prototype */{},
-        
-        /**
-         * <p>An overlay is in the VISIBLE state when it is present in the document
-         * and visible.</p>
-         */
-        VISIBLE: /** @scope Ojay.Overlay.prototype */{
-            /**
-             * <p>Centers the overlay within the viewport.</p>
-             * @returns {Overlay}
-             */
-            center: function() {
-                var region = this.getRegion(), screen = Ojay.getVisibleRegion(),
-                    left = screen.left + (screen.getWidth() - region.getWidth()) / 2,
-                    top = screen.top + (screen.getHeight() - region.getHeight()) / 2;
-                if (left < this.klass.MINIMUM_OFFSET) left = this.klass.MINIMUM_OFFSET;
-                if (top < this.klass.MINIMUM_OFFSET) top = this.klass.MINIMUM_OFFSET;
-                return this.setPosition(left, top);
-            },
-            
-            /**
-             * <p>Hides the overlay using the named transition. Does not remove the overlay from
-             * the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
-             * overlay instance on completion of the transition effect.</p>
-             * @param {String} transition
-             * @param {Object} options
-             * @returns {Overlay|MethodChain}
-             */
-            hide: function(transition, options) {
-                this.setState('HIDING');
-                transition = this.klass.Transitions.get(transition || 'none');
-                var chain = new JS.MethodChain()._(this).setState('INVISIBLE');
-                if((options||{}).silent !== true) chain._(this).notifyObservers('hide');
-                chain._(this);
-                return transition.hide(this, chain);
-            },
-            
-            /**
-             * <p>Closes the overlay by hiding it using the named transition and removing it
-             * from the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
-             * overlay instance on completion of the transition effect.</p>
-             * @param {String} transition
-             * @param {Object} options
-             * @returns {MethodChain}
-             */
-            close: function(transition, options) {
-                return this.hide(transition, options)._(this).close(options);
-            },
-            
-            /**
-             * <p>Resizes the overlay using an animation that can be controlled via an options
-             * hash. You can specify the area to resize to using left, top, width, height params
-             * individually, or using a region object. The method returns a <tt>MethodChain</tt>
-             * that will fire on the receiving overlay once the animation has finished.</p>
-             *
-             * <p>Some examples:</p>
-             *
-             *      overlay.resize(50, 80, 100, 500);
-             *      
-             * <pre><code>    overlay.resize(Ojay.getVisibleRegion(), {
-             *         duration:   4,
-             *         easing:     'easeBoth'
-             *     });</code></pre>
-             *
-             * @param {Number} left
-             * @param {Number} top
-             * @param {Number} width
-             * @param {Number} height
-             * @param {Object} options
-             * @returns {MethodChain}
-             */
-            resize: function(left, top, width, height, options) {
-                var region = left, options = options || {};
-                if (typeof region == 'object') {
-                    options = top || {};
-                    left    = region.left;
-                    top     = region.top;
-                    width   = region.getWidth();
-                    height  = region.getHeight();
-                }
-                this.setState('RESIZING');
-                return this._elements._container.animate({
-                    left:   {to:    left},
-                    top:    {to:    top},
-                    width:  {to:    width},
-                    height: {to:    height}
-                }, options.duration || this.klass.TRANSITION_TIME, {easing: options.easing || this.klass.EASING})
-                ._(this).setSize(width, height)
-                ._(this).setPosition(left, top)
-                ._(this).setState('VISIBLE')._(this);
-            }
-        },
-        
-        /**
-         * <p>An overlay is in the HIDING state when it is transitioning between
-         * VISIBLE and INVISIBLE.</p>
-         */
-        HIDING: /** @scope Ojay.Overlay.prototype */{},
-        
-        /**
-         * <p>An overlay is in the RESIZING state when it is in the process of being resized.</p>
-         */
-        RESIZING: /** @scope Ojay.Overlay.prototype */{},
-        
-        /**
-         * <p>An overlay is in the CLOSED state when it has been removed from the document.
-         * No further work can be done with the overlay once it is in this state.</p>
-         */
-        CLOSED: /** @scope Ojay.Overlay.prototype */{}
-    },
-    
     _addUnits: function(x) {
         return String(x).replace(/^(-?\d+(?:\.\d+)?)$/g, '$1px');
     }
+});
+
+Ojay.Overlay.states({
+    /**
+     * <p>An overlay is in the INVISIBLE state when it is present in the document
+     * but is not visible.</p>
+     */
+    INVISIBLE: /** @scope Ojay.Overlay.prototype */{
+        /**
+         * <p>Centers the overlay within the viewport.</p>
+         * @returns {Overlay}
+         */
+        center: whileHidden('center'),
+        
+        /**
+         * <p>Shows the overlay using the given transition. Returns a <tt>MethodChain</tt>
+         * object so you can chain code to run after the transition finishes. The root of
+         * this chain is the receiving overlay instance.</p>
+         * @param {String} transition
+         * @param {Object} options
+         * @returns {Overlay|MethodChain}
+         */
+        show: function(transition, options) {
+            this.setState('SHOWING');
+            transition = this.klass.Transitions.get(transition || 'none');
+            var chain = new JS.MethodChain()._(this).setState('VISIBLE');
+            if ((options||{}).silent !== true) chain._(this).notifyObservers('show');
+            chain._(this);
+            return transition.show(this, chain);
+        },
+        
+        /**
+         * <p>'Closes' the overlay by removing it from the document.</p>
+         * @param {Object} options
+         * @returns {Overlay}
+         */
+        close: function(options) {
+            this._elements._container.remove();
+            this.setState('CLOSED');
+            if ((options||{}).silent !== true) this.notifyObservers('close');
+            return this;
+        }
+    },
+    
+    /**
+     * <p>An overlay is in the SHOWING state when it is transitioning between
+     * INVISIBLE and VISIBLE.</p>
+     */
+    SHOWING: /** @scope Ojay.Overlay.prototype */{},
+    
+    /**
+     * <p>An overlay is in the VISIBLE state when it is present in the document
+     * and visible.</p>
+     */
+    VISIBLE: /** @scope Ojay.Overlay.prototype */{
+        /**
+         * <p>Centers the overlay within the viewport.</p>
+         * @returns {Overlay}
+         */
+        center: function() {
+            var region = this.getRegion(), screen = Ojay.getVisibleRegion(),
+                left = screen.left + (screen.getWidth() - region.getWidth()) / 2,
+                top = screen.top + (screen.getHeight() - region.getHeight()) / 2;
+            if (left < this.klass.MINIMUM_OFFSET) left = this.klass.MINIMUM_OFFSET;
+            if (top < this.klass.MINIMUM_OFFSET) top = this.klass.MINIMUM_OFFSET;
+            return this.setPosition(left, top);
+        },
+        
+        /**
+         * <p>Hides the overlay using the named transition. Does not remove the overlay from
+         * the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
+         * overlay instance on completion of the transition effect.</p>
+         * @param {String} transition
+         * @param {Object} options
+         * @returns {Overlay|MethodChain}
+         */
+        hide: function(transition, options) {
+            this.setState('HIDING');
+            transition = this.klass.Transitions.get(transition || 'none');
+            var chain = new JS.MethodChain()._(this).setState('INVISIBLE');
+            if((options||{}).silent !== true) chain._(this).notifyObservers('hide');
+            chain._(this);
+            return transition.hide(this, chain);
+        },
+        
+        /**
+         * <p>Closes the overlay by hiding it using the named transition and removing it
+         * from the document. Returns a <tt>MethodChain</tt> that will fire on the receiving
+         * overlay instance on completion of the transition effect.</p>
+         * @param {String} transition
+         * @param {Object} options
+         * @returns {MethodChain}
+         */
+        close: function(transition, options) {
+            return this.hide(transition, options)._(this).close(options);
+        },
+        
+        /**
+         * <p>Resizes the overlay using an animation that can be controlled via an options
+         * hash. You can specify the area to resize to using left, top, width, height params
+         * individually, or using a region object. The method returns a <tt>MethodChain</tt>
+         * that will fire on the receiving overlay once the animation has finished.</p>
+         *
+         * <p>Some examples:</p>
+         *
+         *      overlay.resize(50, 80, 100, 500);
+         *      
+         * <pre><code>    overlay.resize(Ojay.getVisibleRegion(), {
+         *         duration:   4,
+         *         easing:     'easeBoth'
+         *     });</code></pre>
+         *
+         * @param {Number} left
+         * @param {Number} top
+         * @param {Number} width
+         * @param {Number} height
+         * @param {Object} options
+         * @returns {MethodChain}
+         */
+        resize: function(left, top, width, height, options) {
+                options = options || {};
+            var region  = left;
+            
+            if (typeof region == 'object') {
+                options = top || {};
+                left    = region.left;
+                top     = region.top;
+                width   = region.getWidth();
+                height  = region.getHeight();
+            }
+            this.setState('RESIZING');
+            return this._elements._container.animate({
+                left:   {to:    left},
+                top:    {to:    top},
+                width:  {to:    width},
+                height: {to:    height}
+            }, options.duration || this.klass.TRANSITION_TIME, {easing: options.easing || this.klass.EASING})
+            ._(this).setSize(width, height)
+            ._(this).setPosition(left, top)
+            ._(this).setState('VISIBLE')._(this);
+        }
+    },
+    
+    /**
+     * <p>An overlay is in the HIDING state when it is transitioning between
+     * VISIBLE and INVISIBLE.</p>
+     */
+    HIDING: /** @scope Ojay.Overlay.prototype */{},
+    
+    /**
+     * <p>An overlay is in the RESIZING state when it is in the process of being resized.</p>
+     */
+    RESIZING: /** @scope Ojay.Overlay.prototype */{},
+    
+    /**
+     * <p>An overlay is in the CLOSED state when it has been removed from the document.
+     * No further work can be done with the overlay once it is in this state.</p>
+     */
+    CLOSED: /** @scope Ojay.Overlay.prototype */{}
 });
