@@ -72,23 +72,25 @@ Ojay.PageMask = new JS.Class('Ojay.PageMask', Ojay.Overlay, /** @scope Ojay.Page
                 : (color ? String(color).replace(/[^0-9a-f]/ig, '') : this.klass.DEFAULT_COLOR);
         this._elements._container.setStyle({backgroundColor: '#' + this._color});
         return this;
-    },
-    
-    states: /** @scope Ojay.PageMask.prototype */{
+    }
+});
+
+Ojay.PageMask.states({
+    /**
+     * <p>An overlay is in the INVISIBLE state when it is present in the document
+     * but is not visible.</p>
+     */
+    INVISIBLE: /** @scope Ojay.PageMask.prototype */{
         /**
-         * <p>An overlay is in the INVISIBLE state when it is present in the document
-         * but is not visible.</p>
+         * <p><tt>PageMask</tt> overrides <tt>INVISIBLE#show()</tt> to make sure the mask
+         * is sized correctly before being made visible.</p>
+         * @returns {MethodChain}
          */
-        INVISIBLE: /** @scope Ojay.PageMask.prototype */{
-            /**
-             * <p><tt>PageMask</tt> overrides <tt>INVISIBLE#show()</tt> to make sure the mask
-             * is sized correctly before being made visible.</p>
-             * @returns {MethodChain}
-             */
-            show: function() {
-                this.setSize();
-                return this.callSuper();
-    }   }   }
+        show: function() {
+            this.setSize();
+            return this.callSuper();
+        }
+    }
 });
 
 if (YAHOO.env.ua.ie)

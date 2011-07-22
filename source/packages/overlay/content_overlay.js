@@ -85,45 +85,46 @@ Ojay.ContentOverlay = new JS.Class('Ojay.ContentOverlay', Ojay.Overlay, /** @sco
         button.on('click', function() { this.hide(transition, options); }, this);
         this._elements._content.insert(button, 'top');
         return this._elements._closeButton = button;
+    }
+});
+
+Ojay.ContentOverlay.states({
+    /**
+     * <p>An overlay is in the INVISIBLE state when it is present in the document
+     * but is not visible.</p>
+     */
+    INVISIBLE: /** @scope Ojay.ContentOverlay.prototype */{
+        /**
+         * <p>Sets the size of the overlay to just contain its content.</p>
+         * @returns {ContentOverlay}
+         */
+        fitToContent: whileHidden('fitToContent')
     },
     
-    states: /** @scope Ojay.ContentOverlay.prototype */{
-        
+    /**
+     * <p>An overlay is in the VISIBLE state when it is present in the document
+     * and visible.</p>
+     */
+    VISIBLE: /** @scope Ojay.ContentOverlay.prototype */{
         /**
-         * <p>An overlay is in the INVISIBLE state when it is present in the document
-         * but is not visible.</p>
+         * <p>Sets the size of the overlay to just contain its content.</p>
+         * @param {Object} options
+         * @returns {ContentOverlay}
          */
-        INVISIBLE: /** @scope Ojay.ContentOverlay.prototype */{
-            /**
-             * <p>Sets the size of the overlay to just contain its content.</p>
-             * @returns {ContentOverlay}
-             */
-            fitToContent: whileHidden('fitToContent')
-        },
-        
-        /**
-         * <p>An overlay is in the VISIBLE state when it is present in the document
-         * and visible.</p>
-         */
-        VISIBLE: /** @scope Ojay.ContentOverlay.prototype */{
-            /**
-             * <p>Sets the size of the overlay to just contain its content.</p>
-             * @param {Object} options
-             * @returns {ContentOverlay}
-             */
-            fitToContent: function(options) {
-                    options     = options || {};
-                var animate     = !!options.animate,
-                    balance     = !!options.balance,
-                    innerRegion = this._elements._content.getRegion(),
-                    outerRegion = this.getRegion();
-                
-                if (balance) innerRegion.centerOn(outerRegion);
-                
-                if (animate) return this.resize(innerRegion, options);
-                
-                this.setSize(innerRegion.getWidth(), innerRegion.getHeight());
-                this.setPosition(innerRegion.left, innerRegion.top);
-                return this;
-    }   }   }
+        fitToContent: function(options) {
+                options     = options || {};
+            var animate     = !!options.animate,
+                balance     = !!options.balance,
+                innerRegion = this._elements._content.getRegion(),
+                outerRegion = this.getRegion();
+            
+            if (balance) innerRegion.centerOn(outerRegion);
+            
+            if (animate) return this.resize(innerRegion, options);
+            
+            this.setSize(innerRegion.getWidth(), innerRegion.getHeight());
+            this.setPosition(innerRegion.left, innerRegion.top);
+            return this;
+        }
+    }
 });
