@@ -70,30 +70,33 @@ Ojay.AjaxPaginator = new JS.Class('Ojay.AjaxPaginator', Ojay.Paginator, /** @sco
             }
         });
         return this;
+    }
+});
+
+Ojay.AjaxPaginator.states({
+    READY: {
+        /**
+         * <p>Handles request to <tt>changeState()</tt>.</p>
+         * @param {Number} page
+         */
+        _handleSetPage: function(page) {
+            var n = this._options.urls.length;
+            if (page > n) page -= n;
+            if (page < 1) page += n;
+            
+            if (this.pageLoaded(page)) {
+                this.callSuper();
+                return;
+            }
+            
+            var _super = this.method('callSuper');
+            this.setState('REQUESTING');
+            this.loadPage(page, function() {
+                this.setState('READY');
+                _super();
+            }, this);
+        }
     },
     
-    states: {
-        READY: {
-            /**
-             * <p>Handles request to <tt>changeState()</tt>.</p>
-             * @param {Number} page
-             */
-            _handleSetPage: function(page) {
-                var n = this._options.urls.length;
-                if (page > n) page -= n;
-                if (page < 1) page += n;
-                
-                if (this.pageLoaded(page)) return this.callSuper();
-                
-                var _super = this.method('callSuper');
-                this.setState('REQUESTING');
-                this.loadPage(page, function() {
-                    this.setState('READY');
-                    _super();
-                }, this);
-            }
-        },
-        
-        REQUESTING: {}
-    }
+    REQUESTING: {}
 });

@@ -49,7 +49,7 @@
  * @class FilmStrip
  */
 Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.prototype */{
-    include: Ojay.Paginatable,
+    include: [Ojay.Paginatable, JS.State],
     
     extend: /** @scope Ojay.FilmStrip */{
         CONTAINER_CLASS:    'filmstrip',
@@ -199,7 +199,7 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
             i        = 1,
             page     = null;
         
-        this._getEdges().reduce(function(x,y) {
+        this._getEdges().reduce(function(x, y) {
             if (page !== null) return;
             if (x - offset <= center && y - offset >= center) page = i;
             i += 1;
@@ -218,7 +218,7 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
             method   = vertical ? 'getHeight' : 'getWidth',
             center   = this.getRegion()[method]() / 2;
        
-       return this._getCenters()[page - 1] - center;;
+       return this._getCenters()[page - 1] - center;
     },
     
     /**
@@ -276,94 +276,93 @@ Ojay.FilmStrip = new JS.Class('Ojay.FilmStrip', /** @scope Ojay.FilmStrip.protot
             return y;
         });
         return centers;
-    },
-    
-    states: {
-        /**
-         * <p>The <tt>FilmStrip</tt> is in the CREATED state when it has been instantiated but
-         * none of its DOM interactions have taken place. This attachment is deferred to the
-         * <tt>setup()</tt> call so that object can be history-managed before its UI is set up.</p>
-         */
-        CREATED: {
-            /**
-             * <p>Sets up all the DOM changes the <tt>FilmStrip</tt> needs. If you want to history
-             * manage the object, make sure you set up history management before calling this method.
-             * Moves the object to the READY state if successful.</p>
-             * @returns {FilmStrip}
-             */
-            setup: function() {
-                var subject = this._elements._subject = Ojay(this._selector).at(0);
-                if (!subject.node) return this;
-                
-                var container = this.getHTML();
-                subject.insert(container.node, 'after');
-                container.insert(subject.node);
-                subject.setStyle({padding: '0 0 0 0', border: 'none', position: 'absolute', left: 0, top: 0});
-                
-                var dims  = this.getDimensions();
-                
-                var style = (this._options.direction == 'vertical')
-                        ? { width: dims.width + 'px', height: (dims.height + 1000) + 'px' }
-                        : { width: (dims.width + 1000) + 'px', height: dims.height + 'px' };
-                
-                subject.setStyle(style);
-                
-                var state = this.getInitialState();
-                this.setState('READY');
-                if (this._currentPage === undefined) this._currentPage = state.page;
-                this.wait(0.001)._handleSetPage(this._currentPage);
-                
-                return this;
-            }
-        },
-        
-        /**
-         * <p>The <tt>FilmStrip</tt> is in the READY state when all its DOM behaviour has been
-         * set up and it is not in the process of scrolling.</p>
-         */
-        READY: {
-            /**
-             * <p>Handles request to <tt>changeState()</tt>.</p>
-             * @param {Number} page
-             * @param {Function} callback
-             * @param {Object} scope
-             */
-            _handleSetPage: function(page, callback, scope) {
-                var offset = this._offsetForPage(page);
-                this.setScroll(offset, {animate: true}, callback, scope);
-            },
-            
-            /**
-             * <p>Increments the current page by one, firing a <tt>pagechange</tt> event.</p>
-             * @returns {FilmStrip}
-             */
-            incrementPage: function() {
-                return this.setPage(this._currentPage + 1);
-            },
-            
-            /**
-             * <p>Decrements the current page by one, firing a <tt>pagechange</tt> event.</p>
-             * @returns {FilmStrip}
-             */
-            decrementPage: function() {
-                return this.setPage(this._currentPage - 1);
-            },
-            
-            // TODO Paginator#snapToPage
-            
-            /**
-             * <p>For filmstrips, this accepts a <tt>FilmStrip.Item</tt> and centers the
-             * view on that item. Use to handle clicks on individual items. If called with
-             * a number, simply centers on that numbered page.</p>
-             * @param {FilmStrip.Item|Number} item
-             * @returns {FilmStrip}
-             */
-            focusItem: function(item) {
-                if (typeof item !== 'number') item = this._items.indexOf(item) + 1;
-                this.setPage(item);
-                return this;
-            }
-        }
     }
 });
 
+Ojay.FilmStrip.states({
+    /**
+     * <p>The <tt>FilmStrip</tt> is in the CREATED state when it has been instantiated but
+     * none of its DOM interactions have taken place. This attachment is deferred to the
+     * <tt>setup()</tt> call so that object can be history-managed before its UI is set up.</p>
+     */
+    CREATED: {
+        /**
+         * <p>Sets up all the DOM changes the <tt>FilmStrip</tt> needs. If you want to history
+         * manage the object, make sure you set up history management before calling this method.
+         * Moves the object to the READY state if successful.</p>
+         * @returns {FilmStrip}
+         */
+        setup: function() {
+            var subject = this._elements._subject = Ojay(this._selector).at(0);
+            if (!subject.node) return this;
+            
+            var container = this.getHTML();
+            subject.insert(container.node, 'after');
+            container.insert(subject.node);
+            subject.setStyle({padding: '0 0 0 0', border: 'none', position: 'absolute', left: 0, top: 0});
+            
+            var dims  = this.getDimensions();
+            
+            var style = (this._options.direction == 'vertical')
+                    ? { width: dims.width + 'px', height: (dims.height + 1000) + 'px' }
+                    : { width: (dims.width + 1000) + 'px', height: dims.height + 'px' };
+            
+            subject.setStyle(style);
+            
+            var state = this.getInitialState();
+            this.setState('READY');
+            if (this._currentPage === undefined) this._currentPage = state.page;
+            this.wait(0.001)._handleSetPage(this._currentPage);
+            
+            return this;
+        }
+    },
+    
+    /**
+     * <p>The <tt>FilmStrip</tt> is in the READY state when all its DOM behaviour has been
+     * set up and it is not in the process of scrolling.</p>
+     */
+    READY: {
+        /**
+         * <p>Handles request to <tt>changeState()</tt>.</p>
+         * @param {Number} page
+         * @param {Function} callback
+         * @param {Object} scope
+         */
+        _handleSetPage: function(page, callback, scope) {
+            var offset = this._offsetForPage(page);
+            this.setScroll(offset, {animate: true}, callback, scope);
+        },
+        
+        /**
+         * <p>Increments the current page by one, firing a <tt>pagechange</tt> event.</p>
+         * @returns {FilmStrip}
+         */
+        incrementPage: function() {
+            return this.setPage(this._currentPage + 1);
+        },
+        
+        /**
+         * <p>Decrements the current page by one, firing a <tt>pagechange</tt> event.</p>
+         * @returns {FilmStrip}
+         */
+        decrementPage: function() {
+            return this.setPage(this._currentPage - 1);
+        },
+        
+        // TODO Paginator#snapToPage
+        
+        /**
+         * <p>For filmstrips, this accepts a <tt>FilmStrip.Item</tt> and centers the
+         * view on that item. Use to handle clicks on individual items. If called with
+         * a number, simply centers on that numbered page.</p>
+         * @param {FilmStrip.Item|Number} item
+         * @returns {FilmStrip}
+         */
+        focusItem: function(item) {
+            if (typeof item !== 'number') item = this._items.indexOf(item) + 1;
+            this.setPage(item);
+            return this;
+        }
+    }
+});
