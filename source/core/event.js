@@ -54,8 +54,8 @@
                     if (!target.matches(selector) && !includeAncestors) continue;
                     candidate = target;
                     if (includeAncestors) while (candidate && !candidate.matches(selector)) {
-                        candidate = Ojay(candidate.node.parentNode);
-                        if (candidate.node == document.body) candidate = null;
+                        parent = candidate.node.parentNode;
+                        candidate = (parent && parent != document.body) ? Ojay(parent) : null;
                     }
                     if (candidate) Function.from(map[selector]).call(this, candidate, evnt);
                 }
