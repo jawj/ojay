@@ -49,7 +49,7 @@
          */
         delegateEvent: function(map, includeAncestors) {
             return function(element, evnt) {
-                var target = evnt.getTarget(), candidate;
+                var target = evnt.getTarget(), candidate, parent;
                 for (var selector in map) {
                     if (!target.matches(selector) && !includeAncestors) continue;
                     candidate = target;
